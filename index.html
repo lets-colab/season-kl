@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Season KL — Est. 2026</title>
-<meta name="description" content="KL's most intentional nightlife experience. Three chapters. Three paths. Every Friday &amp; Saturday at TREC KL." />
+<meta name="description" content="KL's most intentional nightlife experience. Every Friday &amp; Saturday at TREC KL." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
@@ -69,6 +69,40 @@ nav{
   background:linear-gradient(145deg,#ffffff 0%,var(--neon) 45%,var(--hot) 100%);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
+.hero-logo-wrap{
+  position:relative;z-index:2;display:inline-block;margin-bottom:6px;
+  isolation:isolate;
+}
+.hero-logo-wrap::after{
+  content:'';position:absolute;
+  top:0;bottom:0;
+  width:45%;
+  background:linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(255,255,255,.52) 50%,
+    transparent 100%
+  );
+  transform:skewX(-18deg);
+  mix-blend-mode:screen;
+  animation:logo-shine 4s cubic-bezier(.4,0,.6,1) 1s infinite;
+  pointer-events:none;
+}
+@keyframes logo-shine{
+  0%,100%{left:-60%;opacity:0}
+  5%{opacity:1}
+  40%{left:110%;opacity:1}
+  50%{left:110%;opacity:0}
+}
+.hero-logo{
+  width:clamp(180px,34vw,360px);height:auto;
+  display:block;
+  filter:brightness(1.1) drop-shadow(0 0 28px rgba(0,234,255,.15));
+}
+.section-eyebrow{
+  font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--muted);text-align:center;margin-bottom:32px;
+}
 .hero-sub{
   font-family:'Cormorant Garamond',serif;
   font-size:clamp(1.1rem,2.5vw,1.55rem);
@@ -125,14 +159,6 @@ nav{
 .path-tastemakers::before{background:linear-gradient(145deg,rgba(136,85,238,.09),rgba(136,85,238,.02))}
 .path-tastemakers:hover::after{border-color:rgba(136,85,238,.55);box-shadow:inset 0 0 60px rgba(136,85,238,.05),0 0 30px rgba(136,85,238,.08)}
 
-.path-num{
-  font-family:'Cormorant Garamond',serif;
-  font-size:4.5rem;font-weight:300;line-height:1;
-  opacity:.13;margin-bottom:24px;position:relative;z-index:1;
-}
-.path-explorers .path-num{color:var(--neon)}
-.path-icons .path-num{color:var(--hot)}
-.path-tastemakers .path-num{color:var(--violet)}
 
 .path-label{
   font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.32em;text-transform:uppercase;
@@ -198,13 +224,14 @@ footer{
 <section class="hero">
   <div class="hero-bg"></div>
   <p class="hero-eyebrow reveal">Kuala Lumpur &nbsp;·&nbsp; Est. 2026</p>
-  <h1 class="hero-title reveal">Season</h1>
+  <div class="hero-logo-wrap reveal">
+    <img src="season-logo.png" alt="Season KL" class="hero-logo" onerror="this.style.display='none'">
+  </div>
   <p class="hero-sub reveal">KL's most intentional nightlife experience</p>
   <div class="hero-divider"></div>
   <p class="hero-desc reveal">
-    Three chapters. Three months. Every Friday and Saturday,
-    the right people gather, connect, and create memories that last.
-    Choose your path.
+    Every Friday and Saturday at TREC KL — the right people,
+    the right energy. Choose your path.
   </p>
   <div class="chapter-pills reveal">
     <span class="chapter-pill pill-bloom">🌸 Bloom · July</span>
@@ -215,10 +242,10 @@ footer{
 
 <section class="section" style="padding-top:20px">
   <div class="section-inner">
+    <p class="section-eyebrow reveal">Who Are You at Season?</p>
     <div class="paths reveal">
 
       <a href="explorers.html" class="path-tile path-explorers">
-        <div class="path-num">01</div>
         <div class="path-label">The Explorers</div>
         <div class="path-name">Season<br>First Time Pass</div>
         <p class="path-sub">
@@ -230,7 +257,6 @@ footer{
       </a>
 
       <a href="icons.html" class="path-tile path-icons">
-        <div class="path-num">02</div>
         <div class="path-label">The Icons</div>
         <div class="path-name">Brand<br>Ambassadors</div>
         <p class="path-sub">
@@ -242,7 +268,6 @@ footer{
       </a>
 
       <a href="tastemakers.html" class="path-tile path-tastemakers">
-        <div class="path-num">03</div>
         <div class="path-label">The Tastemakers</div>
         <div class="path-name">KOL &amp;<br>Influencer Access</div>
         <p class="path-sub">
