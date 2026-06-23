@@ -69,6 +69,11 @@ nav{
   background:linear-gradient(145deg,#ffffff 0%,var(--neon) 45%,var(--hot) 100%);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
+.hero-logo{
+  width:clamp(180px,34vw,360px);height:auto;
+  filter:brightness(1.1) drop-shadow(0 0 28px rgba(0,234,255,.15));
+  position:relative;z-index:2;margin-bottom:6px;
+}
 .hero-sub{
   font-family:'Cormorant Garamond',serif;
   font-size:clamp(1.1rem,2.5vw,1.55rem);
@@ -198,13 +203,12 @@ footer{
 <section class="hero">
   <div class="hero-bg"></div>
   <p class="hero-eyebrow reveal">Kuala Lumpur &nbsp;·&nbsp; Est. 2026</p>
-  <h1 class="hero-title reveal">Season</h1>
+  <img src="season-logo.png" alt="Season KL" class="hero-logo reveal" onerror="this.style.display='none'">
   <p class="hero-sub reveal">KL's most intentional nightlife experience</p>
   <div class="hero-divider"></div>
   <p class="hero-desc reveal">
-    Three chapters. Three months. Every Friday and Saturday,
-    the right people gather, connect, and create memories that last.
-    Choose your path.
+    Every Friday and Saturday at TREC KL — the right people,
+    the right energy. Choose your path.
   </p>
   <div class="chapter-pills reveal">
     <span class="chapter-pill pill-bloom">🌸 Bloom · July</span>
