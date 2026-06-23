@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Explorers — Season KL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,600;1,400&family=Cormorant+Garamond:ital,wght@1,400;1,500&family=Outfit:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #020008;
+    --bg2: #07001A;
+    --neon: #00EAFF;
+    --hot: #FF0066;
+    --violet: #8855EE;
+    --gold: #C9A05A;
+    --accent: #00EAFF;
+    --accent-dim: rgba(0,234,255,0.12);
+    --accent-glow: 0 0 24px rgba(0,234,255,0.55), 0 0 60px rgba(0,234,255,0.22);
+    --text: #F0EEF8;
+    --muted: rgba(240,238,248,0.55);
+    --border: rgba(0,234,255,0.18);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 300;
+    line-height: 1.65;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* Canvas */
+  #canvas {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  }
+  .scanlines {
+    position: fixed; inset: 0; z-index: 1; pointer-events: none;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      rgba(0,0,0,0.04) 3px,
+      rgba(0,0,0,0.04) 4px
+    );
+  }
+  .content { position: relative; z-index: 2; }
+
+  /* Nav */
+  nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 48px;
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(8px);
+    background: rgba(2,0,8,0.6);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .nav-back {
+    color: var(--accent); text-decoration: none; font-family: 'DM Mono', monospace;
+    font-size: 0.78rem; letter-spacing: 0.05em;
+    transition: opacity .2s;
+  }
+  .nav-back:hover { opacity: 0.7; }
+  .nav-logo img { height: 32px; filter: brightness(1.1); }
+  .nav-badge {
+    font-family: 'DM Mono', monospace; font-size: 0.72rem; letter-spacing: 0.08em;
+    color: var(--accent); border: 1px solid var(--border); border-radius: 20px;
+    padding: 5px 14px; text-transform: uppercase;
+  }
+
+  /* Hero */
+  .hero {
+    text-align: center;
+    padding: 100px 24px 80px;
+  }
+  .hero-label {
+    font-family: 'DM Mono', monospace; font-size: 0.75rem;
+    letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .hero-label::before, .hero-label::after {
+    content: '—'; margin: 0 12px; opacity: 0.5;
+  }
+  .hero h1 {
+    font-family: 'Bodoni Moda', serif; font-size: clamp(2.6rem, 7vw, 5.4rem);
+    font-weight: 600; letter-spacing: -0.01em; line-height: 1.1;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, #fff 0%, var(--neon) 55%, #fff 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-sub {
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: clamp(1.1rem, 2.5vw, 1.4rem); color: var(--muted); margin-bottom: 40px;
+    max-width: 520px; margin-left: auto; margin-right: auto;
+  }
+  .hero-chapters {
+    display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 8px;
+  }
+  .chapter-pill {
+    font-family: 'DM Mono', monospace; font-size: 0.72rem; letter-spacing: 0.1em;
+    text-transform: uppercase; border-radius: 20px; padding: 6px 18px;
+    border: 1px solid; cursor: default;
+  }
+  .cp-bloom { color: var(--neon); border-color: rgba(0,234,255,0.4); background: rgba(0,234,255,0.06); }
+  .cp-pulse { color: var(--hot); border-color: rgba(255,0,102,0.4); background: rgba(255,0,102,0.06); }
+  .cp-glow  { color: var(--violet); border-color: rgba(136,85,238,0.4); background: rgba(136,85,238,0.06); }
+
+  /* Sections */
+  section { padding: 80px 24px; max-width: 960px; margin: 0 auto; }
+  section + section { padding-top: 0; }
+  .section-label {
+    font-family: 'DM Mono', monospace; font-size: 0.72rem; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 14px;
+  }
+  .section-title {
+    font-family: 'Bodoni Moda', serif; font-size: clamp(1.6rem, 4vw, 2.4rem);
+    font-weight: 600; margin-bottom: 16px;
+  }
+  .section-body { color: var(--muted); max-width: 560px; line-height: 1.75; }
+
+  /* Chapter cards */
+  .chapters-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px;
+    margin-top: 40px;
+  }
+  .chapter-card {
+    background: var(--bg2); border-radius: 14px; padding: 32px 28px;
+    position: relative; overflow: hidden;
+    border: 1px solid var(--border); transition: transform .3s, border-color .3s;
+  }
+  .chapter-card:hover { transform: translateY(-4px); }
+  .chapter-card.feat { border-color: rgba(0,234,255,0.4); }
+  .chapter-card.feat::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(0,234,255,0.06) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .cc-num {
+    font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.15em;
+    color: var(--muted); text-transform: uppercase; margin-bottom: 12px;
+  }
+  .cc-name {
+    font-family: 'Bodoni Moda', serif; font-size: 1.5rem; font-weight: 600;
+    letter-spacing: 0.08em; margin-bottom: 6px;
+    color: var(--accent);
+  }
+  .cc-when {
+    font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--muted);
+    margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .cc-desc { font-size: 0.9rem; color: var(--muted); line-height: 1.65; }
+  .chapter-card:nth-child(2) .cc-name { color: var(--hot); }
+  .chapter-card:nth-child(3) .cc-name { color: var(--violet); }
+
+  /* Perks */
+  .perks-card {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 16px;
+    padding: 40px; margin-top: 40px; position: relative; overflow: hidden;
+  }
+  .perks-card::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(0,234,255,0.05) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .perks-card h3 {
+    font-family: 'Bodoni Moda', serif; font-size: 1.3rem; font-weight: 600;
+    margin-bottom: 24px; color: var(--accent);
+  }
+  .perks-list {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;
+  }
+  .perk-item {
+    display: flex; align-items: flex-start; gap: 12px;
+  }
+  .perk-dot {
+    width: 8px; height: 8px; border-radius: 50%; background: var(--accent);
+    box-shadow: 0 0 8px var(--accent); margin-top: 7px; flex-shrink: 0;
+  }
+  .perk-text { font-size: 0.9rem; color: var(--text); }
+  .perk-text strong { display: block; font-weight: 500; margin-bottom: 2px; }
+  .perk-text span { color: var(--muted); font-size: 0.82rem; }
+
+  /* How it works */
+  .steps { margin-top: 40px; display: flex; flex-direction: column; gap: 0; }
+  .step {
+    display: flex; gap: 28px; padding: 28px 0; position: relative;
+    border-bottom: 1px solid var(--border);
+  }
+  .step:last-child { border-bottom: none; }
+  .step-num {
+    font-family: 'DM Mono', monospace; font-size: 0.72rem; letter-spacing: 0.1em;
+    color: var(--accent); min-width: 32px; padding-top: 3px;
+  }
+  .step-body {}
+  .step-title {
+    font-family: 'Outfit', sans-serif; font-weight: 500; font-size: 1rem;
+    margin-bottom: 4px;
+  }
+  .step-desc { font-size: 0.88rem; color: var(--muted); }
+
+  /* Form */
+  .form-section {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 20px;
+    padding: 48px; margin-top: 0;
+  }
+  .form-header { margin-bottom: 36px; }
+  .form-header h2 {
+    font-family: 'Bodoni Moda', serif; font-size: 1.8rem; font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .form-header p { color: var(--muted); font-size: 0.9rem; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .form-group { display: flex; flex-direction: column; gap: 8px; }
+  .form-group.full { grid-column: 1 / -1; }
+  label {
+    font-family: 'DM Mono', monospace; font-size: 0.72rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  input, select {
+    background: rgba(0,234,255,0.04); border: 1px solid var(--border);
+    border-radius: 8px; padding: 12px 16px;
+    color: var(--text); font-family: 'Outfit', sans-serif; font-size: 0.9rem;
+    outline: none; transition: border-color .2s, box-shadow .2s;
+    -webkit-appearance: none;
+  }
+  input::placeholder { color: rgba(240,238,248,0.3); }
+  input:focus, select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0,234,255,0.1);
+  }
+  select option { background: #07001A; }
+  .btn-submit {
+    margin-top: 28px; width: 100%;
+    background: transparent; border: 1px solid var(--accent);
+    color: var(--accent); font-family: 'DM Mono', monospace; font-size: 0.85rem;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 16px 32px; border-radius: 8px; cursor: pointer;
+    transition: background .2s, box-shadow .2s, color .2s;
+  }
+  .btn-submit:hover {
+    background: rgba(0,234,255,0.1);
+    box-shadow: var(--accent-glow);
+  }
+  .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* Success screen */
+  .success-screen {
+    display: none; text-align: center; padding: 48px 24px;
+  }
+  .success-screen.active { display: block; }
+  .pass-badge {
+    display: inline-block; margin: 20px auto 28px;
+    font-family: 'DM Mono', monospace; font-size: 1.8rem; font-weight: 500;
+    letter-spacing: 0.18em; color: var(--accent);
+    border: 1px solid var(--accent); border-radius: 12px;
+    padding: 20px 40px;
+    box-shadow: var(--accent-glow);
+  }
+  .success-title {
+    font-family: 'Bodoni Moda', serif; font-size: 1.8rem; font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .success-sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 32px; }
+  .btn-wa {
+    display: inline-block; background: #25D366; color: #fff;
+    font-family: 'DM Mono', monospace; font-size: 0.82rem; letter-spacing: 0.1em;
+    text-transform: uppercase; text-decoration: none;
+    padding: 14px 32px; border-radius: 8px;
+    transition: opacity .2s;
+  }
+  .btn-wa:hover { opacity: 0.85; }
+
+  /* Error */
+  .form-error {
+    color: var(--hot); font-size: 0.82rem; margin-top: 12px; display: none;
+  }
+  .form-error.show { display: block; }
+
+  /* Footer */
+  footer {
+    border-top: 1px solid var(--border); padding: 40px 48px;
+    text-align: center; color: var(--muted); font-size: 0.82rem;
+    margin-top: 60px;
+  }
+  footer a { color: var(--accent); text-decoration: none; margin: 0 14px; }
+  footer a:hover { opacity: 0.7; }
+
+  @media (max-width: 768px) {
+    nav { padding: 18px 20px; }
+    .form-section { padding: 28px 20px; }
+    .form-grid { grid-template-columns: 1fr; }
+    section { padding: 60px 20px; }
+    .hero { padding: 70px 20px 50px; }
+    footer { padding: 32px 20px; }
+    .nav-badge { display: none; }
+  }
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div class="scanlines"></div>
+<div class="content">
+
+  <nav>
+    <a href="index.html" class="nav-back">← Season KL</a>
+    <div class="nav-logo"><img src="season-logo.png" alt="Season KL"></div>
+    <div class="nav-badge">The Explorers</div>
+  </nav>
+
+  <div class="hero">
+    <div class="hero-label">Season First Time Pass</div>
+    <h1>You've Been Invited<br>to Bloom</h1>
+    <p class="hero-sub">Your first chapter of Season KL begins here. Claim your pass and step into something worth remembering.</p>
+    <div class="hero-chapters">
+      <span class="chapter-pill cp-bloom">Bloom — Jul 2026</span>
+      <span class="chapter-pill cp-pulse">Pulse — Aug 2026</span>
+      <span class="chapter-pill cp-glow">Glow — Sep 2026</span>
+    </div>
+  </div>
+
+  <!-- Chapters -->
+  <section>
+    <div class="section-label">Three Chapters</div>
+    <h2 class="section-title">The Season Journey</h2>
+    <p class="section-body">Season KL unfolds across three distinct chapters at TREC KL — each one its own world, each one part of the same story.</p>
+    <div class="chapters-grid">
+      <div class="chapter-card feat">
+        <div class="cc-num">Chapter 01</div>
+        <div class="cc-name">BLOOM</div>
+        <div class="cc-when">July 2026</div>
+        <div class="cc-desc">Where it begins. Fresh energy, new faces, the first electric night of Season KL. A bloom that sets the tone for everything that follows.</div>
+      </div>
+      <div class="chapter-card">
+        <div class="cc-num">Chapter 02</div>
+        <div class="cc-name">PULSE</div>
+        <div class="cc-when">August 2026</div>
+        <div class="cc-desc">The beat deepens. Season hits its rhythm. The nights grow bolder and the community tighter — this is Season at full pulse.</div>
+      </div>
+      <div class="chapter-card">
+        <div class="cc-num">Chapter 03</div>
+        <div class="cc-name">GLOW</div>
+        <div class="cc-when">September 2026</div>
+        <div class="cc-desc">The grand finale. Three chapters, one story. Glow is where Season KL reaches its peak — and leaves you wanting more.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Perks -->
+  <section>
+    <div class="section-label">Pass Benefits</div>
+    <h2 class="section-title">What Comes With Your Pass</h2>
+    <div class="perks-card">
+      <h3>Season First Time Pass Includes</h3>
+      <div class="perks-list">
+        <div class="perk-item">
+          <div class="perk-dot"></div>
+          <div class="perk-text">
+            <strong>Bloom Potion</strong>
+            <span>Signature welcome drink on arrival</span>
+          </div>
+        </div>
+        <div class="perk-item">
+          <div class="perk-dot"></div>
+          <div class="perk-text">
+            <strong>Polaroid Memory</strong>
+            <span>A keepsake photo from your first night</span>
+          </div>
+        </div>
+        <div class="perk-item">
+          <div class="perk-dot"></div>
+          <div class="perk-text">
+            <strong>Season Token</strong>
+            <span>Redeemable for drinks or experiences</span>
+          </div>
+        </div>
+        <div class="perk-item">
+          <div class="perk-dot"></div>
+          <div class="perk-text">
+            <strong>Pass It On</strong>
+            <span>Invite a friend to their own first chapter</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section>
+    <div class="section-label">How It Works</div>
+    <h2 class="section-title">From Sign-up to Night Out</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <div class="step-title">Claim Your Pass</div>
+          <div class="step-desc">Fill in the form below. Your unique Season pass code is generated instantly.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <div class="step-title">WhatsApp Confirmation</div>
+          <div class="step-desc">Our team will send your pass details and event info to your WhatsApp number.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <div class="step-title">Confirm Your Spot</div>
+          <div class="step-desc">Reply to confirm your attendance for the chapter you're joining. Spots are limited.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-body">
+          <div class="step-title">Arrive at TREC KL</div>
+          <div class="step-desc">Show your pass code at the door. Scan, smile, and step into your first Season night.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">05</div>
+        <div class="step-body">
+          <div class="step-title">Join the Community</div>
+          <div class="step-desc">After your first night, you're Season family. Explore becoming an Icon or Tastemaker.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Claim Form -->
+  <section>
+    <div class="form-section">
+      <div id="form-view">
+        <div class="form-header">
+          <div class="section-label">Claim Your Pass</div>
+          <h2>Join the First Chapter</h2>
+          <p>Limited spots available for each chapter. Fill in your details and we'll send your pass to WhatsApp.</p>
+        </div>
+        <form id="pass-form">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="name">Full Name</label>
+              <input type="text" id="name" name="name" placeholder="Your full name" required>
+            </div>
+            <div class="form-group">
+              <label for="whatsapp">WhatsApp Number</label>
+              <input type="tel" id="whatsapp" name="whatsapp" placeholder="+60 12-345 6789" required>
+            </div>
+            <div class="form-group full">
+              <label for="instagram">Instagram Handle</label>
+              <input type="text" id="instagram" name="instagram" placeholder="@yourhandle">
+            </div>
+          </div>
+          <div class="form-error" id="form-error">Something went wrong. Please try again.</div>
+          <button type="submit" class="btn-submit" id="submit-btn">Claim My Season Pass</button>
+        </form>
+      </div>
+      <div class="success-screen" id="success-view">
+        <div class="section-label">Your Pass</div>
+        <div class="success-title">You're In.</div>
+        <p class="success-sub">Your Season First Time Pass is ready. Screenshot this and show it at the door.</p>
+        <div class="pass-badge" id="pass-code">SKL-XXXXX</div>
+        <p class="success-sub">We'll WhatsApp you event details and confirm your spot. See you at TREC KL.</p>
+        <a href="#" id="wa-link" class="btn-wa">Open WhatsApp ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <a href="index.html">Home</a>
+    <a href="icons.html">The Icons</a>
+    <a href="tastemakers.html">The Tastemakers</a>
+    <a href="https://instagram.com/seasonkl" target="_blank" rel="noopener">Instagram</a>
+    <div style="margin-top:16px;opacity:0.4">© 2026 Season KL · TREC KL</div>
+  </footer>
+</div>
+
+<script>
+  // Electric particle canvas
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+  const COLORS = ['rgba(0,234,255,', 'rgba(0,234,255,', 'rgba(255,255,255,', 'rgba(136,85,238,'];
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  function mkParticle() {
+    return {
+      x: Math.random() * W,
+      y: H + 10,
+      r: Math.random() * 1.6 + 0.3,
+      vx: (Math.random() - 0.5) * 0.6,
+      vy: -(Math.random() * 1.2 + 0.4),
+      alpha: Math.random() * 0.5 + 0.15,
+      c: COLORS[Math.floor(Math.random() * COLORS.length)],
+    };
+  }
+  function init() {
+    resize();
+    particles = Array.from({ length: 80 }, () => {
+      const p = mkParticle();
+      p.y = Math.random() * H;
+      return p;
+    });
+    window.addEventListener('resize', resize);
+  }
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.y < -10) Object.assign(p, mkParticle());
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.c + p.alpha + ')';
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  init(); draw();
+
+  // Form logic
+  const SUPABASE_URL = 'https://nykukkccynnykbmxznhl.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55a3Vra2NjeW5ueWtibXh6bmhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcwNDk1MzMsImV4cCI6MjA2MjYyNTUzM30.G3nMSgYFCGmRfMW7dXq4nklgcEPWjKuMGcvGjsxnFgA';
+
+  function localPassId() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let code = 'SKL-';
+    for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
+    return code;
+  }
+
+  document.getElementById('pass-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('submit-btn');
+    const errEl = document.getElementById('form-error');
+    btn.disabled = true;
+    btn.textContent = 'Issuing Pass…';
+    errEl.classList.remove('show');
+
+    const name = document.getElementById('name').value.trim();
+    const whatsapp = document.getElementById('whatsapp').value.trim();
+    const instagram = document.getElementById('instagram').value.trim();
+
+    let passCode = null;
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/issue-season-pass`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SUPABASE_ANON}`,
+        },
+        body: JSON.stringify({ full_name: name, whatsapp_number: whatsapp, instagram_handle: instagram }),
+        signal: AbortSignal.timeout(12000),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        passCode = data.pass_code || data.passCode || data.code || null;
+      }
+    } catch (_) {}
+
+    if (!passCode) {
+      // Fallback: direct REST insert
+      try {
+        passCode = localPassId();
+        const res2 = await fetch(`${SUPABASE_URL}/rest/v1/season_passes`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_ANON,
+            'Authorization': `Bearer ${SUPABASE_ANON}`,
+            'Prefer': 'return=minimal',
+          },
+          body: JSON.stringify({
+            full_name: name,
+            whatsapp_number: whatsapp,
+            instagram_handle: instagram,
+            pass_code: passCode,
+            created_at: new Date().toISOString(),
+          }),
+          signal: AbortSignal.timeout(10000),
+        });
+        if (!res2.ok && res2.status !== 201) {
+          passCode = localPassId();
+        }
+      } catch (_) {
+        passCode = localPassId();
+      }
+    }
+
+    // Show success
+    document.getElementById('form-view').style.display = 'none';
+    const successView = document.getElementById('success-view');
+    successView.classList.add('active');
+    document.getElementById('pass-code').textContent = passCode;
+
+    const waNum = '60123456789';
+    const waMsg = encodeURIComponent(`Hi Season KL! I just claimed my First Visit Pass: ${passCode}. Looking forward to seeing you at TREC KL.`);
+    document.getElementById('wa-link').href = `https://wa.me/${waNum}?text=${waMsg}`;
+  });
+</script>
+</body>
+</html>

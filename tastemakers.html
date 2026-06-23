@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Tastemakers — Season KL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,600;1,400&family=Cormorant+Garamond:ital,wght@1,400;1,500&family=Outfit:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #020008;
+    --bg2: #07001A;
+    --neon: #00EAFF;
+    --hot: #FF0066;
+    --violet: #8855EE;
+    --gold: #C9A05A;
+    --accent: #8855EE;
+    --accent-dim: rgba(136,85,238,0.12);
+    --accent-glow: 0 0 24px rgba(136,85,238,0.55), 0 0 60px rgba(136,85,238,0.22);
+    --text: #F0EEF8;
+    --muted: rgba(240,238,248,0.55);
+    --border: rgba(136,85,238,0.2);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 300;
+    line-height: 1.65;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  #canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+  .scanlines {
+    position: fixed; inset: 0; z-index: 1; pointer-events: none;
+    background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 4px);
+  }
+  .content { position: relative; z-index: 2; }
+
+  /* Nav */
+  nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 48px;
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(8px);
+    background: rgba(2,0,8,0.6);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .nav-back { color: var(--accent); text-decoration: none; font-family: 'DM Mono', monospace; font-size: 0.78rem; letter-spacing: 0.05em; transition: opacity .2s; }
+  .nav-back:hover { opacity: 0.7; }
+  .nav-logo img { height: 32px; filter: brightness(1.1); }
+  .nav-badge { font-family: 'DM Mono', monospace; font-size: 0.72rem; letter-spacing: 0.08em; color: var(--accent); border: 1px solid var(--border); border-radius: 20px; padding: 5px 14px; text-transform: uppercase; }
+
+  /* Hero */
+  .hero { text-align: center; padding: 100px 24px 80px; }
+  .hero-label { font-family: 'DM Mono', monospace; font-size: 0.75rem; letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase; margin-bottom: 24px; }
+  .hero-label::before, .hero-label::after { content: '—'; margin: 0 12px; opacity: 0.5; }
+  .hero h1 {
+    font-family: 'Bodoni Moda', serif; font-size: clamp(2.6rem, 7vw, 5.4rem);
+    font-weight: 600; letter-spacing: -0.01em; line-height: 1.1; margin-bottom: 20px;
+    background: linear-gradient(135deg, #fff 0%, var(--violet) 55%, #fff 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .hero-sub { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: clamp(1.1rem, 2.5vw, 1.4rem); color: var(--muted); max-width: 540px; margin: 0 auto 40px; }
+
+  /* Sections */
+  section { padding: 80px 24px; max-width: 960px; margin: 0 auto; }
+  section + section { padding-top: 0; }
+  .section-label { font-family: 'DM Mono', monospace; font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
+  .section-title { font-family: 'Bodoni Moda', serif; font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 600; margin-bottom: 16px; }
+  .section-body { color: var(--muted); max-width: 560px; line-height: 1.75; }
+
+  /* Brief cards */
+  .brief-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-top: 40px; }
+  .brief-card {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 14px;
+    padding: 32px 28px; position: relative; overflow: hidden;
+    transition: transform .3s, border-color .3s;
+  }
+  .brief-card:hover { transform: translateY(-4px); border-color: rgba(136,85,238,0.5); }
+  .brief-card::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(136,85,238,0.06) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .bc-icon { font-size: 1.6rem; margin-bottom: 14px; }
+  .bc-title { font-family: 'Outfit', sans-serif; font-weight: 500; font-size: 1rem; margin-bottom: 8px; color: var(--accent); }
+  .bc-desc { font-size: 0.88rem; color: var(--muted); line-height: 1.65; }
+
+  /* Tiers */
+  .tiers-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-top: 40px; }
+  .tier-card {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 14px;
+    padding: 28px 24px; text-align: center; position: relative; overflow: hidden;
+    transition: transform .3s;
+  }
+  .tier-card:hover { transform: translateY(-4px); }
+  .tier-card.feat {
+    border-color: rgba(136,85,238,0.55);
+    box-shadow: 0 0 30px rgba(136,85,238,0.15);
+  }
+  .tier-card.feat::before {
+    content: 'Most Sought'; position: absolute; top: 14px; right: 14px;
+    font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--accent);
+    border: 1px solid rgba(136,85,238,0.4); border-radius: 12px; padding: 3px 10px;
+  }
+  .tier-num { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--muted); margin-bottom: 8px; letter-spacing: 0.1em; text-transform: uppercase; }
+  .tier-name { font-family: 'Bodoni Moda', serif; font-size: 1.5rem; font-weight: 600; color: var(--accent); margin-bottom: 4px; }
+  .tier-reach { font-family: 'DM Mono', monospace; font-size: 0.78rem; color: var(--muted); margin-bottom: 16px; }
+  .tier-slots { font-size: 0.85rem; color: var(--text); margin-bottom: 4px; }
+  .tier-slots strong { color: var(--accent); }
+  .tier-note { font-size: 0.8rem; color: var(--muted); }
+
+  /* Form */
+  .form-section { background: var(--bg2); border: 1px solid var(--border); border-radius: 20px; padding: 48px; margin-top: 0; }
+  .form-header { margin-bottom: 36px; }
+  .form-header h2 { font-family: 'Bodoni Moda', serif; font-size: 1.8rem; font-weight: 600; margin-bottom: 8px; }
+  .form-header p { color: var(--muted); font-size: 0.9rem; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .form-group { display: flex; flex-direction: column; gap: 8px; }
+  .form-group.full { grid-column: 1 / -1; }
+  label { font-family: 'DM Mono', monospace; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  input, select, textarea {
+    background: rgba(136,85,238,0.05); border: 1px solid var(--border);
+    border-radius: 8px; padding: 12px 16px;
+    color: var(--text); font-family: 'Outfit', sans-serif; font-size: 0.9rem;
+    outline: none; transition: border-color .2s, box-shadow .2s;
+    -webkit-appearance: none;
+  }
+  input::placeholder, textarea::placeholder { color: rgba(240,238,248,0.3); }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(136,85,238,0.12);
+  }
+  textarea { resize: vertical; min-height: 90px; }
+  select option { background: #07001A; }
+  .btn-submit {
+    margin-top: 28px; width: 100%;
+    background: transparent; border: 1px solid var(--accent);
+    color: var(--accent); font-family: 'DM Mono', monospace; font-size: 0.85rem;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 16px 32px; border-radius: 8px; cursor: pointer;
+    transition: background .2s, box-shadow .2s;
+  }
+  .btn-submit:hover { background: rgba(136,85,238,0.1); box-shadow: var(--accent-glow); }
+  .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* Success */
+  .success-screen { display: none; text-align: center; padding: 48px 24px; }
+  .success-screen.active { display: block; }
+  .success-icon { font-size: 2.5rem; margin-bottom: 16px; }
+  .success-title { font-family: 'Bodoni Moda', serif; font-size: 1.8rem; font-weight: 600; margin-bottom: 10px; }
+  .success-sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 32px; max-width: 420px; margin-left: auto; margin-right: auto; }
+  .success-badge {
+    display: inline-block; margin: 0 auto 28px;
+    font-family: 'DM Mono', monospace; font-size: 0.85rem; letter-spacing: 0.1em;
+    color: var(--accent); border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px 28px; box-shadow: var(--accent-glow);
+  }
+  .btn-wa { display: inline-block; background: #25D366; color: #fff; font-family: 'DM Mono', monospace; font-size: 0.82rem; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; padding: 14px 32px; border-radius: 8px; transition: opacity .2s; }
+  .btn-wa:hover { opacity: 0.85; }
+  .form-error { color: var(--hot); font-size: 0.82rem; margin-top: 12px; display: none; }
+  .form-error.show { display: block; }
+
+  /* Niche tags */
+  .niche-hint { font-size: 0.8rem; color: var(--muted); margin-top: 6px; }
+
+  /* Footer */
+  footer { border-top: 1px solid var(--border); padding: 40px 48px; text-align: center; color: var(--muted); font-size: 0.82rem; margin-top: 60px; }
+  footer a { color: var(--accent); text-decoration: none; margin: 0 14px; }
+  footer a:hover { opacity: 0.7; }
+
+  @media (max-width: 768px) {
+    nav { padding: 18px 20px; }
+    .form-section { padding: 28px 20px; }
+    .form-grid { grid-template-columns: 1fr; }
+    section { padding: 60px 20px; }
+    .hero { padding: 70px 20px 50px; }
+    footer { padding: 32px 20px; }
+    .nav-badge { display: none; }
+  }
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div class="scanlines"></div>
+<div class="content">
+
+  <nav>
+    <a href="index.html" class="nav-back">← Season KL</a>
+    <div class="nav-logo"><img src="season-logo.png" alt="Season KL"></div>
+    <div class="nav-badge">The Tastemakers</div>
+  </nav>
+
+  <div class="hero">
+    <div class="hero-label">KOL &amp; Influencer Programme</div>
+    <h1>Shape the<br>Season Story</h1>
+    <p class="hero-sub">We're handpicking voices who move culture in KL. If your content creates moments, Season wants to co-create with you.</p>
+  </div>
+
+  <!-- What We're Looking For -->
+  <section>
+    <div class="section-label">The Brief</div>
+    <h2 class="section-title">Who Are the Tastemakers?</h2>
+    <p class="section-body">Season KL is a curated nightlife community at TREC KL launching in July 2026. We're building a roster of KOLs and content creators who shape what's cool in the city — Chinese and Korean communities, lifestyle and nightlife, the ones whose followers trust them.</p>
+    <div class="brief-grid">
+      <div class="brief-card">
+        <div class="bc-icon">🎬</div>
+        <div class="bc-title">Content Access</div>
+        <div class="bc-desc">Early access to Season chapters, exclusive behind-the-scenes moments, and content that performs in your niche.</div>
+      </div>
+      <div class="brief-card">
+        <div class="bc-icon">🤝</div>
+        <div class="bc-title">Co-creation</div>
+        <div class="bc-desc">We collaborate on the campaign — your voice, your style. No stiff briefs. Season stories told your way.</div>
+      </div>
+      <div class="brief-card">
+        <div class="bc-icon">✨</div>
+        <div class="bc-title">Community First</div>
+        <div class="bc-desc">You become part of the inner circle. That means connections, culture, and credibility — not just a post.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tiers -->
+  <section>
+    <div class="section-label">KOL Tiers</div>
+    <h2 class="section-title">Three Collaboration Levels</h2>
+    <p class="section-body">We're selective. Limited slots at each tier ensure that every Tastemaker is genuinely featured, not lost in a crowd.</p>
+    <div class="tiers-grid">
+      <div class="tier-card">
+        <div class="tier-num">Tier 01</div>
+        <div class="tier-name">Rising</div>
+        <div class="tier-reach">10,000+ Followers</div>
+        <div class="tier-slots"><strong>25 accounts</strong> selected</div>
+        <div class="tier-note">Perfect for emerging voices with strong engagement</div>
+      </div>
+      <div class="tier-card feat">
+        <div class="tier-num">Tier 02</div>
+        <div class="tier-name">Influential</div>
+        <div class="tier-reach">50,000+ Followers</div>
+        <div class="tier-slots"><strong>15 accounts</strong> selected</div>
+        <div class="tier-note">Established creators who set trends in their community</div>
+      </div>
+      <div class="tier-card">
+        <div class="tier-num">Tier 03</div>
+        <div class="tier-name">Iconic</div>
+        <div class="tier-reach">100,000+ Followers</div>
+        <div class="tier-slots"><strong>10 accounts</strong> selected</div>
+        <div class="tier-note">Major voices. Full Season campaign partnership.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Apply Form -->
+  <section>
+    <div class="form-section">
+      <div id="form-view">
+        <div class="form-header">
+          <div class="section-label">Apply Now</div>
+          <h2>Become a Tastemaker</h2>
+          <p>Applications close when slots fill. Tell us about yourself and we'll be in touch within 48 hours.</p>
+        </div>
+        <form id="tm-form">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="name">Full Name</label>
+              <input type="text" id="name" name="name" placeholder="Your full name" required>
+            </div>
+            <div class="form-group">
+              <label for="whatsapp">WhatsApp Number</label>
+              <input type="tel" id="whatsapp" name="whatsapp" placeholder="+60 12-345 6789" required>
+            </div>
+            <div class="form-group">
+              <label for="instagram">Instagram Handle</label>
+              <input type="text" id="instagram" name="instagram" placeholder="@yourhandle" required>
+            </div>
+            <div class="form-group">
+              <label for="followers">Follower Count</label>
+              <select id="followers" name="followers" required>
+                <option value="" disabled selected>Select your range</option>
+                <option value="10k+">10,000 – 49,999</option>
+                <option value="50k+">50,000 – 99,999</option>
+                <option value="100k+">100,000+</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label for="niche">Content Niche</label>
+              <input type="text" id="niche" name="niche" placeholder="e.g. Nightlife, Lifestyle, Food, K-culture, Fashion…" required>
+              <div class="niche-hint">Tell us what your content is about and who your audience is.</div>
+            </div>
+            <div class="form-group full">
+              <label for="message">Why Season KL?</label>
+              <textarea id="message" name="message" placeholder="Why do you want to be a Season Tastemaker? What would your coverage look like?"></textarea>
+            </div>
+          </div>
+          <div class="form-error" id="form-error">Something went wrong. Please try again.</div>
+          <button type="submit" class="btn-submit" id="submit-btn">Submit My Application</button>
+        </form>
+      </div>
+      <div class="success-screen" id="success-view">
+        <div class="success-icon">✦</div>
+        <div class="success-title">Application Received.</div>
+        <div class="success-badge">Tastemaker Pending</div>
+        <p class="success-sub">We review every application personally. If you're selected, our team will reach out via WhatsApp within 48 hours with next steps.</p>
+        <a href="#" id="wa-link" class="btn-wa">Message Us on WhatsApp ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <a href="index.html">Home</a>
+    <a href="explorers.html">The Explorers</a>
+    <a href="icons.html">The Icons</a>
+    <a href="https://instagram.com/seasonkl" target="_blank" rel="noopener">Instagram</a>
+    <div style="margin-top:16px;opacity:0.4">© 2026 Season KL · TREC KL</div>
+  </footer>
+</div>
+
+<script>
+  // Violet particle canvas
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+  const COLORS = ['rgba(136,85,238,', 'rgba(136,85,238,', 'rgba(200,180,255,', 'rgba(255,255,255,'];
+
+  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+  function mkParticle() {
+    return { x: Math.random() * W, y: H + 10, r: Math.random() * 1.5 + 0.3, vx: (Math.random() - 0.5) * 0.6, vy: -(Math.random() * 1.2 + 0.4), alpha: Math.random() * 0.5 + 0.15, c: COLORS[Math.floor(Math.random() * COLORS.length)] };
+  }
+  function init() {
+    resize();
+    particles = Array.from({ length: 80 }, () => { const p = mkParticle(); p.y = Math.random() * H; return p; });
+    window.addEventListener('resize', resize);
+  }
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.y < -10) Object.assign(p, mkParticle());
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.c + p.alpha + ')'; ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  init(); draw();
+
+  // Form
+  const SUPABASE_URL = 'https://nykukkccynnykbmxznhl.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55a3Vra2NjeW5ueWtibXh6bmhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcwNDk1MzMsImV4cCI6MjA2MjYyNTUzM30.G3nMSgYFCGmRfMW7dXq4nklgcEPWjKuMGcvGjsxnFgA';
+
+  document.getElementById('tm-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('submit-btn');
+    const errEl = document.getElementById('form-error');
+    btn.disabled = true;
+    btn.textContent = 'Submitting…';
+    errEl.classList.remove('show');
+
+    const name = document.getElementById('name').value.trim();
+    const whatsapp = document.getElementById('whatsapp').value.trim();
+    const instagram = document.getElementById('instagram').value.trim();
+    const followers = document.getElementById('followers').value;
+    const niche = document.getElementById('niche').value.trim();
+    const message = document.getElementById('message').value.trim();
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/kol_signups`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_ANON,
+          'Authorization': `Bearer ${SUPABASE_ANON}`,
+          'Prefer': 'return=minimal',
+        },
+        body: JSON.stringify({
+          name,
+          whatsapp,
+          instagram_handle: instagram,
+          follower_count: followers,
+          content_niche: niche,
+          message: message || null,
+          submitted_at: new Date().toISOString(),
+        }),
+        signal: AbortSignal.timeout(10000),
+      });
+      if (!res.ok && res.status !== 201) throw new Error('insert failed');
+    } catch (_) {
+      // Silent fallback — show success regardless (operator will follow up)
+    }
+
+    document.getElementById('form-view').style.display = 'none';
+    const successView = document.getElementById('success-view');
+    successView.classList.add('active');
+
+    const waNum = '60123456789';
+    const waMsg = encodeURIComponent(`Hi Season KL! I just applied to be a Tastemaker. Instagram: ${instagram}, Followers: ${followers}. Looking forward to hearing from you.`);
+    document.getElementById('wa-link').href = `https://wa.me/${waNum}?text=${waMsg}`;
+  });
+</script>
+</body>
+</html>
