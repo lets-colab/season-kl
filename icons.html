@@ -228,11 +228,24 @@ footer{
 .footer-links{display:flex;justify-content:center;gap:24px;flex-wrap:wrap}
 .footer-links a{font-size:.7rem;color:var(--muted);text-decoration:none;letter-spacing:.1em;transition:color .2s}
 .footer-links a:hover{color:var(--accent)}
-.footer-copy{font-size:.6rem;color:rgba(240,244,250,.18);margin-top:18px}
+.footer-copy{font-size:.65rem;color:rgba(240,244,250,.22);margin-top:18px}
 
-/* REVEAL */
-.reveal{opacity:0;transform:translateY(18px);transition:opacity .75s ease,transform .75s ease}
-.reveal.visible{opacity:1;transform:translateY(0)}
+/* SCROLL BAR */
+.scroll-bar{position:fixed;top:0;left:0;height:2px;width:0%;background:linear-gradient(to right,var(--accent2),var(--accent));z-index:200;pointer-events:none}
+
+/* CINEMATIC REVEAL */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .85s cubic-bezier(.16,1,.3,1),transform .85s cubic-bezier(.16,1,.3,1)}
+.reveal-left{opacity:0;transform:translateX(-36px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1)}
+.reveal-right{opacity:0;transform:translateX(36px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1)}
+.reveal-scale{opacity:0;transform:scale(.93) translateY(12px);transition:opacity .95s cubic-bezier(.16,1,.3,1),transform .95s cubic-bezier(.16,1,.3,1)}
+.reveal.visible,.reveal-left.visible,.reveal-right.visible,.reveal-scale.visible{opacity:1;transform:none}
+.stagger>.reveal-scale:nth-child(1){transition-delay:.06s}
+.stagger>.reveal-scale:nth-child(2){transition-delay:.18s}
+.stagger>.reveal-scale:nth-child(3){transition-delay:.30s}
+.stagger>.reveal-scale:nth-child(4){transition-delay:.42s}
+:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:4px}
+.btn-wa:focus-visible,.form-submit:focus-visible{outline-offset:3px}
+.field input:focus-visible,.field select:focus-visible,.field textarea:focus-visible{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,0,102,.15)}
 
 @media(max-width:768px){
   nav{padding:16px 20px}
@@ -244,7 +257,8 @@ footer{
 </head>
 <body>
 
-<canvas id="particles"></canvas>
+<canvas id="particles" aria-hidden="true"></canvas>
+<div class="scroll-bar" id="scrollBar"></div>
 
 <nav>
   <a href="index.html" class="nav-back">← Season KL</a>
@@ -269,21 +283,21 @@ footer{
 
 <section class="section" id="about">
   <div class="section-inner">
-    <span class="section-label reveal">The Programme</span>
+    <span class="section-label reveal-left">The Programme</span>
     <h2 class="section-title reveal">What It Means<br>to Be an Icon</h2>
     <p class="section-sub reveal">Three ways to be part of Season. Every level has its own energy and its own rewards.</p>
-    <div class="what-grid reveal">
-      <div class="what-card">
+    <div class="what-grid stagger">
+      <div class="what-card reveal-scale">
         <span class="what-icon">🌸</span>
         <div class="what-title">Community</div>
         <div class="what-desc">You're not just attending — you're hosting. Season Ambassadors build genuine connections that keep the room full and the energy right.</div>
       </div>
-      <div class="what-card">
+      <div class="what-card reveal-scale">
         <span class="what-icon">💜</span>
         <div class="what-title">Earning</div>
         <div class="what-desc">Your social capital converts to real currency. Commissions, bar credits, VIP access — Season rewards the people who make it happen.</div>
       </div>
-      <div class="what-card">
+      <div class="what-card reveal-scale">
         <span class="what-icon">🌹</span>
         <div class="what-title">Growth</div>
         <div class="what-desc">Season Champions host named nights, run their own sub-networks, and take a share of revenue. This is a brand, not a side gig.</div>
@@ -294,11 +308,11 @@ footer{
 
 <section class="section" style="padding-top:20px" id="tiers">
   <div class="section-inner">
-    <span class="section-label reveal">The Tiers</span>
+    <span class="section-label reveal-left">The Tiers</span>
     <h2 class="section-title reveal">Choose Your Season</h2>
-    <div class="tiers-grid">
+    <div class="tiers-grid stagger">
 
-      <div class="tier-card reveal">
+      <div class="tier-card reveal-scale">
         <span class="tier-icon">🌸</span>
         <div class="tier-name">Petal</div>
         <div class="tier-tagline">The beginning of something real.</div>
@@ -311,7 +325,7 @@ footer{
         <div class="tier-cta-hint">Entry Level · Apply Below</div>
       </div>
 
-      <div class="tier-card featured reveal">
+      <div class="tier-card featured reveal-scale">
         <span class="tier-icon">💜</span>
         <div class="tier-name">Bloom</div>
         <div class="tier-tagline">Season becomes your brand.</div>
@@ -325,7 +339,7 @@ footer{
         <div class="tier-cta-hint">Active Promoter · Apply Below</div>
       </div>
 
-      <div class="tier-card tier-season-card reveal">
+      <div class="tier-card tier-season-card reveal-scale">
         <span class="tier-icon">🌹</span>
         <div class="tier-name" style="color:var(--gold-light)">Season</div>
         <div class="tier-tagline">You own the night.</div>
@@ -440,13 +454,37 @@ footer{
   loop();
 })();
 
-/* SCROLL REVEAL */
+/* CINEMATIC SCROLL */
 (function(){
-  const els=document.querySelectorAll('.reveal');
+  const scrollBar=document.getElementById('scrollBar');
+  const particlesEl=document.getElementById('particles');
+
+  /* SCROLL PROGRESS BAR + PARALLAX */
+  let ticking=false;
+  window.addEventListener('scroll',()=>{
+    if(ticking)return;
+    ticking=true;
+    requestAnimationFrame(()=>{
+      const y=window.scrollY;
+      const max=document.body.scrollHeight-window.innerHeight;
+      if(scrollBar)scrollBar.style.width=Math.min(y/max*100,100)+'%';
+      if(particlesEl)particlesEl.style.transform='translateY('+y*.12+'px)';
+      ticking=false;
+    });
+  },{passive:true});
+
+  /* HERO ENTRANCE — stagger hero items on load */
+  document.querySelectorAll('.hero .reveal').forEach((el,i)=>{
+    el.style.transitionDelay=(i*130)+'ms';
+  });
+
+  /* SCROLL REVEAL — all variants */
   const obs=new IntersectionObserver(entries=>{
-    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});
-  },{threshold:0.1});
-  els.forEach(el=>obs.observe(el));
+    entries.forEach(e=>{
+      if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}
+    });
+  },{threshold:0.08,rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale').forEach(el=>obs.observe(el));
 })();
 
 /* FORM SUBMIT → SUPABASE */
@@ -488,6 +526,7 @@ footer{
     document.getElementById('successName').textContent=firstName||'Icon';
     form.style.display='none';
     successDiv.style.display='block';
+    requestAnimationFrame(()=>requestAnimationFrame(()=>successDiv.classList.add('visible')));
   });
 })();
 </script>
