@@ -262,9 +262,19 @@ footer{
 .footer-links a:hover{color:var(--accent)}
 .footer-copy{font-size:.6rem;color:rgba(240,244,250,.18);margin-top:18px}
 
-/* REVEAL */
-.reveal{opacity:0;transform:translateY(18px);transition:opacity .75s ease,transform .75s ease}
-.reveal.visible{opacity:1;transform:translateY(0)}
+/* SCROLL BAR */
+.scroll-bar{position:fixed;top:0;left:0;height:2px;width:0%;background:linear-gradient(to right,var(--accent),#FF0066);z-index:200;pointer-events:none}
+
+/* CINEMATIC REVEAL */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .85s cubic-bezier(.16,1,.3,1),transform .85s cubic-bezier(.16,1,.3,1)}
+.reveal-left{opacity:0;transform:translateX(-36px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1)}
+.reveal-right{opacity:0;transform:translateX(36px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1)}
+.reveal-scale{opacity:0;transform:scale(.93) translateY(12px);transition:opacity .95s cubic-bezier(.16,1,.3,1),transform .95s cubic-bezier(.16,1,.3,1)}
+.reveal.visible,.reveal-left.visible,.reveal-right.visible,.reveal-scale.visible{opacity:1;transform:none}
+.stagger>.reveal-scale:nth-child(1){transition-delay:.06s}
+.stagger>.reveal-scale:nth-child(2){transition-delay:.18s}
+.stagger>.reveal-scale:nth-child(3){transition-delay:.30s}
+.stagger>.reveal-scale:nth-child(4){transition-delay:.42s}
 
 @media(max-width:768px){
   nav{padding:16px 20px}
@@ -283,6 +293,7 @@ footer{
 <body>
 
 <canvas id="particles"></canvas>
+<div class="scroll-bar" id="scrollBar"></div>
 
 <nav>
   <a href="index.html" class="nav-back">← Season KL</a>
@@ -312,23 +323,23 @@ footer{
 
 <section class="section" id="chapters">
   <div class="section-inner">
-    <span class="section-label reveal">Three Chapters</span>
+    <span class="section-label reveal-left">Three Chapters</span>
     <h2 class="section-title reveal">The Season Journey</h2>
     <p class="section-sub reveal">Season KL unfolds across three chapters at TREC KL — each one its own world, each one part of the same story.</p>
-    <div class="chapters-grid reveal">
-      <div class="chapter-card">
+    <div class="chapters-grid stagger">
+      <div class="chapter-card reveal-scale">
         <span class="chapter-num">Chapter 01</span>
         <div class="chapter-name">BLOOM</div>
         <div class="chapter-when">July 2026</div>
         <div class="chapter-desc">Where it all begins. Fresh faces, electric first nights, and the energy of something new. Bloom sets the tone.</div>
       </div>
-      <div class="chapter-card">
+      <div class="chapter-card reveal-scale">
         <span class="chapter-num">Chapter 02</span>
         <div class="chapter-name">PULSE</div>
         <div class="chapter-when">August 2026</div>
         <div class="chapter-desc">The beat deepens. Season hits its rhythm. The nights grow bolder and the community tighter.</div>
       </div>
-      <div class="chapter-card">
+      <div class="chapter-card reveal-scale">
         <span class="chapter-num">Chapter 03</span>
         <div class="chapter-name">GLOW</div>
         <div class="chapter-when">September 2026</div>
@@ -340,25 +351,25 @@ footer{
 
 <section class="section" style="padding-top:20px">
   <div class="section-inner">
-    <span class="section-label reveal">What You Receive</span>
+    <span class="section-label reveal-left">What You Receive</span>
     <h2 class="section-title reveal">Your First Visit Includes</h2>
-    <div class="perks-grid reveal">
-      <div class="perk-card">
+    <div class="perks-grid stagger">
+      <div class="perk-card reveal-scale">
         <span class="perk-icon">🌸</span>
         <div class="perk-name">Bloom Potion</div>
         <div class="perk-desc">A signature welcome cocktail, crafted for your first night at Season KL.</div>
       </div>
-      <div class="perk-card">
+      <div class="perk-card reveal-scale">
         <span class="perk-icon">📷</span>
         <div class="perk-name">Polaroid Memory</div>
         <div class="perk-desc">A printed Polaroid from your first night — something real to keep.</div>
       </div>
-      <div class="perk-card">
+      <div class="perk-card reveal-scale">
         <span class="perk-icon">✦</span>
         <div class="perk-name">Season Token</div>
         <div class="perk-desc">A collectible token redeemable for drinks or experiences on future visits.</div>
       </div>
-      <div class="perk-card">
+      <div class="perk-card reveal-scale">
         <span class="perk-icon">💌</span>
         <div class="perk-name">Pass It On</div>
         <div class="perk-desc">After your first night, you can invite a friend to claim their own First Visit Pass.</div>
@@ -369,24 +380,24 @@ footer{
 
 <section class="section" style="padding-top:20px">
   <div class="section-inner">
-    <span class="section-label reveal">How It Works</span>
+    <span class="section-label reveal-left">How It Works</span>
     <h2 class="section-title reveal">From Sign-up to Night Out</h2>
-    <div class="steps reveal">
-      <div class="step">
+    <div class="steps">
+      <div class="step reveal-left">
         <div class="step-num">01</div>
         <div class="step-body">
           <div class="step-title">Claim Your Pass</div>
           <div class="step-desc">Fill in the form below. Your unique Season pass code is generated instantly and confirmed on screen.</div>
         </div>
       </div>
-      <div class="step">
+      <div class="step reveal-right">
         <div class="step-num">02</div>
         <div class="step-body">
           <div class="step-title">Get Your WhatsApp Confirmation</div>
           <div class="step-desc">We send your pass, event details, and everything you need — direct to WhatsApp. No app required.</div>
         </div>
       </div>
-      <div class="step">
+      <div class="step reveal-left">
         <div class="step-num">03</div>
         <div class="step-body">
           <div class="step-title">Arrive at TREC KL</div>
@@ -481,13 +492,37 @@ footer{
   loop();
 })();
 
-/* SCROLL REVEAL */
+/* CINEMATIC SCROLL */
 (function(){
-  const els=document.querySelectorAll('.reveal');
+  const scrollBar=document.getElementById('scrollBar');
+  const particlesEl=document.getElementById('particles');
+
+  /* SCROLL PROGRESS BAR + PARALLAX */
+  let ticking=false;
+  window.addEventListener('scroll',()=>{
+    if(ticking)return;
+    ticking=true;
+    requestAnimationFrame(()=>{
+      const y=window.scrollY;
+      const max=document.body.scrollHeight-window.innerHeight;
+      if(scrollBar)scrollBar.style.width=Math.min(y/max*100,100)+'%';
+      if(particlesEl)particlesEl.style.transform='translateY('+y*.12+'px)';
+      ticking=false;
+    });
+  },{passive:true});
+
+  /* HERO ENTRANCE — stagger hero items on load */
+  document.querySelectorAll('.hero .reveal').forEach((el,i)=>{
+    el.style.transitionDelay=(i*130)+'ms';
+  });
+
+  /* SCROLL REVEAL — all variants */
   const obs=new IntersectionObserver(entries=>{
-    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});
-  },{threshold:0.1});
-  els.forEach(el=>obs.observe(el));
+    entries.forEach(e=>{
+      if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}
+    });
+  },{threshold:0.08,rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale').forEach(el=>obs.observe(el));
 })();
 
 /* FORM → SUPABASE */
