@@ -193,7 +193,7 @@ footer{
 .footer-links{display:flex;justify-content:center;gap:28px;flex-wrap:wrap}
 .footer-links a{font-size:.7rem;color:var(--muted);text-decoration:none;letter-spacing:.1em;transition:color .2s}
 .footer-links a:hover{color:var(--neon)}
-.footer-copy{font-size:.6rem;color:rgba(240,244,250,.18);margin-top:20px}
+.footer-copy{font-size:.65rem;color:rgba(240,244,250,.22);margin-top:20px}
 
 /* SCROLL BAR */
 .scroll-bar{position:fixed;top:0;left:0;height:2px;width:0%;background:linear-gradient(to right,var(--neon),var(--hot));z-index:200;pointer-events:none}
@@ -209,6 +209,8 @@ footer{
 .stagger>.reveal-scale:nth-child(3){transition-delay:.30s}
 .stagger>.reveal-scale:nth-child(4){transition-delay:.42s}
 
+:focus-visible{outline:2px solid var(--neon);outline-offset:4px;border-radius:4px}
+.path-tile:focus-visible{outline-offset:0}
 @media(max-width:768px){
   nav{padding:16px 20px}
   .paths{grid-template-columns:1fr}
@@ -223,7 +225,7 @@ footer{
 </head>
 <body>
 
-<canvas id="particles"></canvas>
+<canvas id="particles" aria-hidden="true"></canvas>
 <div class="scroll-bar" id="scrollBar"></div>
 
 <nav>
