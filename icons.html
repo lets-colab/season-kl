@@ -254,6 +254,18 @@ footer{
   .section{padding:60px 20px}
 }
 </style>
+<!-- Meta Pixel — replace YOUR_PIXEL_ID with your actual Pixel ID from Meta Business Manager → Events Manager -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init','YOUR_PIXEL_ID');
+fbq('track','PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID&ev=PageView&noscript=1"/></noscript>
 </head>
 <body>
 
@@ -327,7 +339,7 @@ footer{
 
       <div class="tier-card featured reveal-scale">
         <span class="tier-icon">💜</span>
-        <div class="tier-name">Bloom</div>
+        <div class="tier-name">Ember</div>
         <div class="tier-tagline">Season becomes your brand.</div>
         <ul class="tier-perks">
           <li>RM200 monthly commission</li>
@@ -382,7 +394,7 @@ footer{
           <select id="tier" name="tier">
             <option value="">Select a tier</option>
             <option value="Petal">🌸 Petal — Entry Level</option>
-            <option value="Bloom">💜 Bloom — Active Promoter</option>
+            <option value="Ember">🔥 Ember — Active Promoter</option>
             <option value="Season">🌹 Season — Power Host</option>
           </select>
         </div>
@@ -497,6 +509,7 @@ footer{
 
   form.addEventListener('submit',async(e)=>{
     e.preventDefault();
+    if(typeof fbq!=='undefined')fbq('track','Lead');
     submitBtn.disabled=true;submitBtn.textContent='Submitting…';
     const name=document.getElementById('name').value.trim();
     const whatsapp=document.getElementById('whatsapp').value.trim();
@@ -524,6 +537,7 @@ footer{
 
     const firstName=name.split(' ')[0];
     document.getElementById('successName').textContent=firstName||'Icon';
+    if(typeof fbq!=='undefined')fbq('track','CompleteRegistration');
     form.style.display='none';
     successDiv.style.display='block';
     requestAnimationFrame(()=>requestAnimationFrame(()=>successDiv.classList.add('visible')));

@@ -292,6 +292,18 @@ footer{
   .step-num{font-size:2.2rem;min-width:40px}
 }
 </style>
+<!-- Meta Pixel — replace YOUR_PIXEL_ID with your actual Pixel ID from Meta Business Manager → Events Manager -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init','YOUR_PIXEL_ID');
+fbq('track','PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID&ev=PageView&noscript=1"/></noscript>
 </head>
 <body>
 
@@ -334,19 +346,19 @@ footer{
         <span class="chapter-num">Chapter 01</span>
         <div class="chapter-name">BLOOM</div>
         <div class="chapter-when">July 2026</div>
-        <div class="chapter-desc">Where it all begins. Fresh faces, electric first nights, and the energy of something new. Bloom sets the tone.</div>
+        <div class="chapter-desc">The first night you never forget. KL's most intentional crowd comes together for the first time. Electric, curious, alive.</div>
       </div>
       <div class="chapter-card reveal-scale">
         <span class="chapter-num">Chapter 02</span>
         <div class="chapter-name">PULSE</div>
         <div class="chapter-when">August 2026</div>
-        <div class="chapter-desc">The beat deepens. Season hits its rhythm. The nights grow bolder and the community tighter.</div>
+        <div class="chapter-desc">The community finds its rhythm. Familiar faces, deeper nights, and the feeling of belonging to something real.</div>
       </div>
       <div class="chapter-card reveal-scale">
         <span class="chapter-num">Chapter 03</span>
         <div class="chapter-name">GLOW</div>
         <div class="chapter-when">September 2026</div>
-        <div class="chapter-desc">The season's peak. Three chapters of momentum culminating in one unforgettable finale.</div>
+        <div class="chapter-desc">The season's peak. The people who were here from Bloom — this is their night. One last chapter. Unforgettable.</div>
       </div>
     </div>
   </div>
@@ -547,6 +559,7 @@ footer{
 
   form.addEventListener('submit',async(e)=>{
     e.preventDefault();
+    if(typeof fbq!=='undefined')fbq('track','Lead');
     submitBtn.disabled=true;submitBtn.textContent='Issuing Pass…';
     errorDiv.classList.remove('show');
 
@@ -598,6 +611,7 @@ footer{
     const waMsg=encodeURIComponent(`Hi Season KL! My First Visit Pass is: ${passCode}. Looking forward to Bloom at TREC KL.`);
     document.getElementById('waLink').href=`https://wa.me/${WA_NUMBER}?text=${waMsg}`;
 
+    if(typeof fbq!=='undefined')fbq('track','CompleteRegistration');
     form.style.display='none';
     successDiv.style.display='block';
     requestAnimationFrame(()=>requestAnimationFrame(()=>successDiv.classList.add('visible')));
