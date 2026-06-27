@@ -574,12 +574,12 @@ src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID&ev=PageView&noscript=1"/></nos
       const res=await fetch(`${SUPABASE_URL}/functions/v1/issue-season-pass`,{
         method:'POST',
         headers:{'Content-Type':'application/json','Authorization':`Bearer ${SUPABASE_ANON}`},
-        body:JSON.stringify({full_name:name,whatsapp_number:whatsapp,instagram_handle:instagram}),
+        body:JSON.stringify({name:name,whatsapp:whatsapp,instagram:instagram,source:'Instagram'}),
         signal:AbortSignal.timeout(12000),
       });
       if(res.ok){
         const data=await res.json();
-        passCode=data.pass_code||data.passCode||data.code||null;
+        passCode=data.pass_id||data.pass_code||data.passCode||data.code||null;
       }
     }catch(_){}
 
