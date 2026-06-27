@@ -30,8 +30,6 @@ body::before{
   opacity:.5;
 }
 #particles{position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.5}
-
-/* NAV */
 nav{
   position:fixed;top:0;left:0;right:0;z-index:100;
   display:flex;align-items:center;justify-content:space-between;
@@ -47,8 +45,6 @@ nav{
   display:flex;align-items:center;gap:6px;
 }
 .nav-back:hover{color:var(--accent)}
-
-/* HERO */
 .hero{
   position:relative;min-height:100svh;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -97,8 +93,6 @@ nav{
   transition:all .3s;border:none;cursor:pointer;font-family:'Outfit',sans-serif;
 }
 .btn-accent:hover{transform:translateY(-2px);box-shadow:0 8px 50px rgba(255,0,102,.45)}
-
-/* SECTION */
 .section{position:relative;z-index:2;padding:80px 24px}
 .section-inner{max-width:1080px;margin:0 auto}
 .section-label{
@@ -110,8 +104,6 @@ nav{
   font-size:clamp(2rem,5vw,3.2rem);font-weight:400;line-height:1.1;letter-spacing:-.02em;
 }
 .section-sub{font-size:.95rem;color:var(--muted);max-width:520px;line-height:1.8;margin-top:10px}
-
-/* WHAT IT MEANS */
 .what-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:48px}
 .what-card{
   padding:40px 32px;border:1px solid rgba(255,0,102,.12);
@@ -129,8 +121,6 @@ nav{
   font-size:1.4rem;font-weight:400;margin-bottom:8px;color:var(--text);
 }
 .what-desc{font-size:.82rem;color:var(--muted);line-height:1.7}
-
-/* TIER CARDS */
 .tiers-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:48px}
 .tier-card{
   border:1px solid rgba(255,0,102,.15);border-radius:var(--r);
@@ -173,8 +163,6 @@ nav{
   font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.12em;color:var(--accent);
   opacity:.55;margin-top:20px;padding-top:14px;border-top:1px solid rgba(255,0,102,.12);
 }
-
-/* FORM */
 .form-section{
   background:linear-gradient(145deg,rgba(255,0,102,.05),rgba(2,0,8,1));
   border-top:1px solid var(--border);
@@ -214,12 +202,11 @@ nav{
 .form-error{font-size:.78rem;color:#FF6699;text-align:center;margin-top:8px;display:none;padding:10px 14px;border:1px solid rgba(255,0,102,.2);border-radius:8px;background:rgba(255,0,102,.05);}
 .form-error.show{display:block}
 .form-disclaimer{font-size:.7rem;color:var(--muted);text-align:center;margin-top:14px;line-height:1.6}
-.form-success{display:none;text-align:center;padding:40px 20px}
+.form-success{display:none;text-align:center;padding:40px 20px;opacity:0;transform:translateY(12px);transition:opacity .5s ease,transform .5s ease;}
+.form-success.visible{opacity:1;transform:translateY(0)}
 .form-success-icon{font-size:2.8rem;margin-bottom:16px}
 .form-success h3{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:400;margin-bottom:8px}
 .form-success p{font-size:.85rem;color:var(--muted);line-height:1.7}
-
-/* FOOTER */
 footer{
   border-top:1px solid var(--border);
   padding:40px 24px;text-align:center;position:relative;z-index:2;
@@ -231,11 +218,7 @@ footer{
 .footer-links a{font-size:.7rem;color:var(--muted);text-decoration:none;letter-spacing:.1em;transition:color .2s}
 .footer-links a:hover{color:var(--accent)}
 .footer-copy{font-size:.65rem;color:rgba(240,244,250,.22);margin-top:18px}
-
-/* SCROLL BAR */
 .scroll-bar{position:fixed;top:0;left:0;height:2px;width:0%;background:linear-gradient(to right,var(--accent2),var(--accent));z-index:200;pointer-events:none}
-
-/* CINEMATIC REVEAL */
 .reveal{opacity:0;transform:translateY(24px);transition:opacity .85s cubic-bezier(.16,1,.3,1),transform .85s cubic-bezier(.16,1,.3,1)}
 .reveal-left{opacity:0;transform:translateX(-36px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1)}
 .reveal-right{opacity:0;transform:translateX(36px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1)}
@@ -248,7 +231,6 @@ footer{
 :focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:4px}
 .btn-wa:focus-visible,.form-submit:focus-visible{outline-offset:3px}
 .field input:focus-visible,.field select:focus-visible,.field textarea:focus-visible{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,0,102,.15)}
-
 @media(max-width:768px){
   nav{padding:16px 20px}
   .what-grid{grid-template-columns:1fr}
@@ -256,18 +238,10 @@ footer{
   .section{padding:60px 20px}
 }
 </style>
-<!-- Meta Pixel — replace YOUR_PIXEL_ID with your actual Pixel ID from Meta Business Manager → Events Manager -->
+<!-- Season KL Analytics — visitor & conversion data stored in Supabase -->
 <script>
-!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
-n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
-document,'script','https://connect.facebook.net/en_US/fbevents.js');
-fbq('init','YOUR_PIXEL_ID');
-fbq('track','PageView');
+(function(){var SB='https://nykukkccynnykbmxznhl.supabase.co',KEY='sb_publishable_aG3K6RiA-yXMN3QlNLmt0Q_65xhqvPb',PAGE=location.pathname.split('/').pop().replace('.html','')||'home',SID=(function(){var k='skl_sid',s=sessionStorage.getItem(k);if(!s){s=Math.random().toString(36).slice(2)+Date.now().toString(36);sessionStorage.setItem(k,s);}return s;})();window._skl=function(ev){try{fetch(SB+'/rest/v1/site_events',{method:'POST',headers:{'Content-Type':'application/json','apikey':KEY,'Authorization':'Bearer '+KEY,'Prefer':'return=minimal'},body:JSON.stringify({event_name:ev,page:PAGE,session_id:SID,referrer:(document.referrer||'').slice(0,400)||null,user_agent:navigator.userAgent.slice(0,300)}),keepalive:true}).catch(function(){});}catch(e){}};window._skl('PageView');})();
 </script>
-<noscript><img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID&ev=PageView&noscript=1"/></noscript>
 </head>
 <body>
 
@@ -440,7 +414,6 @@ src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID&ev=PageView&noscript=1"/></nos
 </footer>
 
 <script>
-/* ELECTRIC PARTICLES — pink tinted */
 (function(){
   const canvas=document.getElementById('particles');
   const ctx=canvas.getContext('2d');
@@ -469,15 +442,12 @@ src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID&ev=PageView&noscript=1"/></nos
   loop();
 })();
 
-/* CINEMATIC SCROLL */
 (function(){
   const scrollBar=document.getElementById('scrollBar');
   const particlesEl=document.getElementById('particles');
-
   let ticking=false;
   window.addEventListener('scroll',()=>{
-    if(ticking)return;
-    ticking=true;
+    if(ticking)return;ticking=true;
     requestAnimationFrame(()=>{
       const y=window.scrollY;
       const max=document.body.scrollHeight-window.innerHeight;
@@ -486,11 +456,9 @@ src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID&ev=PageView&noscript=1"/></nos
       ticking=false;
     });
   },{passive:true});
-
   document.querySelectorAll('.hero .reveal').forEach((el,i)=>{
     el.style.transitionDelay=(i*130)+'ms';
   });
-
   const obs=new IntersectionObserver(entries=>{
     entries.forEach(e=>{
       if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}
@@ -499,15 +467,12 @@ src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID&ev=PageView&noscript=1"/></nos
   document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale').forEach(el=>obs.observe(el));
 })();
 
-/* FORM SUBMIT → SUPABASE (resilience: localStorage backup + retry-on-load + honest errors) */
 (function(){
   const SUPABASE_URL='https://nykukkccynnykbmxznhl.supabase.co';
   const SUPABASE_ANON='sb_publishable_aG3K6RiA-yXMN3QlNLmt0Q_65xhqvPb';
   const LS_KEY='skl_icon_pending';
-
   function saveLocal(d){try{localStorage.setItem(LS_KEY,JSON.stringify({...d,savedAt:new Date().toISOString()}));}catch(_){}}
   function clearLocal(){try{localStorage.removeItem(LS_KEY);}catch(_){}}
-
   (async function retryPending(){
     let p;try{p=JSON.parse(localStorage.getItem(LS_KEY)||'null');}catch(_){return;}
     if(!p)return;
@@ -521,26 +486,21 @@ src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID&ev=PageView&noscript=1"/></nos
       if(r.ok||r.status===201)clearLocal();
     }catch(_){}
   })();
-
   const form=document.getElementById('iconForm');
   const submitBtn=document.getElementById('submitBtn');
   const successDiv=document.getElementById('formSuccess');
   const errorDiv=document.getElementById('formError');
-
   form.addEventListener('submit',async(e)=>{
     e.preventDefault();
-    if(typeof fbq!=='undefined')fbq('track','Lead');
+    if(window._skl)window._skl('Lead');
     submitBtn.disabled=true;submitBtn.textContent='Submitting…';
     errorDiv.classList.remove('show');
-
     const name=document.getElementById('name').value.trim();
     const whatsapp=document.getElementById('whatsapp').value.trim();
     const instagram=document.getElementById('instagram').value.trim();
     const tier=document.getElementById('tier').value;
     const message=document.getElementById('message').value.trim();
-
     saveLocal({name,whatsapp,instagram,tier,message});
-
     let networkOk=false;
     try{
       const res=await fetch(`${SUPABASE_URL}/rest/v1/ambassador_signups`,{
@@ -551,17 +511,15 @@ src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID&ev=PageView&noscript=1"/></nos
       });
       if(res.ok||res.status===201){networkOk=true;clearLocal();}
     }catch(_){}
-
     if(!networkOk){
       submitBtn.disabled=false;submitBtn.textContent='Try Again';
       errorDiv.textContent='Connection issue — your application is saved and will submit automatically when you reconnect. Or message us on WhatsApp.';
       errorDiv.classList.add('show');
       return;
     }
-
     const firstName=name.split(' ')[0];
     document.getElementById('successName').textContent=firstName||'Icon';
-    if(typeof fbq!=='undefined')fbq('track','CompleteRegistration');
+    if(window._skl)window._skl('CompleteRegistration');
     form.style.display='none';
     successDiv.style.display='block';
     requestAnimationFrame(()=>requestAnimationFrame(()=>successDiv.classList.add('visible')));

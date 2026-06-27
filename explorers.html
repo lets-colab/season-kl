@@ -292,18 +292,10 @@ footer{
   .step-num{font-size:2.2rem;min-width:40px}
 }
 </style>
-<!-- Meta Pixel — replace YOUR_PIXEL_ID with your actual Pixel ID from Meta Business Manager → Events Manager -->
+<!-- Season KL Analytics — visitor & conversion data stored in Supabase -->
 <script>
-!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
-n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
-document,'script','https://connect.facebook.net/en_US/fbevents.js');
-fbq('init','YOUR_PIXEL_ID');
-fbq('track','PageView');
+(function(){var SB='https://nykukkccynnykbmxznhl.supabase.co',KEY='sb_publishable_aG3K6RiA-yXMN3QlNLmt0Q_65xhqvPb',PAGE=location.pathname.split('/').pop().replace('.html','')||'home',SID=(function(){var k='skl_sid',s=sessionStorage.getItem(k);if(!s){s=Math.random().toString(36).slice(2)+Date.now().toString(36);sessionStorage.setItem(k,s);}return s;})();window._skl=function(ev){try{fetch(SB+'/rest/v1/site_events',{method:'POST',headers:{'Content-Type':'application/json','apikey':KEY,'Authorization':'Bearer '+KEY,'Prefer':'return=minimal'},body:JSON.stringify({event_name:ev,page:PAGE,session_id:SID,referrer:(document.referrer||'').slice(0,400)||null,user_agent:navigator.userAgent.slice(0,300)}),keepalive:true}).catch(function(){});}catch(e){}};window._skl('PageView');})();
 </script>
-<noscript><img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID&ev=PageView&noscript=1"/></noscript>
 </head>
 <body>
 
@@ -380,7 +372,7 @@ src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID&ev=PageView&noscript=1"/></nos
         <div class="perk-desc">A printed Polaroid from your first night — something real to keep.</div>
       </div>
       <div class="perk-card reveal-scale">
-        <span class="perk-icon">✦</span>
+        <span class="perk-icon">❆</span>
         <div class="perk-name">Season Token</div>
         <div class="perk-desc">A collectible token redeemable for drinks or experiences on future visits.</div>
       </div>
@@ -453,7 +445,7 @@ src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID&ev=PageView&noscript=1"/></nos
       </form>
 
       <div class="form-success" id="formSuccess">
-        <div class="form-success-icon">✦</div>
+        <div class="form-success-icon">❆</div>
         <h3>You're In, <span id="successName">Explorer</span></h3>
         <div class="pass-code" id="passCodeDisplay"></div>
         <p>Screenshot your pass code. Show it at the door on the night. We'll also confirm everything via WhatsApp.</p>
@@ -537,7 +529,7 @@ src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID&ev=PageView&noscript=1"/></nos
   document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale').forEach(el=>obs.observe(el));
 })();
 
-/* FORM → SUPABASE (resilience: localStorage backup + retry-on-load + honest errors) */
+/* FORM → SUPABASE */
 (function(){
   const SUPABASE_URL='https://nykukkccynnykbmxznhl.supabase.co';
   const SUPABASE_ANON='sb_publishable_aG3K6RiA-yXMN3QlNLmt0Q_65xhqvPb';
@@ -581,7 +573,7 @@ src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID&ev=PageView&noscript=1"/></nos
 
   form.addEventListener('submit',async(e)=>{
     e.preventDefault();
-    if(typeof fbq!=='undefined')fbq('track','Lead');
+    if(window._skl)window._skl('Lead');
     submitBtn.disabled=true;submitBtn.textContent='Issuing Pass…';
     errorDiv.classList.remove('show');
 
@@ -635,7 +627,7 @@ src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID&ev=PageView&noscript=1"/></nos
     const waMsg=encodeURIComponent(`Hi Season KL! My First Visit Pass is: ${finalCode}. Looking forward to Bloom at TREC KL.`);
     document.getElementById('waLink').href=`https://wa.me/${WA_NUMBER}?text=${waMsg}`;
 
-    if(typeof fbq!=='undefined')fbq('track','CompleteRegistration');
+    if(window._skl)window._skl('CompleteRegistration');
     form.style.display='none';
     successDiv.style.display='block';
     requestAnimationFrame(()=>requestAnimationFrame(()=>successDiv.classList.add('visible')));
