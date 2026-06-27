@@ -222,18 +222,10 @@ footer{
   .chapter-pills{gap:8px}
 }
 </style>
-<!-- Meta Pixel — replace YOUR_PIXEL_ID with your actual Pixel ID from Meta Business Manager → Events Manager -->
+<!-- Season KL Analytics — visitor & conversion data stored in Supabase -->
 <script>
-!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
-n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
-document,'script','https://connect.facebook.net/en_US/fbevents.js');
-fbq('init','YOUR_PIXEL_ID');
-fbq('track','PageView');
+(function(){var SB='https://nykukkccynnykbmxznhl.supabase.co',KEY='sb_publishable_aG3K6RiA-yXMN3QlNLmt0Q_65xhqvPb',PAGE=location.pathname.split('/').pop().replace('.html','')||'home',SID=(function(){var k='skl_sid',s=sessionStorage.getItem(k);if(!s){s=Math.random().toString(36).slice(2)+Date.now().toString(36);sessionStorage.setItem(k,s);}return s;})();window._skl=function(ev){try{fetch(SB+'/rest/v1/site_events',{method:'POST',headers:{'Content-Type':'application/json','apikey':KEY,'Authorization':'Bearer '+KEY,'Prefer':'return=minimal'},body:JSON.stringify({event_name:ev,page:PAGE,session_id:SID,referrer:(document.referrer||'').slice(0,400)||null,user_agent:navigator.userAgent.slice(0,300)}),keepalive:true}).catch(function(){});}catch(e){}};window._skl('PageView');})();
 </script>
-<noscript><img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID&ev=PageView&noscript=1"/></noscript>
 </head>
 <body>
 
@@ -242,7 +234,7 @@ src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID&ev=PageView&noscript=1"/></nos
 
 <nav>
   <a href="#" class="nav-logo">
-    <img src="season-logo.svg" alt="Season KL" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span style=\'font-family:Georgia,serif;letter-spacing:.12em;font-size:1.1rem;color:#F5EDD6\'>SEASON KL</span>')">
+    <img src="season-logo.png" alt="Season KL" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span style=\'font-family:Georgia,serif;letter-spacing:.12em;font-size:1.1rem;color:#F5EDD6\'>SEASON KL</span>')">
   </a>
 </nav>
 
@@ -250,7 +242,7 @@ src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID&ev=PageView&noscript=1"/></nos
   <div class="hero-bg"></div>
   <p class="hero-eyebrow reveal">Kuala Lumpur &nbsp;·&nbsp; Est. 2026</p>
   <div class="hero-logo-wrap reveal">
-    <img src="season-logo.svg" alt="Season KL" class="hero-logo" onerror="this.style.display='none'">
+    <img src="season-logo.png" alt="Season KL" class="hero-logo" onerror="this.style.display='none'">
   </div>
   <p class="hero-sub reveal">A community, not a club.</p>
   <div class="hero-divider"></div>
@@ -306,7 +298,7 @@ src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID&ev=PageView&noscript=1"/></nos
 
 <footer>
   <div class="footer-logo">
-    <img src="season-logo.svg" alt="Season KL" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span style=\'font-family:Georgia,serif;letter-spacing:.12em;font-size:1rem;color:#F5EDD6\'>SEASON KL</span>')">
+    <img src="season-logo.png" alt="Season KL" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span style=\'font-family:Georgia,serif;letter-spacing:.12em;font-size:1rem;color:#F5EDD6\'>SEASON KL</span>')">
   </div>
   <div class="footer-sub">Every Friday &amp; Saturday &nbsp;·&nbsp; TREC KL</div>
   <div class="footer-links">
