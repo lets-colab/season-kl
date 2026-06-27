@@ -269,6 +269,18 @@ footer{
   .hero{padding:100px 20px 60px}
 }
 </style>
+<!-- Meta Pixel — replace YOUR_PIXEL_ID with your actual Pixel ID from Meta Business Manager → Events Manager -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init','YOUR_PIXEL_ID');
+fbq('track','PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID&ev=PageView&noscript=1"/></noscript>
 </head>
 <body>
 
@@ -360,8 +372,8 @@ footer{
   <div class="section-inner">
     <div class="form-wrap">
       <span class="section-label" style="display:block;text-align:center;margin-bottom:12px">Apply Now</span>
-      <h2 class="form-title reveal">Become a Tastemaker</h2>
-      <p class="form-sub reveal">Applications close when slots fill. We review every application personally and respond within 48 hours.</p>
+      <h2 class="form-title reveal">Apply for Your Chapter</h2>
+      <p class="form-sub reveal">We select fewer than 50 Tastemakers per season. Applications close when slots fill — we review every one personally and respond within 48 hours.</p>
 
       <form class="form reveal" id="tmForm">
         <div class="field">
@@ -503,6 +515,7 @@ footer{
 
   form.addEventListener('submit',async(e)=>{
     e.preventDefault();
+    if(typeof fbq!=='undefined')fbq('track','Lead');
     submitBtn.disabled=true;submitBtn.textContent='Submitting…';
     errorDiv.classList.remove('show');
 
@@ -542,6 +555,7 @@ footer{
     const waMsg=encodeURIComponent(`Hi Season KL! I just applied to be a Tastemaker. My Instagram is ${instagram} with ${followers} followers. Looking forward to hearing from you.`);
     document.getElementById('waLink').href=`https://wa.me/${WA_NUMBER}?text=${waMsg}`;
 
+    if(typeof fbq!=='undefined')fbq('track','CompleteRegistration');
     form.style.display='none';
     successDiv.style.display='block';
     requestAnimationFrame(()=>requestAnimationFrame(()=>successDiv.classList.add('visible')));
