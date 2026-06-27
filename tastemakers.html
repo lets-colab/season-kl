@@ -502,11 +502,30 @@ src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID&ev=PageView&noscript=1"/></nos
   document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale').forEach(el=>obs.observe(el));
 })();
 
-/* FORM → SUPABASE */
+/* FORM → SUPABASE (resilience: localStorage backup + retry-on-load + honest errors) */
 (function(){
   const SUPABASE_URL='https://nykukkccynnykbmxznhl.supabase.co';
   const SUPABASE_ANON='sb_publishable_aG3K6RiA-yXMN3QlNLmt0Q_65xhqvPb';
   const WA_NUMBER='60123843413';
+  const LS_KEY='skl_tastemaker_pending';
+
+  function saveLocal(d){try{localStorage.setItem(LS_KEY,JSON.stringify({...d,savedAt:new Date().toISOString()}));}catch(_){}}
+  function clearLocal(){try{localStorage.removeItem(LS_KEY);}catch(_){}}
+
+  /* Silently retry any pending entry from a previous failed submission */
+  (async function retryPending(){
+    let p;try{p=JSON.parse(localStorage.getItem(LS_KEY)||'null');}catch(_){return;}
+    if(!p)return;
+    try{
+      const r=await fetch(`${SUPABASE_URL}/rest/v1/kol_signups`,{
+        method:'POST',
+        headers:{'Content-Type':'application/json','apikey':SUPABASE_ANON,'Authorization':`Bearer ${SUPABASE_ANON}`,'Prefer':'return=minimal'},
+        body:JSON.stringify({name:p.name,whatsapp:p.whatsapp,instagram_handle:p.instagram,follower_count:p.followers,content_niche:p.niche,message:p.message||null,submitted_at:p.savedAt}),
+        signal:AbortSignal.timeout(10000),
+      });
+      if(r.ok||r.status===201)clearLocal();
+    }catch(_){}
+  })();
 
   const form=document.getElementById('tmForm');
   const submitBtn=document.getElementById('submitBtn');
@@ -526,28 +545,27 @@ src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID&ev=PageView&noscript=1"/></nos
     const niche=document.getElementById('niche').value.trim();
     const message=document.getElementById('message').value.trim();
 
-    let ok=false;
+    /* Save to localStorage immediately — data is safe before any network call */
+    saveLocal({name,whatsapp,instagram,followers,niche,message});
+
+    let networkOk=false;
     try{
       const res=await fetch(`${SUPABASE_URL}/rest/v1/kol_signups`,{
         method:'POST',
-        headers:{
-          'Content-Type':'application/json',
-          'apikey':SUPABASE_ANON,
-          'Authorization':`Bearer ${SUPABASE_ANON}`,
-          'Prefer':'return=minimal',
-        },
-        body:JSON.stringify({
-          name,whatsapp,instagram_handle:instagram,
-          follower_count:followers,content_niche:niche,
-          message:message||null,submitted_at:new Date().toISOString(),
-        }),
+        headers:{'Content-Type':'application/json','apikey':SUPABASE_ANON,'Authorization':`Bearer ${SUPABASE_ANON}`,'Prefer':'return=minimal'},
+        body:JSON.stringify({name,whatsapp,instagram_handle:instagram,follower_count:followers,content_niche:niche,message:message||null,submitted_at:new Date().toISOString()}),
         signal:AbortSignal.timeout(10000),
       });
-      ok=res.ok||res.status===201;
+      networkOk=res.ok||res.status===201;
+      if(networkOk)clearLocal();
     }catch(_){}
 
-    if(!ok){
-      /* Show success anyway — form data may have been lost but user experience matters */
+    if(!networkOk){
+      /* Data is in localStorage and will retry on next page load */
+      submitBtn.disabled=false;submitBtn.textContent='Try Again';
+      errorDiv.textContent='Connection issue — your application is saved and will submit automatically when you reconnect. Or message us on WhatsApp.';
+      errorDiv.classList.add('show');
+      return;
     }
 
     const firstName=name.split(' ')[0];

@@ -211,6 +211,8 @@ nav{
 }
 .form-submit:hover{transform:translateY(-2px);box-shadow:0 8px 50px rgba(255,0,102,.38)}
 .form-submit:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.form-error{font-size:.78rem;color:#FF6699;text-align:center;margin-top:8px;display:none;padding:10px 14px;border:1px solid rgba(255,0,102,.2);border-radius:8px;background:rgba(255,0,102,.05);}
+.form-error.show{display:block}
 .form-disclaimer{font-size:.7rem;color:var(--muted);text-align:center;margin-top:14px;line-height:1.6}
 .form-success{display:none;text-align:center;padding:40px 20px}
 .form-success-icon{font-size:2.8rem;margin-bottom:16px}
@@ -405,6 +407,7 @@ src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID&ev=PageView&noscript=1"/></nos
         <button type="submit" class="form-submit" id="submitBtn">
           Join the Programme
         </button>
+        <div class="form-error" id="formError">Something went wrong. Please try again.</div>
         <p class="form-disclaimer">
           By applying you agree to receive WhatsApp messages from Season KL. We'll be in touch within 24 hours.
         </p>
@@ -499,41 +502,68 @@ src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID&ev=PageView&noscript=1"/></nos
   document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale').forEach(el=>obs.observe(el));
 })();
 
-/* FORM SUBMIT → SUPABASE */
+/* FORM SUBMIT → SUPABASE (resilience: localStorage backup + retry-on-load + honest errors) */
 (function(){
   const SUPABASE_URL='https://nykukkccynnykbmxznhl.supabase.co';
   const SUPABASE_ANON='sb_publishable_aG3K6RiA-yXMN3QlNLmt0Q_65xhqvPb';
+  const LS_KEY='skl_icon_pending';
+
+  function saveLocal(d){try{localStorage.setItem(LS_KEY,JSON.stringify({...d,savedAt:new Date().toISOString()}));}catch(_){}}
+  function clearLocal(){try{localStorage.removeItem(LS_KEY);}catch(_){}}
+
+  /* Silently retry any pending entry from a previous failed submission */
+  (async function retryPending(){
+    let p;try{p=JSON.parse(localStorage.getItem(LS_KEY)||'null');}catch(_){return;}
+    if(!p)return;
+    try{
+      const r=await fetch(`${SUPABASE_URL}/rest/v1/ambassador_signups`,{
+        method:'POST',
+        headers:{'Content-Type':'application/json','apikey':SUPABASE_ANON,'Authorization':`Bearer ${SUPABASE_ANON}`,'Prefer':'return=minimal'},
+        body:JSON.stringify({name:p.name,whatsapp:p.whatsapp,instagram_handle:p.instagram,tier_interest:p.tier||'Unspecified',message:p.message,submitted_at:p.savedAt}),
+        signal:AbortSignal.timeout(10000),
+      });
+      if(r.ok||r.status===201)clearLocal();
+    }catch(_){}
+  })();
+
   const form=document.getElementById('iconForm');
   const submitBtn=document.getElementById('submitBtn');
   const successDiv=document.getElementById('formSuccess');
+  const errorDiv=document.getElementById('formError');
 
   form.addEventListener('submit',async(e)=>{
     e.preventDefault();
     if(typeof fbq!=='undefined')fbq('track','Lead');
     submitBtn.disabled=true;submitBtn.textContent='Submitting…';
+    errorDiv.classList.remove('show');
+
     const name=document.getElementById('name').value.trim();
     const whatsapp=document.getElementById('whatsapp').value.trim();
     const instagram=document.getElementById('instagram').value.trim();
     const tier=document.getElementById('tier').value;
     const message=document.getElementById('message').value.trim();
 
+    /* Save to localStorage immediately — data is safe before any network call */
+    saveLocal({name,whatsapp,instagram,tier,message});
+
+    let networkOk=false;
     try{
-      await fetch(`${SUPABASE_URL}/rest/v1/ambassador_signups`,{
+      const res=await fetch(`${SUPABASE_URL}/rest/v1/ambassador_signups`,{
         method:'POST',
-        headers:{
-          'Content-Type':'application/json',
-          'apikey':SUPABASE_ANON,
-          'Authorization':`Bearer ${SUPABASE_ANON}`,
-          'Prefer':'return=minimal',
-        },
-        body:JSON.stringify({
-          name,whatsapp,instagram_handle:instagram,
-          tier_interest:tier||'Unspecified',
-          message,submitted_at:new Date().toISOString(),
-        }),
+        headers:{'Content-Type':'application/json','apikey':SUPABASE_ANON,'Authorization':`Bearer ${SUPABASE_ANON}`,'Prefer':'return=minimal'},
+        body:JSON.stringify({name,whatsapp,instagram_handle:instagram,tier_interest:tier||'Unspecified',message,submitted_at:new Date().toISOString()}),
         signal:AbortSignal.timeout(10000),
       });
+      if(res.ok||res.status===201){networkOk=true;clearLocal();}
     }catch(_){}
+
+    if(!networkOk){
+      /* Data is in localStorage and will retry on next page load */
+      submitBtn.disabled=false;submitBtn.textContent='Try Again';
+      errorDiv.textContent='Connection issue — your application is saved and will submit automatically when you reconnect. Or message us on WhatsApp.';
+      errorDiv.classList.add('show');
+      return;
+    }
 
     const firstName=name.split(' ')[0];
     document.getElementById('successName').textContent=firstName||'Icon';
