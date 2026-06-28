@@ -231,11 +231,15 @@ footer{
   .hero{padding:100px 20px 60px}
   .chapter-pills{gap:8px}
 }
+.lang-switcher{display:flex;gap:6px;align-items:center}
+.lang-btn{background:none;border:1px solid rgba(240,244,250,.18);color:rgba(240,244,250,.45);font-family:'DM Mono',monospace;font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;padding:5px 9px;cursor:pointer;transition:border-color .2s,color .2s;border-radius:2px}
+.lang-btn:hover,.lang-btn.active{border-color:var(--gold);color:var(--gold)}
 </style>
 <!-- Season KL Analytics — visitor & conversion data stored in Supabase -->
 <script>
 (function(){var SB='https://nykukkccynnykbmxznhl.supabase.co',KEY='sb_publishable_aG3K6RiA-yXMN3QlNLmt0Q_65xhqvPb',PAGE=location.pathname.split('/').pop().replace('.html','')||'home',SID=(function(){var k='skl_sid',s=sessionStorage.getItem(k);if(!s){s=Math.random().toString(36).slice(2)+Date.now().toString(36);sessionStorage.setItem(k,s);}return s;})();window._skl=function(ev){try{fetch(SB+'/rest/v1/site_events',{method:'POST',headers:{'Content-Type':'application/json','apikey':KEY,'Authorization':'Bearer '+KEY,'Prefer':'return=minimal'},body:JSON.stringify({event_name:ev,page:PAGE,session_id:SID,referrer:(document.referrer||'').slice(0,400)||null,user_agent:navigator.userAgent.slice(0,300)}),keepalive:true}).catch(function(){});}catch(e){}};window._skl('PageView');})();
 </script>
+<script src="translations.js"></script>
 </head>
 <body>
 
@@ -243,20 +247,24 @@ footer{
 <div class="scroll-bar" id="scrollBar"></div>
 
 <nav>
-  <a href="#" class="nav-logo">
-    <img src="season-logo.png" alt="Season KL" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span style=\'font-family:Georgia,serif;letter-spacing:.12em;font-size:1.1rem;color:#F5EDD6\'>SEASON KL</span>')">
-  </a>
+  <span></span>
+  <div class="lang-switcher">
+    <button class="lang-btn active" data-lang="en">EN</button>
+    <button class="lang-btn" data-lang="zh">中文</button>
+    <button class="lang-btn" data-lang="ko">한국어</button>
+    <button class="lang-btn" data-lang="yue">粤</button>
+  </div>
 </nav>
 
 <section class="hero">
   <div class="hero-bg"></div>
-  <p class="hero-eyebrow reveal">Kuala Lumpur &nbsp;·&nbsp; Est. 2026</p>
+  <p class="hero-eyebrow reveal" data-i18n="hero_eyebrow">Kuala Lumpur &nbsp;·&nbsp; Est. 2026</p>
   <div class="hero-logo-wrap reveal">
     <img src="season-logo.png" alt="Season KL" class="hero-logo" onerror="this.style.display='none'">
   </div>
-  <p class="hero-sub reveal">A community, not a club.</p>
+  <p class="hero-sub reveal" data-i18n="hero_sub">A community, not a club.</p>
   <div class="hero-divider"></div>
-  <p class="hero-desc reveal">
+  <p class="hero-desc reveal" data-i18n="hero_desc">
     Every Friday and Saturday at TREC KL. The right crowd builds the right nights.
   </p>
   <div class="chapter-pills reveal">
@@ -268,37 +276,37 @@ footer{
 
 <section class="section" style="padding-top:20px">
   <div class="section-inner">
-    <p class="section-eyebrow reveal-left">Who Are You at Season?</p>
+    <p class="section-eyebrow reveal-left" data-i18n="who_are_you">Who Are You at Season?</p>
     <div class="paths stagger">
 
       <a href="explorers.html" class="path-tile path-explorers reveal-scale">
-        <div class="path-label">The Explorers</div>
-        <div class="path-name">Your<br>First Night</div>
-        <p class="path-sub">
+        <div class="path-label" data-i18n="path_explorers_label">The Explorers</div>
+        <div class="path-name" data-i18n="path_explorers_name">Your<br>First Night</div>
+        <p class="path-sub" data-i18n="path_explorers_sub">
           Your first night in the Season universe. Sign up, claim your pass, walk in.
           No history required — just curiosity.
         </p>
-        <div class="path-cta">Claim Your Pass →</div>
+        <div class="path-cta" data-i18n="path_explorers_cta">Claim Your Pass →</div>
       </a>
 
       <a href="icons.html" class="path-tile path-icons reveal-scale">
-        <div class="path-label">The Icons</div>
-        <div class="path-name">Brand<br>Ambassadors</div>
-        <p class="path-sub">
+        <div class="path-label" data-i18n="path_icons_label">The Icons</div>
+        <div class="path-name" data-i18n="path_icons_name">Brand<br>Ambassadors</div>
+        <p class="path-sub" data-i18n="path_icons_sub">
           Not just attending. You bring people, you shape the room, you earn from it.
           This is what it means to be an Icon.
         </p>
-        <div class="path-cta">Join the Programme →</div>
+        <div class="path-cta" data-i18n="path_icons_cta">Join the Programme →</div>
       </a>
 
       <a href="tastemakers.html" class="path-tile path-tastemakers reveal-scale">
-        <div class="path-label">The Tastemakers</div>
-        <div class="path-name">Your Audience.<br>Our Access.</div>
-        <p class="path-sub">
+        <div class="path-label" data-i18n="path_tm_label">The Tastemakers</div>
+        <div class="path-name" data-i18n="path_tm_name">Your Audience.<br>Our Access.</div>
+        <p class="path-sub" data-i18n="path_tm_sub">
           Your audience is your credential. Season provides the access, the story,
           and the stage. You bring it to the world.
         </p>
-        <div class="path-cta">Collaborate with Us →</div>
+        <div class="path-cta" data-i18n="path_tm_cta">Collaborate with Us →</div>
       </a>
 
     </div>
@@ -309,11 +317,11 @@ footer{
   <div class="footer-logo">
     <img src="season-logo.png" alt="Season KL" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span style=\'font-family:Georgia,serif;letter-spacing:.12em;font-size:1rem;color:#F5EDD6\'>SEASON KL</span>')">
   </div>
-  <div class="footer-sub">Every Friday &amp; Saturday &nbsp;·&nbsp; TREC KL</div>
+  <div class="footer-sub" data-i18n="footer_sub">Every Friday &amp; Saturday &nbsp;·&nbsp; TREC KL</div>
   <div class="footer-links">
-    <a href="explorers.html">First Visit Pass</a>
-    <a href="icons.html">Ambassadors</a>
-    <a href="tastemakers.html">KOL Collab</a>
+    <a href="explorers.html" data-i18n="footer_first_visit">First Visit Pass</a>
+    <a href="icons.html" data-i18n="footer_ambassadors">Ambassadors</a>
+    <a href="tastemakers.html" data-i18n="footer_kol">KOL Collab</a>
     <a href="https://instagram.com/season_kl_official" target="_blank" rel="noopener">Instagram</a>
   </div>
   <div class="footer-copy">© 2026 Season KL</div>

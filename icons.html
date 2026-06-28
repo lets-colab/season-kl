@@ -212,6 +212,7 @@ nav{
 .form-error{font-size:.78rem;color:#FF6699;text-align:center;margin-top:8px;display:none;padding:10px 14px;border:1px solid rgba(255,0,102,.2);border-radius:8px;background:rgba(255,0,102,.05);}
 .form-error.show{display:block}
 .form-disclaimer{font-size:.7rem;color:var(--muted);text-align:center;margin-top:14px;line-height:1.6}
+.req-star{color:var(--accent);margin-left:2px;font-weight:400;font-style:normal}
 .form-success{display:none;text-align:center;padding:40px 20px;opacity:0;transform:translateY(12px);transition:opacity .5s ease,transform .5s ease;}
 .form-success.visible{opacity:1;transform:translateY(0)}
 .form-success-icon{font-size:2.8rem;margin-bottom:16px}
@@ -247,11 +248,15 @@ footer{
   .tiers-grid{grid-template-columns:1fr}
   .section{padding:60px 20px}
 }
+.lang-switcher{display:flex;gap:6px;align-items:center}
+.lang-btn{background:none;border:1px solid rgba(240,244,250,.18);color:rgba(240,244,250,.45);font-family:'DM Mono',monospace;font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;padding:5px 9px;cursor:pointer;transition:border-color .2s,color .2s;border-radius:2px}
+.lang-btn:hover,.lang-btn.active{border-color:var(--accent);color:var(--accent)}
 </style>
 <!-- Season KL Analytics — visitor & conversion data stored in Supabase -->
 <script>
 (function(){var SB='https://nykukkccynnykbmxznhl.supabase.co',KEY='sb_publishable_aG3K6RiA-yXMN3QlNLmt0Q_65xhqvPb',PAGE=location.pathname.split('/').pop().replace('.html','')||'home',SID=(function(){var k='skl_sid',s=sessionStorage.getItem(k);if(!s){s=Math.random().toString(36).slice(2)+Date.now().toString(36);sessionStorage.setItem(k,s);}return s;})();window._skl=function(ev){try{fetch(SB+'/rest/v1/site_events',{method:'POST',headers:{'Content-Type':'application/json','apikey':KEY,'Authorization':'Bearer '+KEY,'Prefer':'return=minimal'},body:JSON.stringify({event_name:ev,page:PAGE,session_id:SID,referrer:(document.referrer||'').slice(0,400)||null,user_agent:navigator.userAgent.slice(0,300)}),keepalive:true}).catch(function(){});}catch(e){}};window._skl('PageView');})();
 </script>
+<script src="translations.js"></script>
 </head>
 <body>
 
@@ -259,7 +264,13 @@ footer{
 <div class="scroll-bar" id="scrollBar"></div>
 
 <nav>
-  <a href="index.html" class="nav-back">← Season KL</a>
+  <a href="index.html" class="nav-back" data-i18n="nav_back">← Season KL</a>
+  <div class="lang-switcher">
+    <button class="lang-btn active" data-lang="en">EN</button>
+    <button class="lang-btn" data-lang="zh">中文</button>
+    <button class="lang-btn" data-lang="ko">한국어</button>
+    <button class="lang-btn" data-lang="yue">粤</button>
+  </div>
   <a href="index.html" class="nav-logo">
     <img src="season-logo.png" alt="Season KL" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span style=\'font-family:Georgia,serif;letter-spacing:.12em;font-size:1rem;color:#F5EDD6\'>SEASON KL</span>')">
   </a>
@@ -267,38 +278,38 @@ footer{
 
 <section class="hero">
   <div class="hero-bg"></div>
-  <p class="hero-eyebrow reveal">The Icons &nbsp;·&nbsp; Ambassador Programme</p>
-  <h1 class="hero-title reveal">Own the Night.<br>Earn from It.</h1>
-  <p class="hero-sub reveal">Three tiers. One family. Season becomes your brand.</p>
+  <p class="hero-eyebrow reveal" data-i18n="icons_eyebrow">The Icons &nbsp;·&nbsp; Ambassador Programme</p>
+  <h1 class="hero-title reveal" data-i18n="icons_h1">Own the Night.<br>Earn from It.</h1>
+  <p class="hero-sub reveal" data-i18n="icons_hero_sub">Three tiers. One family. Season becomes your brand.</p>
   <div class="hero-divider"></div>
-  <p class="hero-desc reveal">
+  <p class="hero-desc reveal" data-i18n="icons_hero_desc">
     Season Ambassadors don't just show up — they define the room.
     Join an in-house community of hosts, creators, and connectors
     who make every Friday and Saturday unforgettable.
   </p>
-  <a href="#signup" class="btn-accent reveal">Apply to the Programme</a>
+  <a href="#signup" class="btn-accent reveal" data-i18n="btn_icons_apply">Apply to the Programme</a>
 </section>
 
 <section class="section" id="about">
   <div class="section-inner">
-    <span class="section-label reveal-left">The Programme</span>
-    <h2 class="section-title reveal">What It Means<br>to Be an Icon</h2>
-    <p class="section-sub reveal">Three ways to be part of Season. Every level has its own energy and its own rewards.</p>
+    <span class="section-label reveal-left" data-i18n="icons_programme_label">The Programme</span>
+    <h2 class="section-title reveal" data-i18n="icons_programme_title">What It Means<br>to Be an Icon</h2>
+    <p class="section-sub reveal" data-i18n="icons_programme_sub">Three ways to be part of Season. Every level has its own energy and its own rewards.</p>
     <div class="what-grid stagger">
       <div class="what-card reveal-scale">
         <span class="what-icon">🌸</span>
-        <div class="what-title">Community</div>
-        <div class="what-desc">You're not just attending — you're hosting. Season Ambassadors build genuine connections that keep the room full and the energy right.</div>
+        <div class="what-title" data-i18n="icons_what1_title">Community</div>
+        <div class="what-desc" data-i18n="icons_what1_desc">You're not just attending — you're hosting. Season Ambassadors build genuine connections that keep the room full and the energy right.</div>
       </div>
       <div class="what-card reveal-scale">
         <span class="what-icon">💜</span>
-        <div class="what-title">Earning</div>
-        <div class="what-desc">Your social capital converts to real currency. Commissions, bar credits, VIP access — Season rewards the people who make it happen.</div>
+        <div class="what-title" data-i18n="icons_what2_title">Earning</div>
+        <div class="what-desc" data-i18n="icons_what2_desc">Your social capital converts to real currency. Commissions, bar credits, VIP access — Season rewards the people who make it happen.</div>
       </div>
       <div class="what-card reveal-scale">
         <span class="what-icon">🌹</span>
-        <div class="what-title">Growth</div>
-        <div class="what-desc">Season Champions host named nights, run their own sub-networks, and take a share of revenue. This is a brand, not a side gig.</div>
+        <div class="what-title" data-i18n="icons_what3_title">Growth</div>
+        <div class="what-desc" data-i18n="icons_what3_desc">Season Champions host named nights, run their own sub-networks, and take a share of revenue. This is a brand, not a side gig.</div>
       </div>
     </div>
   </div>
@@ -306,49 +317,49 @@ footer{
 
 <section class="section" style="padding-top:20px" id="tiers">
   <div class="section-inner">
-    <span class="section-label reveal-left">The Tiers</span>
-    <h2 class="section-title reveal">Choose Your Season</h2>
+    <span class="section-label reveal-left" data-i18n="icons_tiers_label">The Tiers</span>
+    <h2 class="section-title reveal" data-i18n="icons_tiers_title">Choose Your Season</h2>
     <div class="tiers-grid stagger">
 
       <div class="tier-card reveal-scale">
         <span class="tier-icon">🌸</span>
         <div class="tier-name">Petal</div>
-        <div class="tier-tagline">The beginning of something real.</div>
+        <div class="tier-tagline" data-i18n="petal_tagline">The beginning of something real.</div>
         <ul class="tier-perks">
-          <li>20% F&amp;B discount every visit</li>
-          <li>Free entry + Season member card</li>
-          <li>Priority WhatsApp for event invites</li>
-          <li>Season family community access</li>
+          <li data-i18n="petal_perk1">20% F&amp;B discount every visit</li>
+          <li data-i18n="petal_perk2">Free entry + Season member card</li>
+          <li data-i18n="petal_perk3">Priority WhatsApp for event invites</li>
+          <li data-i18n="petal_perk4">Season family community access</li>
         </ul>
-        <div class="tier-cta-hint">Entry Level · Apply Below</div>
+        <div class="tier-cta-hint" data-i18n="petal_hint">Entry Level · Apply Below</div>
       </div>
 
       <div class="tier-card featured reveal-scale">
         <span class="tier-icon">🔥</span>
         <div class="tier-name">Ember</div>
-        <div class="tier-tagline">Season becomes your brand.</div>
+        <div class="tier-tagline" data-i18n="ember_tagline">Season becomes your brand.</div>
         <ul class="tier-perks">
-          <li>RM200 monthly commission</li>
-          <li>RM20 F&amp;B credit per guest you bring</li>
-          <li>Priority table booking</li>
-          <li>VIP table + RM50 bar credit on milestone</li>
-          <li>Direct ambassador support line</li>
+          <li data-i18n="ember_perk1">RM200 monthly commission</li>
+          <li data-i18n="ember_perk2">RM20 F&amp;B credit per guest you bring</li>
+          <li data-i18n="ember_perk3">Priority table booking</li>
+          <li data-i18n="ember_perk4">VIP table + RM50 bar credit on milestone</li>
+          <li data-i18n="ember_perk5">Direct ambassador support line</li>
         </ul>
-        <div class="tier-cta-hint">Active Promoter · Apply Below</div>
+        <div class="tier-cta-hint" data-i18n="ember_hint">Active Promoter · Apply Below</div>
       </div>
 
       <div class="tier-card tier-season-card reveal-scale">
         <span class="tier-icon">🌹</span>
         <div class="tier-name" style="color:var(--gold-light)">Season</div>
-        <div class="tier-tagline">You own the night.</div>
+        <div class="tier-tagline" data-i18n="season_tier_tagline">You own the night.</div>
         <ul class="tier-perks">
-          <li>8% revenue share from your nights</li>
-          <li>RM1,000–1,500 monthly retainer</li>
-          <li>Host your own named events</li>
-          <li>Featured across Season socials</li>
-          <li>Run your own sub-ambassador network</li>
+          <li data-i18n="season_perk1">8% revenue share from your nights</li>
+          <li data-i18n="season_perk2">RM1,000–1,500 monthly retainer</li>
+          <li data-i18n="season_perk3">Host your own named events</li>
+          <li data-i18n="season_perk4">Featured across Season socials</li>
+          <li data-i18n="season_perk5">Run your own sub-ambassador network</li>
         </ul>
-        <div class="tier-cta-hint" style="color:var(--gold-light);border-top-color:rgba(201,160,90,.12)">Power Host · Apply Below</div>
+        <div class="tier-cta-hint" style="color:var(--gold-light);border-top-color:rgba(201,160,90,.12)" data-i18n="season_hint">Power Host · Apply Below</div>
       </div>
 
     </div>
@@ -360,50 +371,60 @@ footer{
     <div class="form-wrap">
       <span class="section-label" style="display:block;text-align:center;margin-bottom:12px">Apply Now</span>
       <p class="reveal" style="text-align:center;font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:var(--accent);opacity:.7;margin-bottom:10px;">12 Icons confirmed for Bloom · Applications open</p>
-      <h2 class="form-title reveal">Join the<br>Season Family</h2>
-      <p class="form-sub reveal">Tell us about yourself. We'll reach out via WhatsApp to walk you through the right tier.</p>
+      <h2 class="form-title reveal" data-i18n="form_icons_title">Join the<br>Season Family</h2>
+      <p class="form-sub reveal" data-i18n="form_icons_sub">Tell us about yourself. We'll reach out via WhatsApp to walk you through the right tier.</p>
 
       <form class="form reveal" id="iconForm">
         <div class="field">
-          <label for="name">Full Name</label>
-          <input type="text" id="name" name="name" placeholder="Your name" required autocomplete="name" />
+          <label for="name"><span data-i18n="label_name">Full Name</span><abbr class="req-star" title="required"> *</abbr></label>
+          <input type="text" id="name" name="name" placeholder="Your name" data-i18n-ph="ph_name_short" required autocomplete="name" />
         </div>
         <div class="field">
-          <label for="whatsapp">WhatsApp Number</label>
+          <label for="whatsapp"><span data-i18n="label_whatsapp">WhatsApp Number</span><abbr class="req-star" title="required"> *</abbr></label>
           <input type="tel" id="whatsapp" name="whatsapp" placeholder="+60 12 345 6789" required autocomplete="tel" />
         </div>
         <div class="field">
-          <label for="instagram">Instagram Handle</label>
-          <input type="text" id="instagram" name="instagram" placeholder="@yourhandle" autocomplete="off" />
-        </div>
-        <div class="field">
-          <label for="tier">Which tier interests you?</label>
-          <select id="tier" name="tier" required>
-            <option value="" disabled selected>Select a tier</option>
-            <option value="Petal">🌸 Petal — Entry Level</option>
-            <option value="Ember">🔥 Ember — Active Promoter</option>
-            <option value="Season">🌹 Season — Power Host</option>
+          <label for="language" data-i18n="label_language">Preferred Language</label>
+          <select id="language" name="language">
+            <option value="" disabled selected data-i18n="ph_select_lang">Select your language</option>
+            <option value="English" data-i18n="opt_english">English</option>
+            <option value="Simplified Chinese" data-i18n="opt_zh">简体中文 Simplified Chinese</option>
+            <option value="Korean" data-i18n="opt_ko">한국어 Korean</option>
+            <option value="Cantonese" data-i18n="opt_yue">广东话 Cantonese</option>
           </select>
         </div>
         <div class="field">
-          <label for="message">Why do you want to be a Season Icon?</label>
-          <textarea id="message" name="message" rows="3" placeholder="Tell us about yourself and your network…"></textarea>
+          <label for="instagram" data-i18n="label_instagram">Instagram Handle</label>
+          <input type="text" id="instagram" name="instagram" placeholder="@yourhandle" data-i18n-ph="ph_instagram" autocomplete="off" />
         </div>
-        <button type="submit" class="form-submit" id="submitBtn">
+        <div class="field">
+          <label for="tier"><span data-i18n="label_tier">Which tier interests you?</span><abbr class="req-star" title="required"> *</abbr></label>
+          <select id="tier" name="tier" required>
+            <option value="" disabled selected data-i18n="ph_select_tier">Select a tier</option>
+            <option value="Petal" data-i18n="tier_petal">🌸 Petal — Entry Level</option>
+            <option value="Ember" data-i18n="tier_ember">🔥 Ember — Active Promoter</option>
+            <option value="Season" data-i18n="tier_season">🌹 Season — Power Host</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="message" data-i18n="label_message">Why do you want to be a Season Icon?</label>
+          <textarea id="message" name="message" rows="3" placeholder="Tell us about yourself and your network…" data-i18n-ph="ph_message"></textarea>
+        </div>
+        <button type="submit" class="form-submit" id="submitBtn" data-i18n="btn_icons_submit">
           Join the Programme
         </button>
         <div class="form-error" id="formError">Something went wrong. Please try again.</div>
-        <p class="form-disclaimer">
+        <p class="form-disclaimer" data-i18n="disclaimer_icons">
           By applying you agree to receive WhatsApp messages from Season KL. We'll be in touch within 24 hours.
         </p>
       </form>
 
       <div class="form-success" id="formSuccess">
         <div class="form-success-icon">🌹</div>
-        <h3>You're On the List, <span id="successName">Icon</span></h3>
-        <p>We've received your application. Our team will WhatsApp you within 24 hours to discuss your Season journey.</p>
+        <h3><span data-i18n="success_icons_pre">You're On the List, </span><span id="successName">Icon</span></h3>
+        <p data-i18n="success_icons_msg">We've received your application. Our team will WhatsApp you within 24 hours to discuss your Season journey.</p>
         <p style="margin-top:16px;font-size:.78rem">
-          Questions? <a href="https://wa.me/60123843413" target="_blank" rel="noopener" style="color:var(--accent)">Message us on WhatsApp</a>
+          <span data-i18n="success_icons_q">Questions? </span><a href="https://wa.me/60173867701" target="_blank" rel="noopener" style="color:var(--accent)" data-i18n="success_icons_wa">Message us on WhatsApp</a>
         </p>
       </div>
     </div>
@@ -414,11 +435,11 @@ footer{
   <div class="footer-logo">
     <img src="season-logo.png" alt="Season KL" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span style=\'font-family:Georgia,serif;letter-spacing:.12em;font-size:1rem;color:#F5EDD6\'>SEASON KL</span>')">
   </div>
-  <div class="footer-sub">Every Friday &amp; Saturday &nbsp;·&nbsp; TREC KL</div>
+  <div class="footer-sub" data-i18n="footer_sub">Every Friday &amp; Saturday &nbsp;·&nbsp; TREC KL</div>
   <div class="footer-links">
     <a href="index.html">All Paths</a>
-    <a href="explorers.html">First Visit Pass</a>
-    <a href="tastemakers.html">KOL Collab</a>
+    <a href="explorers.html" data-i18n="footer_first_visit">First Visit Pass</a>
+    <a href="tastemakers.html" data-i18n="footer_kol">KOL Collab</a>
     <a href="https://instagram.com/season_kl_official" target="_blank" rel="noopener">Instagram</a>
   </div>
   <div class="footer-copy">© 2026 Season KL</div>
@@ -503,22 +524,30 @@ footer{
   const errorDiv=document.getElementById('formError');
   form.addEventListener('submit',async(e)=>{
     e.preventDefault();
+    const rawWA=document.getElementById('whatsapp').value.trim().replace(/[\s\-\(\)]/g,'');
+    if(!/^(\+?60|0)\d{7,11}$/.test(rawWA)){
+      errorDiv.textContent='Please enter a valid WhatsApp number (e.g. +60123456789 or 0123456789).';
+      errorDiv.classList.add('show');
+      return;
+    }
     if(window._skl)window._skl('Lead');
     if(window.fbq)fbq('track','Lead');
     submitBtn.disabled=true;submitBtn.textContent='Submitting…';
     errorDiv.classList.remove('show');
     const name=document.getElementById('name').value.trim();
     const whatsapp=document.getElementById('whatsapp').value.trim();
+    const language=document.getElementById('language').value||'';
     const instagram=document.getElementById('instagram').value.trim();
     const tier=document.getElementById('tier').value;
     const message=document.getElementById('message').value.trim();
-    saveLocal({name,whatsapp,instagram,tier,message});
+    const fullMessage=(language?`[Language: ${language}]\n`:'')+message;
+    saveLocal({name,whatsapp,language,instagram,tier,message:fullMessage});
     let networkOk=false;
     try{
       const res=await fetch(`${SUPABASE_URL}/rest/v1/ambassador_signups`,{
         method:'POST',
         headers:{'Content-Type':'application/json','apikey':SUPABASE_ANON,'Authorization':`Bearer ${SUPABASE_ANON}`,'Prefer':'return=minimal'},
-        body:JSON.stringify({name,whatsapp,instagram_handle:instagram,tier_interest:tier||'Unspecified',message,submitted_at:new Date().toISOString()}),
+        body:JSON.stringify({name,whatsapp,instagram_handle:instagram,tier_interest:tier||'Unspecified',message:fullMessage,submitted_at:new Date().toISOString()}),
         signal:AbortSignal.timeout(10000),
       });
       if(res.ok||res.status===201){networkOk=true;clearLocal();}
