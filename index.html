@@ -104,10 +104,20 @@ nav{
   40%{left:110%;opacity:1}
   50%{left:110%;opacity:0}
 }
+@keyframes logo-3d{
+  0%  {transform:perspective(700px) rotateX(3deg) rotateY(-5deg) translateY(0px)}
+  25% {transform:perspective(700px) rotateX(-2deg) rotateY(4deg) translateY(-7px)}
+  50% {transform:perspective(700px) rotateX(3deg) rotateY(6deg) translateY(-4px)}
+  75% {transform:perspective(700px) rotateX(-3deg) rotateY(-3deg) translateY(-9px)}
+  100%{transform:perspective(700px) rotateX(3deg) rotateY(-5deg) translateY(0px)}
+}
 .hero-logo{
   width:clamp(180px,34vw,360px);height:auto;
   display:block;
-  filter:brightness(1.1) drop-shadow(0 0 28px rgba(0,234,255,.15));
+  filter:brightness(1.15) drop-shadow(0 4px 24px rgba(201,160,90,.28)) drop-shadow(0 0 60px rgba(201,160,90,.1));
+  animation:logo-3d 9s ease-in-out infinite;
+  transform-origin:center center;
+  will-change:transform;
 }
 .section-eyebrow{
   font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;
@@ -268,9 +278,9 @@ footer{
     Every Friday and Saturday at TREC KL. The right crowd builds the right nights.
   </p>
   <div class="chapter-pills reveal">
-    <span class="chapter-pill pill-bloom">🌸 Bloom · July</span>
-    <span class="chapter-pill pill-pulse">🔥 Pulse · August</span>
-    <span class="chapter-pill pill-glow">✨ Glow · September</span>
+    <span class="chapter-pill pill-bloom">🌸 Bloom · Connect</span>
+    <span class="chapter-pill pill-pulse">🔥 Pulse · Peak Energy</span>
+    <span class="chapter-pill pill-glow">✨ Glow · Your Stage</span>
   </div>
 </section>
 
@@ -399,6 +409,24 @@ footer{
     });
   },{threshold:0.08,rootMargin:'0px 0px -40px 0px'});
   document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale').forEach(el=>obs.observe(el));
+})();
+
+/* 3D LOGO PARALLAX — desktop mouse tracking */
+(function(){
+  const img=document.querySelector('.hero-logo');
+  if(!img||window.matchMedia('(pointer:coarse)').matches)return;
+  let active=false;
+  document.addEventListener('mousemove',function(e){
+    const x=(e.clientX/window.innerWidth-.5)*16;
+    const y=(e.clientY/window.innerHeight-.5)*-12;
+    if(!active){img.style.animationPlayState='paused';active=true;}
+    img.style.transform='perspective(700px) rotateY('+x+'deg) rotateX('+y+'deg)';
+  });
+  document.addEventListener('mouseleave',function(){
+    img.style.animationPlayState='running';
+    img.style.transform='';
+    active=false;
+  });
 })();
 </script>
 </body>
