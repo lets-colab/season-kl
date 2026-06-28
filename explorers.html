@@ -232,6 +232,7 @@ nav{
 }
 .form-error.show{display:block}
 .form-disclaimer{font-size:.7rem;color:var(--muted);text-align:center;margin-top:14px;line-height:1.6}
+.req-star{color:var(--accent);margin-left:2px;font-weight:400;font-style:normal}
 
 /* SUCCESS */
 .form-success{
@@ -445,11 +446,11 @@ footer{
 
       <form class="form reveal" id="passForm">
         <div class="field">
-          <label for="name" data-i18n="label_name">Full Name</label>
+          <label for="name"><span data-i18n="label_name">Full Name</span><abbr class="req-star" title="required"> *</abbr></label>
           <input type="text" id="name" name="name" placeholder="Your full name" data-i18n-ph="ph_name" required autocomplete="name" />
         </div>
         <div class="field">
-          <label for="whatsapp" data-i18n="label_whatsapp">WhatsApp Number</label>
+          <label for="whatsapp"><span data-i18n="label_whatsapp">WhatsApp Number</span><abbr class="req-star" title="required"> *</abbr></label>
           <input type="tel" id="whatsapp" name="whatsapp" placeholder="+60 12 345 6789" required autocomplete="tel" />
         </div>
         <div class="field">
@@ -604,6 +605,12 @@ footer{
 
   form.addEventListener('submit',async(e)=>{
     e.preventDefault();
+    const rawWA=document.getElementById('whatsapp').value.trim().replace(/[\s\-\(\)]/g,'');
+    if(!/^(\+?60|0)\d{7,11}$/.test(rawWA)){
+      errorDiv.textContent='Please enter a valid WhatsApp number (e.g. +60123456789 or 0123456789).';
+      errorDiv.classList.add('show');
+      return;
+    }
     if(window._skl)window._skl('Lead');
     if(window.fbq)fbq('track','Lead');
     submitBtn.disabled=true;submitBtn.textContent='Issuing Pass…';

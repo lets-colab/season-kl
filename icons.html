@@ -212,6 +212,7 @@ nav{
 .form-error{font-size:.78rem;color:#FF6699;text-align:center;margin-top:8px;display:none;padding:10px 14px;border:1px solid rgba(255,0,102,.2);border-radius:8px;background:rgba(255,0,102,.05);}
 .form-error.show{display:block}
 .form-disclaimer{font-size:.7rem;color:var(--muted);text-align:center;margin-top:14px;line-height:1.6}
+.req-star{color:var(--accent);margin-left:2px;font-weight:400;font-style:normal}
 .form-success{display:none;text-align:center;padding:40px 20px;opacity:0;transform:translateY(12px);transition:opacity .5s ease,transform .5s ease;}
 .form-success.visible{opacity:1;transform:translateY(0)}
 .form-success-icon{font-size:2.8rem;margin-bottom:16px}
@@ -375,11 +376,11 @@ footer{
 
       <form class="form reveal" id="iconForm">
         <div class="field">
-          <label for="name" data-i18n="label_name">Full Name</label>
+          <label for="name"><span data-i18n="label_name">Full Name</span><abbr class="req-star" title="required"> *</abbr></label>
           <input type="text" id="name" name="name" placeholder="Your name" data-i18n-ph="ph_name_short" required autocomplete="name" />
         </div>
         <div class="field">
-          <label for="whatsapp" data-i18n="label_whatsapp">WhatsApp Number</label>
+          <label for="whatsapp"><span data-i18n="label_whatsapp">WhatsApp Number</span><abbr class="req-star" title="required"> *</abbr></label>
           <input type="tel" id="whatsapp" name="whatsapp" placeholder="+60 12 345 6789" required autocomplete="tel" />
         </div>
         <div class="field">
@@ -397,7 +398,7 @@ footer{
           <input type="text" id="instagram" name="instagram" placeholder="@yourhandle" data-i18n-ph="ph_instagram" autocomplete="off" />
         </div>
         <div class="field">
-          <label for="tier" data-i18n="label_tier">Which tier interests you?</label>
+          <label for="tier"><span data-i18n="label_tier">Which tier interests you?</span><abbr class="req-star" title="required"> *</abbr></label>
           <select id="tier" name="tier" required>
             <option value="" disabled selected data-i18n="ph_select_tier">Select a tier</option>
             <option value="Petal" data-i18n="tier_petal">🌸 Petal — Entry Level</option>
@@ -523,6 +524,12 @@ footer{
   const errorDiv=document.getElementById('formError');
   form.addEventListener('submit',async(e)=>{
     e.preventDefault();
+    const rawWA=document.getElementById('whatsapp').value.trim().replace(/[\s\-\(\)]/g,'');
+    if(!/^(\+?60|0)\d{7,11}$/.test(rawWA)){
+      errorDiv.textContent='Please enter a valid WhatsApp number (e.g. +60123456789 or 0123456789).';
+      errorDiv.classList.add('show');
+      return;
+    }
     if(window._skl)window._skl('Lead');
     if(window.fbq)fbq('track','Lead');
     submitBtn.disabled=true;submitBtn.textContent='Submitting…';
