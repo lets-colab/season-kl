@@ -365,6 +365,16 @@ footer{
           <input type="tel" id="whatsapp" name="whatsapp" placeholder="+60 12 345 6789" required autocomplete="tel" />
         </div>
         <div class="field">
+          <label for="language">Preferred Language</label>
+          <select id="language" name="language">
+            <option value="" disabled selected>Select your language</option>
+            <option value="English">English</option>
+            <option value="Mandarin">普通话 Mandarin</option>
+            <option value="Hokkien">福建话 Hokkien</option>
+            <option value="Cantonese">广东话 Cantonese</option>
+          </select>
+        </div>
+        <div class="field">
           <label for="instagram">Instagram Handle</label>
           <input type="text" id="instagram" name="instagram" placeholder="@yourhandle" required autocomplete="off" />
         </div>
@@ -398,7 +408,7 @@ footer{
         <div class="form-success-icon">❆</div>
         <h3>Application Received, <span id="successName">Tastemaker</span></h3>
         <p>We review every application ourselves. If you're selected, our team will WhatsApp you within 48 hours with next steps.</p>
-        <p style="margin-top:12px;font-size:.78rem">Questions? <a href="https://wa.me/60123843413" target="_blank" rel="noopener" style="color:var(--accent2)">Message us on WhatsApp</a></p>
+        <p style="margin-top:12px;font-size:.78rem">Questions? <a href="https://wa.me/60173867701" target="_blank" rel="noopener" style="color:var(--accent2)">Message us on WhatsApp</a></p>
         <a href="#" id="waLink" class="btn-wa">Open WhatsApp ↗</a>
       </div>
     </div>
@@ -476,7 +486,7 @@ footer{
 (function(){
   const SUPABASE_URL='https://nykukkccynnykbmxznhl.supabase.co';
   const SUPABASE_ANON='sb_publishable_aG3K6RiA-yXMN3QlNLmt0Q_65xhqvPb';
-  const WA_NUMBER='60123843413';
+  const WA_NUMBER='60173867701';
   const LS_KEY='skl_tastemaker_pending';
   function saveLocal(d){try{localStorage.setItem(LS_KEY,JSON.stringify({...d,savedAt:new Date().toISOString()}));}catch(_){}}
   function clearLocal(){try{localStorage.removeItem(LS_KEY);}catch(_){}}
@@ -505,17 +515,19 @@ footer{
     errorDiv.classList.remove('show');
     const name=document.getElementById('name').value.trim();
     const whatsapp=document.getElementById('whatsapp').value.trim();
+    const language=document.getElementById('language').value||'';
     const instagram=document.getElementById('instagram').value.trim();
     const followers=document.getElementById('followers').value;
     const niche=document.getElementById('niche').value.trim();
     const message=document.getElementById('message').value.trim();
-    saveLocal({name,whatsapp,instagram,followers,niche,message});
+    const fullMessage=(language?`[Language: ${language}]\n`:'')+message;
+    saveLocal({name,whatsapp,language,instagram,followers,niche,message:fullMessage});
     let networkOk=false;
     try{
       const res=await fetch(`${SUPABASE_URL}/rest/v1/kol_signups`,{
         method:'POST',
         headers:{'Content-Type':'application/json','apikey':SUPABASE_ANON,'Authorization':`Bearer ${SUPABASE_ANON}`,'Prefer':'return=minimal'},
-        body:JSON.stringify({name,whatsapp,instagram_handle:instagram,follower_count:followers,content_niche:niche,message:message||null,submitted_at:new Date().toISOString()}),
+        body:JSON.stringify({name,whatsapp,instagram_handle:instagram,follower_count:followers,content_niche:niche,message:fullMessage||null,submitted_at:new Date().toISOString()}),
         signal:AbortSignal.timeout(10000),
       });
       networkOk=res.ok||res.status===201;
@@ -529,7 +541,8 @@ footer{
     }
     const firstName=name.split(' ')[0];
     document.getElementById('successName').textContent=firstName||'Tastemaker';
-    const waMsg=encodeURIComponent(`Hi Season KL! I just applied to be a Tastemaker. My Instagram is ${instagram} with ${followers} followers. Looking forward to hearing from you.`);
+    const langNote=language?` [${language}]`:'';
+    const waMsg=encodeURIComponent(`Hi Season KL!${langNote} I just applied to be a Tastemaker. My Instagram is ${instagram} with ${followers} followers. Looking forward to hearing from you.`);
     document.getElementById('waLink').href=`https://wa.me/${WA_NUMBER}?text=${waMsg}`;
     if(window._skl)window._skl('CompleteRegistration');
     if(window.fbq)fbq('track','CompleteRegistration');
