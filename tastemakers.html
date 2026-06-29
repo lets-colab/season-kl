@@ -419,7 +419,7 @@ footer{
         <div class="form-success-icon">❆</div>
         <h3><span data-i18n="success_tm_pre">Application Received, </span><span id="successName">Tastemaker</span></h3>
         <p data-i18n="success_tm_msg">We review every application ourselves. If you're selected, our team will WhatsApp you within 48 hours with next steps.</p>
-        <p style="margin-top:12px;font-size:.78rem"><span data-i18n="success_tm_q">Questions? </span><a href="https://wa.me/60173867701" target="_blank" rel="noopener" style="color:var(--accent2)" data-i18n="success_tm_wa">Message us on WhatsApp</a></p>
+        <p style="margin-top:12px;font-size:.78rem"><span data-i18n="success_tm_q">Questions? </span><a href="https://wa.me/8801631326245" target="_blank" rel="noopener" style="color:var(--accent2)" data-i18n="success_tm_wa">Message us on WhatsApp</a></p>
         <a href="#" id="waLink" class="btn-wa" data-i18n="btn_wa">Open WhatsApp ↗</a>
       </div>
     </div>
@@ -497,7 +497,7 @@ footer{
 (function(){
   const SUPABASE_URL='https://nykukkccynnykbmxznhl.supabase.co';
   const SUPABASE_ANON='sb_publishable_aG3K6RiA-yXMN3QlNLmt0Q_65xhqvPb';
-  const WA_NUMBER='60173867701';
+  const WA_NUMBER='8801631326245';
   const LS_KEY='skl_tastemaker_pending';
   function saveLocal(d){try{localStorage.setItem(LS_KEY,JSON.stringify({...d,savedAt:new Date().toISOString()}));}catch(_){}}
   function clearLocal(){try{localStorage.removeItem(LS_KEY);}catch(_){}}
@@ -521,8 +521,8 @@ footer{
   form.addEventListener('submit',async(e)=>{
     e.preventDefault();
     const rawWA=document.getElementById('whatsapp').value.trim().replace(/[\s\-\(\)]/g,'');
-    if(!/^(\+?60|0)\d{7,11}$/.test(rawWA)){
-      errorDiv.textContent='Please enter a valid WhatsApp number (e.g. +60123456789 or 0123456789).';
+    if(!/^\+?\d{7,15}$/.test(rawWA)){
+      errorDiv.textContent='Please enter a valid WhatsApp number with country code (e.g. +60 12 345 6789).';
       errorDiv.classList.add('show');
       return;
     }
