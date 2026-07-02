@@ -454,6 +454,10 @@ footer{
           <input type="tel" id="whatsapp" name="whatsapp" placeholder="+60 12 345 6789" required autocomplete="tel" />
         </div>
         <div class="field">
+          <label for="email"><span data-i18n="label_email">Email</span> <span style="opacity:.5;font-size:.9em" data-i18n="label_email_opt">(optional — we'll email your pass)</span></label>
+          <input type="email" id="email" name="email" placeholder="you@email.com" autocomplete="email" />
+        </div>
+        <div class="field">
           <label for="language" data-i18n="label_language">Preferred Language</label>
           <select id="language" name="language">
             <option value="" disabled selected data-i18n="ph_select_lang">Select your language</option>
@@ -608,7 +612,7 @@ footer{
     try{
       const r=await fetch(`${SUPABASE_URL}/functions/v1/issue-season-pass`,{
         method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${SUPABASE_ANON}`},
-        body:JSON.stringify({name:p.name,whatsapp:p.whatsapp,instagram:p.instagram,source:p.source||'Instagram',visit_intent:p.visit_intent||'',guest_count:p.guest_count??null}),
+        body:JSON.stringify({name:p.name,whatsapp:p.whatsapp,email:p.email||null,instagram:p.instagram,source:p.source||'Instagram',visit_intent:p.visit_intent||'',guest_count:p.guest_count??null}),
         signal:AbortSignal.timeout(12000),
       });
       if(r.ok){clearLocal();return;}
@@ -617,7 +621,7 @@ footer{
       const r=await fetch(`${SUPABASE_URL}/rest/v1/season_passes`,{
         method:'POST',
         headers:{'Content-Type':'application/json','apikey':SUPABASE_ANON,'Authorization':`Bearer ${SUPABASE_ANON}`,'Prefer':'return=minimal','Accept-Profile':'public','Content-Profile':'public'},
-        body:JSON.stringify({guest_name:p.name,whatsapp:p.whatsapp,instagram_handle:p.instagram,pass_id:p.passCode,lead_source:p.source||'Web Form',visit_intent:p.visit_intent||null,guest_count:p.guest_count??null,issued_at:p.savedAt}),
+        body:JSON.stringify({guest_name:p.name,whatsapp:p.whatsapp,email:p.email||null,instagram_handle:p.instagram,pass_id:p.passCode,lead_source:p.source||'Web Form',visit_intent:p.visit_intent||null,guest_count:p.guest_count??null,issued_at:p.savedAt}),
         signal:AbortSignal.timeout(10000),
       });
       if(r.ok||r.status===201)clearLocal();
@@ -644,6 +648,7 @@ footer{
 
     const name=document.getElementById('name').value.trim();
     const whatsapp=document.getElementById('whatsapp').value.trim();
+    const email=(document.getElementById('email').value||'').trim().toLowerCase()||null;
     const language=document.getElementById('language').value||'';
     const instagram=document.getElementById('instagram').value.trim();
     const source=document.getElementById('source').value||'Instagram';
@@ -652,7 +657,7 @@ footer{
     const guest_count=gcVal!==''?parseInt(gcVal,10):null;
     const passCode=localCode();
 
-    saveLocal({name,whatsapp,language,instagram,source,visit_intent,guest_count,passCode});
+    saveLocal({name,whatsapp,email,language,instagram,source,visit_intent,guest_count,passCode});
 
     let networkOk=false;
     let finalCode=passCode;
@@ -661,7 +666,7 @@ footer{
       const res=await fetch(`${SUPABASE_URL}/functions/v1/issue-season-pass`,{
         method:'POST',
         headers:{'Content-Type':'application/json','Authorization':`Bearer ${SUPABASE_ANON}`},
-        body:JSON.stringify({name,whatsapp,instagram,source,visit_intent,guest_count}),
+        body:JSON.stringify({name,whatsapp,email,instagram,source,visit_intent,guest_count}),
         signal:AbortSignal.timeout(12000),
       });
       if(res.ok){
@@ -677,7 +682,7 @@ footer{
         const res=await fetch(`${SUPABASE_URL}/rest/v1/season_passes`,{
           method:'POST',
           headers:{'Content-Type':'application/json','apikey':SUPABASE_ANON,'Authorization':`Bearer ${SUPABASE_ANON}`,'Prefer':'return=minimal','Accept-Profile':'public','Content-Profile':'public'},
-          body:JSON.stringify({guest_name:name,whatsapp,instagram_handle:instagram,pass_id:passCode,lead_source:source,visit_intent:visit_intent||null,guest_count:guest_count,issued_at:new Date().toISOString()}),
+          body:JSON.stringify({guest_name:name,whatsapp,email,instagram_handle:instagram,pass_id:passCode,lead_source:source,visit_intent:visit_intent||null,guest_count:guest_count,issued_at:new Date().toISOString()}),
           signal:AbortSignal.timeout(10000),
         });
         if(res.ok||res.status===201){networkOk=true;clearLocal();}
@@ -685,7 +690,7 @@ footer{
     }
 
     if(!networkOk){
-      try{fetch(`${SUPABASE_URL}/rest/v1/lead_safetynet`,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_ANON,'Authorization':`Bearer ${SUPABASE_ANON}`,'Prefer':'return=minimal','Content-Profile':'public'},body:JSON.stringify({form_type:'first_visit',page:location.pathname,user_agent:navigator.userAgent.slice(0,300),payload:{name,whatsapp,language,instagram,source,visit_intent,guest_count,passCode}}),keepalive:true}).catch(function(){});}catch(_){}
+      try{fetch(`${SUPABASE_URL}/rest/v1/lead_safetynet`,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_ANON,'Authorization':`Bearer ${SUPABASE_ANON}`,'Prefer':'return=minimal','Content-Profile':'public'},body:JSON.stringify({form_type:'first_visit',page:location.pathname,user_agent:navigator.userAgent.slice(0,300),payload:{name,whatsapp,email,language,instagram,source,visit_intent,guest_count,passCode}}),keepalive:true}).catch(function(){});}catch(_){}
       submitBtn.disabled=false;submitBtn.textContent='Try Again';
       errorDiv.textContent='Connection issue — your info is saved and will register automatically when you reconnect. You can also message us directly on WhatsApp.';
       errorDiv.classList.add('show');
