@@ -146,6 +146,31 @@ nav{
   font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;
   padding:6px 16px;border-radius:100px;border:1px solid;
 }
+.hero-cta-row{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;position:relative;z-index:2;margin-top:26px}
+.hero-cta{
+  font-family:'Outfit',sans-serif;font-size:.78rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
+  padding:15px 32px;border-radius:100px;text-decoration:none;transition:all .3s;
+}
+.hero-cta-primary{color:#fff;background:linear-gradient(135deg,var(--violet),var(--hot));box-shadow:0 6px 30px rgba(255,0,102,.25)}
+.hero-cta-primary:hover{transform:translateY(-2px);box-shadow:0 10px 40px rgba(255,0,102,.4)}
+.hero-cta-ghost{color:var(--gold-light,#E2BF7A);border:1px solid rgba(226,191,122,.4);background:rgba(226,191,122,.06)}
+.hero-cta-ghost:hover{border-color:rgba(226,191,122,.7);background:rgba(226,191,122,.12)}
+/* WHEEL BANNER */
+.wheel-banner{
+  position:relative;overflow:hidden;text-align:center;padding:64px 24px;margin:0 auto;
+  border-top:1px solid var(--border-c);border-bottom:1px solid var(--border-c);
+}
+.wheel-banner::before{
+  content:'';position:absolute;inset:0;z-index:0;
+  background:radial-gradient(ellipse 65% 70% at 50% 40%,rgba(136,85,238,.20) 0%,transparent 70%);
+}
+.wheel-banner-inner{position:relative;z-index:2;max-width:520px;margin:0 auto}
+.wheel-emoji{font-size:3rem;margin-bottom:14px;display:inline-block}
+.wheel-heading{
+  font-family:'Bodoni Moda',serif;font-size:clamp(1.8rem,5vw,2.6rem);font-weight:400;letter-spacing:-.01em;
+  color:#F0F4FA;margin-bottom:12px;
+}
+.wheel-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;color:var(--muted);margin-bottom:26px;line-height:1.6}
 .pill-bloom{color:var(--hot);border-color:rgba(255,0,102,.35);background:rgba(255,0,102,.07)}
 .pill-pulse{color:#AA77FF;border-color:rgba(136,85,238,.35);background:rgba(136,85,238,.07)}
 .pill-glow{color:var(--gold-light);border-color:rgba(201,160,90,.35);background:rgba(201,160,90,.07)}
@@ -282,6 +307,20 @@ footer{
     <span class="chapter-pill pill-pulse">🔥 Pulse · Peak Energy</span>
     <span class="chapter-pill pill-glow">✨ Glow · Earned Your Place</span>
   </div>
+  <div class="hero-cta-row reveal">
+    <a href="explorers.html#passForm" class="hero-cta hero-cta-primary" data-i18n="hero_rsvp_btn">RSVP Now →</a>
+    <a href="tables.html" class="hero-cta hero-cta-ghost" data-i18n="hero_table_btn">Reserve a Table</a>
+  </div>
+</section>
+
+<section class="wheel-banner">
+  <div class="wheel-banner-inner">
+    <span class="wheel-emoji reveal-scale">🎡</span>
+    <p class="hero-eyebrow reveal" style="margin-bottom:10px" data-i18n="wheel_banner_eyebrow">You're One of Our Lucky Followers</p>
+    <h2 class="wheel-heading reveal" data-i18n="wheel_banner_heading">Spin the Season Wheel</h2>
+    <p class="wheel-sub reveal" data-i18n="wheel_banner_sub">Every spin wins — free entry, drinks, shots, even a 5-friend pass. One spin, one prize, redeem it at the bar.</p>
+    <a href="spin.html" class="hero-cta hero-cta-primary reveal" data-i18n="wheel_banner_cta">Spin to Claim Your Reward →</a>
+  </div>
 </section>
 
 <section class="section" style="padding-top:20px">
@@ -331,6 +370,7 @@ footer{
   <div class="footer-links">
     <a href="explorers.html" data-i18n="footer_first_visit">First Visit Pass</a>
     <a href="tables.html">Reserve a Table</a>
+    <a href="menu.html">The Menu</a>
     <a href="spin.html">Spin the Wheel 🎡</a>
     <a href="icons.html" data-i18n="footer_ambassadors">Ambassadors</a>
     <a href="tastemakers.html" data-i18n="footer_kol">KOL Collab</a>
