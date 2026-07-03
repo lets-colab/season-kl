@@ -75,6 +75,9 @@ h1{font-family:'Bodoni Moda',serif;font-size:clamp(2.2rem,7vw,3.4rem);font-weigh
 .prize .rules{font-size:.74rem;color:var(--muted);line-height:1.8;max-width:380px;margin:10px auto 0}
 .btn-wa{display:inline-flex;align-items:center;gap:8px;background:#25D366;color:#fff;font-size:.74rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;padding:14px 30px;border-radius:100px;margin-top:16px}
 .btn-tbl{display:inline-block;margin-top:12px;font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-light);text-decoration:none;border-bottom:1px solid rgba(201,160,90,.4);padding-bottom:2px}
+.btn-share{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#8855EE,#00EAFF);color:#fff;font-size:.74rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;border:none;text-decoration:none;padding:14px 30px;border-radius:100px;margin-top:14px;cursor:pointer;font-family:'Outfit',sans-serif}
+.btn-share:hover{transform:translateY(-1px);box-shadow:0 8px 30px rgba(136,85,238,.35)}
+.share-note{font-size:.7rem;color:var(--muted);margin-top:8px}
 footer{border-top:1px solid var(--border);padding:34px 20px;text-align:center;color:var(--muted);font-size:.7rem;letter-spacing:.1em;margin-top:40px}
 footer a{color:var(--muted);text-decoration:none;margin:0 10px}
 footer a:hover{color:var(--neon)}
@@ -92,9 +95,9 @@ footer a:hover{color:var(--neon)}
 </nav>
 
 <section class="hero">
-  <p class="eyebrow">Every Spin Wins · TREC KL</p>
-  <h1>The Season Wheel</h1>
-  <p class="hero-sub">One spin. One prize. Guaranteed. Redeem it at the bar this weekend.</p>
+  <p class="eyebrow">You're One of Our Lucky Followers · TREC KL</p>
+  <h1>Spin to Claim Your Reward</h1>
+  <p class="hero-sub">Every spin wins — free entry, drinks, shots, even a 5-friend pass. Redeem it at the bar this weekend.</p>
 </section>
 
 <div class="wrap">
@@ -129,10 +132,14 @@ footer a:hover{color:var(--neon)}
     <p class="rules">Show this code at the bar on arrival to redeem. One prize per guest, tied to your WhatsApp number. Valid Friday &amp; Saturday nights this season at Season KL, TREC.</p>
     <a href="#" id="waLink" class="btn-wa" target="_blank" rel="noopener">Save it on WhatsApp ↗</a>
     <br/>
+    <button id="shareBtn" class="btn-share">📤 Share to Instagram Story</button>
+    <p class="share-note">Show off your prize — friends who see it can spin too.</p>
+    <br/>
     <a href="tables.html" class="btn-tbl">Make it a table night → Reserve a table</a>
   </div>
 
 </div>
+<canvas id="shareCanvas" width="1080" height="1920" style="display:none"></canvas>
 
 <footer>
   <div style="margin-bottom:10px">Every Friday &amp; Saturday · TREC KL</div>
@@ -149,16 +156,16 @@ footer a:hover{color:var(--neon)}
 
   // MUST match server prize_key order in spin_wheel() — slice i = index i
   const PRIZES=[
-    {k:'welcome_shot', l:'Free Welcome Shot',                    i:'🥃', c:'#2a1f4d'},
-    {k:'twofer_pour',  l:'2-for-1 House Pour',                   i:'🍹', c:'#12103a'},
-    {k:'free_beer',    l:'Free Corona — with any drink order',    i:'🍺', c:'#2a1f4d'},
-    {k:'bottle_15',    l:'15% Off Any Bottle',                    i:'🏷️', c:'#12103a'},
-    {k:'mixer_jug',    l:'Free Mixer Jug — with any bottle',      i:'🫗', c:'#2a1f4d'},
-    {k:'credit_100',   l:'RM100 Off Any Bottle',                  i:'💳', c:'#3a2a10'},
-    {k:'moet_mini',    l:'Free Moët Mini — with any bottle',      i:'🍾', c:'#3a2a10'},
-    {k:'jackpot_bottle',l:'JACKPOT: Free House Bottle — table of 4+',i:'👑', c:'#4d3308'},
+    {k:'entry_pass',        l:'1 Entry Pass',                 i:'🎟️', c:'#2a1f4d'},
+    {k:'house_drink',       l:'1 House Drink',                i:'🍹', c:'#12103a'},
+    {k:'house_shot',        l:'1 House Shot',                 i:'🥃', c:'#2a1f4d'},
+    {k:'three_shots_entry', l:'3 Shots + 1 Entry Pass',        i:'🍸', c:'#12103a'},
+    {k:'house_cocktail',    l:'1 House Cocktail',              i:'🍸', c:'#2a1f4d'},
+    {k:'premium_upgrade',   l:'1 Premium Drink Upgrade',       i:'✨', c:'#3a2a10'},
+    {k:'group_pass',        l:'5 Friends Entry Pass',          i:'👥', c:'#3a2a10'},
+    {k:'shisha_vip',        l:'Shisha + 2 Drink Credits',      i:'💨', c:'#4d3308'},
   ];
-  const SHORT=['Free Shot','2-for-1 Pour','Free Corona','15% Bottle','Mixer Jug','RM100 Off','Moët Mini','JACKPOT 🍾'];
+  const SHORT=['Entry Pass','House Drink','House Shot','3 Shots+Entry','Cocktail','Upgrade','5-Friend Pass','Shisha+2'];
 
   const $=id=>document.getElementById(id);
 
@@ -240,6 +247,7 @@ footer a:hover{color:var(--neon)}
 
     setTimeout(()=>{
       const P=PRIZES[safe];
+      won={icon:P.i,label:res.prize_label||P.l};
       $('prizeIco').textContent=P.i;
       $('prizeHead').textContent=res.already?'Your prize':'You won';
       $('alreadyNote').style.display=res.already?'block':'none';
@@ -253,6 +261,71 @@ footer a:hover{color:var(--neon)}
       $('prize').scrollIntoView({behavior:'smooth',block:'center'});
     },5400);
   }
+
+  /* ---------- share-to-story card ---------- */
+  let won=null;
+  function drawShareCard(icon,label){
+    const cv=$('shareCanvas'), ctx=cv.getContext('2d'), W=cv.width, H=cv.height;
+    const bg=ctx.createLinearGradient(0,0,0,H);
+    bg.addColorStop(0,'#0d0620'); bg.addColorStop(.5,'#1a0f35'); bg.addColorStop(1,'#020008');
+    ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+    // ambient glow
+    const glow=ctx.createRadialGradient(W/2,H*0.38,50,W/2,H*0.38,600);
+    glow.addColorStop(0,'rgba(136,85,238,.35)'); glow.addColorStop(1,'rgba(136,85,238,0)');
+    ctx.fillStyle=glow; ctx.fillRect(0,0,W,H);
+    // fireflies
+    for(let i=0;i<40;i++){
+      ctx.beginPath();
+      const x=Math.random()*W, y=Math.random()*H, r=1+Math.random()*3;
+      ctx.fillStyle=['rgba(0,234,255,.7)','rgba(226,191,122,.7)','rgba(255,0,102,.55)'][i%3];
+      ctx.arc(x,y,r,0,7); ctx.fill();
+    }
+    ctx.textAlign='center';
+    ctx.fillStyle='rgba(240,244,250,.55)';
+    ctx.font='600 26px DM Mono, monospace';
+    ctx.fillText('S E A S O N   K L', W/2, 220);
+    ctx.fillStyle='#E2BF7A';
+    ctx.font='300 30px "Cormorant Garamond", serif';
+    ctx.fillText("You're one of our lucky followers", W/2, 300);
+    ctx.font='200px sans-serif';
+    ctx.fillText(icon, W/2, 760);
+    ctx.fillStyle='#F0F4FA';
+    ctx.font='500 76px "Bodoni Moda", serif';
+    wrapText(ctx,label,W/2,900,900,88);
+    ctx.fillStyle='rgba(240,244,250,.6)';
+    ctx.font='300 34px Outfit, sans-serif';
+    ctx.fillText('Tap the link to spin yours', W/2, 1650);
+    ctx.fillStyle='#00EAFF';
+    ctx.font='600 40px DM Mono, monospace';
+    ctx.fillText('SEASON_KL_OFFICIAL', W/2, 1720);
+    ctx.strokeStyle='rgba(201,160,90,.5)'; ctx.lineWidth=2;
+    ctx.strokeRect(60,60,W-120,H-120);
+    return cv;
+  }
+  function wrapText(ctx,text,x,y,maxWidth,lineHeight){
+    const words=text.split(' '); let line=''; const lines=[];
+    words.forEach(w=>{ const test=line+w+' '; if(ctx.measureText(test).width>maxWidth&&line){lines.push(line);line=w+' ';}else{line=test;} });
+    lines.push(line);
+    const startY=y-((lines.length-1)*lineHeight)/2;
+    lines.forEach((l,i)=>ctx.fillText(l.trim(),x,startY+i*lineHeight));
+  }
+  async function shareCard(){
+    if(!won)return;
+    const cv=drawShareCard(won.icon,won.label);
+    if(window._skl)window._skl('ShareClick');
+    cv.toBlob(async(blob)=>{
+      if(!blob)return;
+      const file=new File([blob],'season-kl-prize.png',{type:'image/png'});
+      if(navigator.canShare && navigator.canShare({files:[file]})){
+        try{ await navigator.share({files:[file],title:'Season KL',text:'I just won a prize at Season KL — spin yours!'}); if(window._skl)window._skl('ShareCompleted'); return; }catch(_){}
+      }
+      // fallback: open the image so guests can long-press-save and post to their story manually
+      const url=URL.createObjectURL(blob);
+      const win=window.open(url,'_blank');
+      if(!win){ const a=document.createElement('a'); a.href=url; a.download='season-kl-prize.png'; a.click(); }
+    },'image/png',0.95);
+  }
+  $('shareBtn').addEventListener('click',shareCard);
 
   $('spinBtn').addEventListener('click',spin);
 })();
