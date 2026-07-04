@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: write
+  pages: write
 
 jobs:
   deploy:
@@ -32,14 +33,14 @@ jobs:
           git commit -m "deploy: ${GITHUB_SHA}"
           git push origin gh-pages --force
 
-      # GITHUB_TOKEN pushes don't reliably trigger the internal Pages build,
-      # so request one explicitly. Non-fatal: the push itself usually suffices.
+      # GITHUB_TOKEN pushes don't trigger the internal Pages build here
+      # (confirmed 2026-07-04), so an explicit build request is the critical
+      # path — fail loudly if it doesn't go through.
       - name: Request Pages build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          curl -sf -X POST \
+          curl -f -X POST \
             -H "Authorization: Bearer ${GITHUB_TOKEN}" \
             -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages/builds" \
-            || echo "::warning::Pages build request failed; relying on push trigger"
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages/builds"
