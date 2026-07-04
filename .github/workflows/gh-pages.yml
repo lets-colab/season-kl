@@ -9,13 +9,19 @@ on:
 permissions:
   contents: write
   pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
 
 jobs:
-  deploy:
+  # Path A — keep the gh-pages branch current (serves Pages when the source
+  # is "Deploy from a branch"). Plain git, no actions: immune to the
+  # Actions allowlist.
+  publish-branch:
     runs-on: ubuntu-latest
     steps:
-      # No marketplace actions: the org Actions policy requires allowlisted,
-      # SHA-pinned actions, so we publish with plain git + the built-in token.
       - name: Publish main to gh-pages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -32,15 +38,37 @@ jobs:
           git add -A
           git commit -m "deploy: ${GITHUB_SHA}"
           git push origin gh-pages --force
-
-      # GITHUB_TOKEN pushes don't trigger the internal Pages build here
-      # (confirmed 2026-07-04), so an explicit build request is the critical
-      # path — fail loudly if it doesn't go through.
-      - name: Request Pages build
+      - name: Request legacy Pages build (best effort)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          curl -f -X POST \
+          curl -s -X POST \
             -H "Authorization: Bearer ${GITHUB_TOKEN}" \
             -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages/builds"
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages/builds" \
+            || true
+
+  # Path B — official Pages deployment (serves Pages when the source is
+  # "GitHub Actions"). All actions are GitHub-created and pinned to full
+  # commit SHAs to satisfy a strict Actions allowlist.
+  deploy-pages:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9f698171ed81b15d1823a05fc7211befd50c8ae0 # v6.0.3
+      - name: Strip internal files
+        run: |
+          rm -rf .github .agents skills-lock.json .mcp.json
+          touch .nojekyll
+      - name: Configure Pages
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4.0.0
+        with:
+          path: ./
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5
