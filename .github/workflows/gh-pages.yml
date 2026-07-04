@@ -24,9 +24,22 @@ jobs:
             "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" site
           cd site
           rm -rf .github .agents skills-lock.json .mcp.json
+          touch .nojekyll
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout --orphan gh-pages
           git add -A
           git commit -m "deploy: ${GITHUB_SHA}"
           git push origin gh-pages --force
+
+      # GITHUB_TOKEN pushes don't reliably trigger the internal Pages build,
+      # so request one explicitly. Non-fatal: the push itself usually suffices.
+      - name: Request Pages build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl -sf -X POST \
+            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages/builds" \
+            || echo "::warning::Pages build request failed; relying on push trigger"
