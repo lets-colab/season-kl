@@ -38,15 +38,28 @@ jobs:
           git add -A
           git commit -m "deploy: ${GITHUB_SHA}"
           git push origin gh-pages --force
-      - name: Request legacy Pages build (best effort)
+      # In branch mode this request IS the publish step, so it must fail loudly;
+      # in Actions mode the deploy-pages job publishes and this is a no-op.
+      - name: Request legacy Pages build (branch mode only)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          curl -s -X POST \
+          set -euo pipefail
+          mode=$(curl -sf \
             -H "Authorization: Bearer ${GITHUB_TOKEN}" \
             -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages/builds" \
-            || true
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages" \
+            | python3 -c "import json,sys; print(json.load(sys.stdin).get('build_type','unknown'))" \
+            || echo unknown)
+          echo "Pages build_type: ${mode}"
+          if [ "${mode}" = "legacy" ]; then
+            curl -f -X POST \
+              -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages/builds"
+          else
+            echo "Pages publishes via the deploy-pages job in '${mode}' mode; skipping legacy build request."
+          fi
 
   # Path B — official Pages deployment (serves Pages when the source is
   # "GitHub Actions"). All actions are GitHub-created and pinned to full
