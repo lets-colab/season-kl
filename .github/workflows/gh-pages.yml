@@ -16,10 +16,35 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # Detect whether GitHub Pages is currently configured to build from a
+  # branch ("legacy") or via GitHub Actions ("workflow"), so we don't
+  # attempt a deployment path that's blocked by environment protection
+  # rules for the branch this workflow runs on.
+  detect-mode:
+    runs-on: ubuntu-latest
+    outputs:
+      mode: ${{ steps.check.outputs.mode }}
+    steps:
+      - name: Check Pages build type
+        id: check
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          mode=$(curl -sf \
+            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages" \
+            | python3 -c "import json,sys; print(json.load(sys.stdin).get('build_type','unknown'))" \
+            || echo unknown)
+          echo "Pages build_type: ${mode}"
+          echo "mode=${mode}" >> "$GITHUB_OUTPUT"
+
   # Path A — keep the gh-pages branch current (serves Pages when the source
   # is "Deploy from a branch"). Plain git, no actions: immune to the
   # Actions allowlist.
   publish-branch:
+    needs: detect-mode
     runs-on: ubuntu-latest
     steps:
       - name: Publish main to gh-pages
@@ -41,30 +66,23 @@ jobs:
       # In branch mode this request IS the publish step, so it must fail loudly;
       # in Actions mode the deploy-pages job publishes and this is a no-op.
       - name: Request legacy Pages build (branch mode only)
+        if: needs.detect-mode.outputs.mode == 'legacy'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          mode=$(curl -sf \
+          curl -f -X POST \
             -H "Authorization: Bearer ${GITHUB_TOKEN}" \
             -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages" \
-            | python3 -c "import json,sys; print(json.load(sys.stdin).get('build_type','unknown'))" \
-            || echo unknown)
-          echo "Pages build_type: ${mode}"
-          if [ "${mode}" = "legacy" ]; then
-            curl -f -X POST \
-              -H "Authorization: Bearer ${GITHUB_TOKEN}" \
-              -H "Accept: application/vnd.github+json" \
-              "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages/builds"
-          else
-            echo "Pages publishes via the deploy-pages job in '${mode}' mode; skipping legacy build request."
-          fi
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages/builds"
 
   # Path B — official Pages deployment (serves Pages when the source is
-  # "GitHub Actions"). All actions are GitHub-created and pinned to full
-  # commit SHAs to satisfy a strict Actions allowlist.
+  # "GitHub Actions"). Only runs when Pages is actually in "workflow" mode,
+  # since the github-pages environment's deployment branch policy currently
+  # only allows the gh-pages branch and would otherwise reject this job.
   deploy-pages:
+    needs: detect-mode
+    if: needs.detect-mode.outputs.mode == 'workflow'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
