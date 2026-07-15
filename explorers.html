@@ -505,6 +505,7 @@ footer{
           <label for="source" data-i18n="label_source">How did you hear about us?</label>
           <select id="source" name="source">
             <option value="" disabled selected data-i18n="ph_select_source">Select one</option>
+            <option value="IG DM" data-i18n="src_igdm">Invited by our team (Instagram DM)</option>
             <option value="Instagram" data-i18n="src_ig">Instagram</option>
             <option value="TikTok" data-i18n="src_tiktok">TikTok</option>
             <option value="KOL / Creator" data-i18n="src_kol">A creator / KOL</option>
@@ -638,6 +639,28 @@ footer{
   }
   function saveLocal(d){try{localStorage.setItem(LS_KEY,JSON.stringify({...d,savedAt:new Date().toISOString()}));}catch(_){}}
   function clearLocal(){try{localStorage.removeItem(LS_KEY);}catch(_){}}
+
+  /* DM tracking links: explorers.html?src=igdm&h=<handle>#claim
+     Prefills her IG handle + lead source so the signup auto-matches
+     back to her row in the DM Tracker. Params are also accepted after
+     the hash (…#claim?src=igdm&h=x) since some DMs get pasted that way. */
+  (function dmAttribution(){
+    try{
+      let qs=location.search;
+      if(!qs&&location.hash.indexOf('?')>-1)qs=location.hash.slice(location.hash.indexOf('?'));
+      const q=new URLSearchParams(qs);
+      const h=(q.get('h')||'').replace(/^@/,'').trim();
+      const src=(q.get('src')||'').toLowerCase();
+      if(src==='igdm'){
+        const s=document.getElementById('source');
+        if(s&&!s.value)s.value='IG DM';
+      }
+      if(h){
+        const ig=document.getElementById('instagram');
+        if(ig&&!ig.value)ig.value='@'+h;
+      }
+    }catch(_){}
+  })();
 
   (async function retryPending(){
     let p;try{p=JSON.parse(localStorage.getItem(LS_KEY)||'null');}catch(_){return;}
