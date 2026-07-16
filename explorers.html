@@ -543,6 +543,11 @@ footer{
         <div class="pass-code" id="passCodeDisplay"></div>
         <p data-i18n="success_exp_msg">Screenshot your pass code. Show it at the door on the night. We'll also confirm everything via WhatsApp.</p>
         <a href="#" id="waLink" class="btn-wa" data-i18n="btn_wa">Open WhatsApp ↗</a>
+        <div style="margin-top:14px">
+          <button type="button" id="storyShareBtn" class="btn-wa" style="border:none;cursor:pointer;background:linear-gradient(135deg,#FF0066,#AA77FF)" data-i18n="btn_story">📲 Share to your IG Story</button>
+        </div>
+        <p id="storyHint" style="font-size:.78rem;opacity:.55;margin-top:10px;line-height:1.6" data-i18n="story_hint">Your poster is ready — one tap opens Instagram. Post it and tag @season_kl_official 💜</p>
+        <span id="storySavedMsg" style="display:none" data-i18n="story_saved">Poster saved to your device — add it to your Story from your gallery and tag @season_kl_official 💜</span>
       </div>
     </div>
   </div>
@@ -639,6 +644,61 @@ footer{
   }
   function saveLocal(d){try{localStorage.setItem(LS_KEY,JSON.stringify({...d,savedAt:new Date().toISOString()}));}catch(_){}}
   function clearLocal(){try{localStorage.removeItem(LS_KEY);}catch(_){}}
+
+  /* ---- IG Story poster (generated on-device after registration) ---- */
+  function _rr(x,px,py,w,h,rad){x.beginPath();x.moveTo(px+rad,py);x.arcTo(px+w,py,px+w,py+h,rad);x.arcTo(px+w,py+h,px,py+h,rad);x.arcTo(px,py+h,px,py,rad);x.arcTo(px,py,px+w,py,rad);x.closePath();}
+  function _ls(x,v){try{x.letterSpacing=v}catch(_){}}
+  function drawStoryPoster(firstName,code){
+    const W=1080,H=1920,c=document.createElement('canvas');c.width=W;c.height=H;
+    const x=c.getContext('2d');
+    const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#04000E');g.addColorStop(.55,'#020008');g.addColorStop(1,'#0A0018');
+    x.fillStyle=g;x.fillRect(0,0,W,H);
+    let r=x.createRadialGradient(W/2,320,60,W/2,320,720);r.addColorStop(0,'rgba(0,234,255,.20)');r.addColorStop(1,'rgba(0,234,255,0)');
+    x.fillStyle=r;x.fillRect(0,0,W,H);
+    r=x.createRadialGradient(W/2,H-260,60,W/2,H-260,640);r.addColorStop(0,'rgba(136,85,238,.16)');r.addColorStop(1,'rgba(136,85,238,0)');
+    x.fillStyle=r;x.fillRect(0,0,W,H);
+    x.textAlign='center';
+    _ls(x,'26px');x.fillStyle='#F5EDD6';x.font='400 100px "Bodoni Moda",Georgia,serif';x.fillText('SEASON',W/2+13,300);
+    _ls(x,'10px');x.fillStyle='rgba(240,244,250,.55)';x.font='30px "DM Mono",monospace';x.fillText('KUALA LUMPUR · TREC',W/2+5,368);
+    _ls(x,'0px');
+    x.strokeStyle='rgba(0,234,255,.6)';x.lineWidth=2;x.beginPath();x.moveTo(W/2,430);x.lineTo(W/2,540);x.stroke();
+    x.fillStyle='#F0F4FA';x.font='italic 300 72px "Cormorant Garamond",Georgia,serif';x.fillText('my first Season',W/2,650);
+    _ls(x,'6px');x.fillStyle='#00EAFF';x.font='400 58px "Bodoni Moda",Georgia,serif';x.fillText("I'M ON THE LIST",W/2+3,748);_ls(x,'0px');
+    _rr(x,120,830,W-240,330,28);x.fillStyle='rgba(0,234,255,.05)';x.fill();x.strokeStyle='rgba(0,234,255,.35)';x.lineWidth=2;x.stroke();
+    _ls(x,'8px');x.fillStyle='rgba(240,244,250,.6)';x.font='28px "DM Mono",monospace';x.fillText('FIRST TIME EXPERIENCE',W/2+4,900);_ls(x,'0px');
+    x.fillStyle='#F0F4FA';x.font='42px "Outfit",system-ui,sans-serif';
+    x.fillText('🥃 2 Signature Shooters · Season Lounge',W/2,985);
+    x.fillText('🍸 3 Drinks · In the Club',W/2,1062);
+    x.fillStyle='rgba(240,244,250,.55)';x.font='italic 32px "Cormorant Garamond",Georgia,serif';x.fillText('first-time visitors only',W/2,1122);
+    x.fillStyle='#F5EDD6';x.font='italic 64px "Cormorant Garamond",Georgia,serif';
+    x.fillText(firstName?('— '+firstName+' —'):'— see you there —',W/2,1290);
+    const bw=560,bx=(W-bw)/2;
+    _rr(x,bx,1360,bw,150,22);x.fillStyle='rgba(0,234,255,.07)';x.fill();
+    x.setLineDash([14,10]);x.strokeStyle='#00EAFF';x.lineWidth=3;x.stroke();x.setLineDash([]);
+    _ls(x,'8px');x.fillStyle='#00EAFF';x.font='58px "DM Mono",monospace';x.fillText(code||'',W/2+4,1455);_ls(x,'0px');
+    x.fillStyle='rgba(240,244,250,.7)';x.font='34px "Outfit",system-ui,sans-serif';x.fillText('Every Friday & Saturday · TREC KL',W/2,1650);
+    x.fillStyle='rgba(240,244,250,.45)';x.font='30px "DM Mono",monospace';x.fillText('@season_kl_official',W/2,1710);
+    return c;
+  }
+  window.__sklPosterPreview=drawStoryPoster; /* QA hook */
+  async function shareStoryPoster(firstName,code){
+    try{
+      await Promise.all(['400 100px "Bodoni Moda"','italic 300 72px "Cormorant Garamond"','58px "DM Mono"','42px "Outfit"'].map(f=>document.fonts.load(f)));
+    }catch(_){}
+    const canvas=drawStoryPoster(firstName,code);
+    if(window.fbq)try{fbq('trackCustom','StoryShareTap');}catch(_){}
+    canvas.toBlob(async function(blob){
+      if(!blob)return;
+      const file=new File([blob],'season-first-visit.png',{type:'image/png'});
+      if(navigator.canShare&&navigator.canShare({files:[file]})){
+        try{await navigator.share({files:[file],title:'Season KL',text:'My Season KL First Visit Pass ✨'});return;}catch(_){return;}
+      }
+      const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='season-first-visit.png';
+      document.body.appendChild(a);a.click();a.remove();
+      const hint=document.getElementById('storyHint'),saved=document.getElementById('storySavedMsg');
+      if(hint&&saved)hint.textContent=saved.textContent;
+    },'image/png');
+  }
 
   /* DM tracking links: explorers.html?src=igdm&h=<handle>#claim
      Prefills her IG handle + lead source so the signup auto-matches
@@ -759,6 +819,8 @@ footer{
     const langNote=language?` [${language}]`:'';
     const waMsg=encodeURIComponent(`Hi Season KL!${langNote} My First Visit Pass is: ${finalCode}. Looking forward to Bloom at TREC KL.`);
     document.getElementById('waLink').href=`https://wa.me/${WA_NUMBER}?text=${waMsg}`;
+    const storyBtn=document.getElementById('storyShareBtn');
+    if(storyBtn)storyBtn.onclick=function(){shareStoryPoster(firstName,finalCode);};
 
     if(window._skl)window._skl('CompleteRegistration');
     if(window.fbq)fbq('track','CompleteRegistration');
