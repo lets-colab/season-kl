@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Reserve a Table — Season KL</title>
+<meta name="description" content="Book your table at Season KL — pick your spot on the floor, choose your bottles, and lock it in. Every Friday & Saturday at TREC KL." />
+<link rel="icon" href="season-logo.png" type="image/png" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://lets-colab.github.io/season-kl/tables.html" />
+<meta property="og:title" content="Season KL — Reserve Your Table" />
+<meta property="og:description" content="Pick your table, choose your bottles, lock it in. Every Friday & Saturday at TREC KL." />
+<meta property="og:image" content="https://lets-colab.github.io/season-kl/season-logo.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="canonical" href="https://lets-colab.github.io/season-kl/tables.html" />
+<script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','1530124382241175');fbq('track','PageView');</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1530124382241175&ev=PageView&noscript=1"/></noscript>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=Outfit:wght@300;400;500;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#020008;--text:#F0F4FA;--muted:rgba(240,244,250,.5);
+  --neon:#00EAFF;--hot:#FF0066;--violet:#8855EE;--gold:#C9A05A;--gold-light:#E2BF7A;
+  --s:#9B7FD4;--k:#39D98A;--l:#2CC6C0;--vip:#E2BF7A;
+  --card:rgba(255,255,255,.04);--border:rgba(255,255,255,.12);--r:12px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden;min-height:100vh}
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 24px;background:linear-gradient(to bottom,rgba(2,0,8,.96),rgba(2,0,8,.6));backdrop-filter:blur(6px);border-bottom:1px solid var(--border)}
+.nav-back{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);text-decoration:none}
+.nav-back:hover{color:var(--neon)}
+.nav-logo{font-family:'Bodoni Moda',serif;letter-spacing:.14em;font-size:1rem;color:#F5EDD6;text-decoration:none}
+.hero{position:relative;text-align:center;padding:40px 20px 24px;overflow:hidden}
+.hero-img{position:absolute;inset:0;background:url('floorplan.jpg') center top/cover no-repeat;opacity:.22;filter:saturate(1.1)}
+.hero-fade{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(2,0,8,.4),var(--bg))}
+.hero-inner{position:relative;z-index:2}
+.eyebrow{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.34em;text-transform:uppercase;color:var(--neon);opacity:.8;margin-bottom:10px}
+h1{font-family:'Bodoni Moda',serif;font-size:clamp(2.2rem,7vw,3.6rem);font-weight:400;line-height:1;letter-spacing:-.02em}
+.hero-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(1rem,2.4vw,1.3rem);color:var(--muted);margin-top:10px}
+.wrap{max-width:920px;margin:0 auto;padding:8px 16px 60px}
+.step-label{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);margin:26px 0 12px;display:flex;align-items:center;gap:8px}
+.step-label b{color:var(--neon);font-weight:400}
+/* date chips */
+.dates{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.chip{font-family:'DM Mono',monospace;font-size:.72rem;letter-spacing:.06em;padding:10px 16px;border-radius:100px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;transition:all .2s}
+.chip.active{border-color:var(--neon);color:var(--neon);box-shadow:0 0 20px rgba(0,234,255,.15)}
+.chip input{margin-left:6px;background:none;border:none;color:inherit;font-family:inherit;font-size:.72rem}
+input[type=date]{background:var(--card);border:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:.72rem;padding:10px 14px;border-radius:100px;color-scheme:dark;cursor:pointer}
+/* interactive floor-plan map */
+.mapwrap{position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--border);box-shadow:0 0 50px rgba(136,85,238,.18)}
+.mapwrap img{display:block;width:100%;height:auto;user-select:none;-webkit-user-drag:none}
+#map{position:absolute;inset:0}
+.spot{position:absolute;transform:translate(-50%,-50%);width:11%;height:3.5%;border-radius:22%/45%;border:2px solid var(--c);background:transparent;cursor:pointer;padding:0;animation:breath 2.8s ease-in-out infinite;transition:transform .18s}
+.spot.big{width:21%;height:4.6%;border-radius:14%/50%}
+.spot:hover:not(.booked){transform:translate(-50%,-50%) scale(1.12);animation-play-state:paused;box-shadow:0 0 24px var(--c)}
+.spot.sel{border-color:#fff;box-shadow:0 0 0 2px #fff,0 0 28px var(--c);animation:none}
+.spot.sel::after{content:'✓';position:absolute;top:-9px;right:-7px;width:18px;height:18px;border-radius:50%;background:#fff;color:#020008;font-size:.68rem;line-height:18px;font-weight:600}
+.spot.booked{cursor:not-allowed;border-color:rgba(255,255,255,.25);background:rgba(2,0,8,.62);animation:none}
+.spot.booked::after{content:'BOOKED';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.14em;color:rgba(255,255,255,.75)}
+.z-S{--c:rgba(155,127,212,.95)}
+.z-K{--c:rgba(57,217,138,.95)}
+.z-L{--c:rgba(44,198,192,.95)}
+.z-VIP{--c:rgba(226,191,122,.98)}
+@keyframes breath{0%,100%{box-shadow:0 0 5px var(--c)}50%{box-shadow:0 0 20px var(--c)}}
+.maphint{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pulse-demo{width:22px;height:12px;border-radius:22%/45%;border:2px solid rgba(0,234,255,.9);display:inline-block;animation:breath 2.8s ease-in-out infinite;--c:rgba(0,234,255,.9)}
+.booked-demo{width:22px;height:12px;border-radius:22%/45%;border:2px solid rgba(255,255,255,.25);background:rgba(2,0,8,.62);display:inline-block}
+/* bottles */
+.bottles{display:flex;flex-direction:column;gap:8px}
+.bottle{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--border);border-radius:10px;background:var(--card)}
+.bottle .info{flex:1;min-width:0}
+.bottle .bn{font-size:.9rem}
+.bottle .bc{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.bottle .bp{font-family:'DM Mono',monospace;font-size:.8rem;color:var(--gold-light);white-space:nowrap}
+.stepper{display:flex;align-items:center;gap:10px}
+.stepper button{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:rgba(255,255,255,.05);color:var(--text);font-size:1.1rem;cursor:pointer;line-height:1}
+.stepper button:hover{border-color:var(--neon)}
+.stepper .q{font-family:'DM Mono',monospace;min-width:18px;text-align:center}
+.premium{font-size:.78rem;color:var(--muted);line-height:1.7;margin-top:6px;padding:12px 14px;border:1px dashed var(--border);border-radius:10px}
+/* fields */
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.field label{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.field input,.field textarea{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px 15px;color:var(--text);font-family:'Outfit',sans-serif;font-size:.92rem;outline:none;transition:border-color .2s;-webkit-appearance:none;resize:none}
+.field input:focus,.field textarea:focus{border-color:var(--neon)}
+.req{color:var(--hot)}
+/* summary bar */
+.summary{position:sticky;bottom:0;z-index:50;margin-top:20px;background:linear-gradient(to top,rgba(2,0,8,.98),rgba(6,0,16,.9));border:1px solid var(--border);border-radius:16px;padding:16px 18px;backdrop-filter:blur(8px)}
+.sumrow{display:flex;justify-content:space-between;font-size:.82rem;color:var(--muted);margin-bottom:4px}
+.sumrow.total{font-size:1.05rem;color:var(--text);margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
+.sumrow.total b{color:var(--gold-light);font-family:'DM Mono',monospace}
+.reserve{margin-top:12px;width:100%;font-size:.78rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:#fff;background:linear-gradient(135deg,var(--violet),var(--hot));border:none;border-radius:100px;padding:16px;cursor:pointer;transition:all .3s;font-family:'Outfit',sans-serif}
+.reserve:hover{transform:translateY(-2px);box-shadow:0 8px 40px rgba(255,0,102,.35)}
+.reserve:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+.hint{text-align:center;font-size:.7rem;color:var(--muted);margin-top:10px;line-height:1.6}
+.form-error{display:none;font-size:.78rem;color:#FF6699;text-align:center;margin-top:10px;padding:10px;border:1px solid rgba(255,0,102,.25);border-radius:8px;background:rgba(255,0,102,.05)}
+.form-error.show{display:block}
+/* success */
+.success{display:none;text-align:center;padding:50px 20px}
+.success.show{display:block}
+.success .ico{font-size:3rem;margin-bottom:14px}
+.success h2{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:400;margin-bottom:10px}
+.success p{color:var(--muted);max-width:440px;margin:0 auto 8px;font-size:.9rem}
+.btn-wa{display:inline-flex;align-items:center;gap:8px;background:#25D366;color:#fff;font-size:.74rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;padding:14px 30px;border-radius:100px;margin-top:18px}
+footer{border-top:1px solid var(--border);padding:34px 20px;text-align:center;color:var(--muted);font-size:.7rem;letter-spacing:.1em}
+footer a{color:var(--muted);text-decoration:none;margin:0 10px}
+footer a:hover{color:var(--neon)}
+@media(max-width:520px){.grid{gap:6px}.tbl{font-size:.6rem}.bottle .bn{font-size:.82rem}}
+</style>
+<!-- Season KL Analytics -->
+<script>
+(function(){var SB='https://nykukkccynnykbmxznhl.supabase.co',KEY='sb_publishable_aG3K6RiA-yXMN3QlNLmt0Q_65xhqvPb',PAGE='tables',SID=(function(){var k='skl_sid',s=sessionStorage.getItem(k);if(!s){s=Math.random().toString(36).slice(2)+Date.now().toString(36);sessionStorage.setItem(k,s);}return s;})();window._skl=function(ev){try{fetch(SB+'/rest/v1/site_events',{method:'POST',headers:{'Content-Type':'application/json','apikey':KEY,'Authorization':'Bearer '+KEY,'Prefer':'return=minimal','Accept-Profile':'public','Content-Profile':'public'},body:JSON.stringify({event_name:ev,page:PAGE,session_id:SID,referrer:(document.referrer||'').slice(0,400)||null,user_agent:navigator.userAgent.slice(0,300)}),keepalive:true}).catch(function(){});}catch(e){}};window._skl('PageView');})();
+</script>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-back">← Season KL</a>
+  <a href="index.html" class="nav-logo">SEASON</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-img"></div>
+  <div class="hero-fade"></div>
+  <div class="hero-inner">
+    <p class="eyebrow">Table Reservations · TREC KL</p>
+    <h1>Reserve Your Table</h1>
+    <p class="hero-sub">Pick your spot. Choose your bottles. Lock it in.</p>
+  </div>
+</section>
+
+<div class="wrap">
+
+  <div id="booking">
+    <!-- STEP 1: DATE -->
+    <div class="step-label"><b>1</b> Which night?</div>
+    <div class="dates" id="dates"></div>
+
+    <!-- STEP 2: TABLE -->
+    <div class="step-label"><b>2</b> Choose your table <span style="color:var(--muted);text-transform:none;letter-spacing:0">— tap a glowing table on the map</span></div>
+    <div class="mapwrap">
+      <img src="floorplan.jpg" alt="Season KL floor plan — tap a table to select it" />
+      <div id="map"></div>
+    </div>
+    <p class="maphint"><span class="pulse-demo"></span> available — tap to select &nbsp;·&nbsp; <span class="booked-demo"></span> already reserved</p>
+
+    <!-- STEP 3: BOTTLES -->
+    <div class="step-label"><b>3</b> Add bottles <span style="color:var(--muted);text-transform:none;letter-spacing:0">(optional · twin-bottle promo before 12am)</span></div>
+    <div class="bottles" id="bottles"></div>
+    <div class="premium">
+      <strong style="color:var(--text)">Premium & rare on request:</strong> Macallan 12 / 18, Rémy Martin Louis XIII, Hennessy Paradis / XO / VSOP, Martell Cordon Bleu, Dom Pérignon, Ace of Spade, Clase Azul, Monkey 47 & more. Add a note below and we'll sort it on WhatsApp. &nbsp;·&nbsp; <a href="menu.html" style="color:var(--neon)">View the full menu →</a>
+    </div>
+
+    <!-- STEP 4: DETAILS -->
+    <div class="step-label"><b>4</b> Your details</div>
+    <div class="field"><label>Full Name <span class="req">*</span></label><input type="text" id="name" placeholder="Your name" autocomplete="name" /></div>
+    <div class="field"><label>WhatsApp Number <span class="req">*</span></label><input type="tel" id="whatsapp" placeholder="+60 12 345 6789" autocomplete="tel" /></div>
+    <div class="field"><label>Number of Guests</label><input type="number" id="guests" min="1" max="30" inputmode="numeric" placeholder="e.g. 6" /></div>
+    <div class="field"><label>Notes <span style="opacity:.5">(optional — premium bottles, occasion, requests)</span></label><textarea id="notes" rows="2" placeholder="Anything we should know?"></textarea></div>
+
+    <!-- SUMMARY -->
+    <div class="summary">
+      <div class="sumrow"><span id="sumTable">No table selected</span><span id="sumTablePrice">—</span></div>
+      <div class="sumrow"><span id="sumBottles">Bottles: none</span><span id="sumBottlePrice">RM 0</span></div>
+      <div class="sumrow total"><span>Total</span><b id="sumTotal">RM 0</b></div>
+      <div class="form-error" id="formError">Please complete the required fields.</div>
+      <button class="reserve" id="reserveBtn" disabled>Select a table to reserve</button>
+      <p class="hint">This is a reservation <strong>request</strong>. We confirm your table on WhatsApp. Table minimum spend applies.</p>
+    </div>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="success" id="success">
+    <div class="ico">🌿</div>
+    <h2>Reservation Requested, <span id="successName">friend</span></h2>
+    <p id="successLine">We've got your table request.</p>
+    <p>Our team will confirm availability and details on WhatsApp shortly. See you at Season.</p>
+    <a href="#" id="waLink" class="btn-wa" target="_blank" rel="noopener">Confirm on WhatsApp ↗</a>
+  </div>
+
+</div>
+
+<footer>
+  <div style="margin-bottom:10px">Every Friday &amp; Saturday · TREC KL</div>
+  <a href="index.html">Home</a><a href="explorers.html">First Visit Pass</a><a href="menu.html">The Menu</a><a href="spin.html">Spin the Wheel 🎡</a><a href="icons.html">Ambassadors</a><a href="https://instagram.com/season_kl_official" target="_blank" rel="noopener">Instagram</a>
+  <div style="margin-top:14px;opacity:.5">© 2026 Season KL</div>
+</footer>
+
+<script>
+(function(){
+  const SB='https://nykukkccynnykbmxznhl.supabase.co';
+  const ANON='sb_publishable_aG3K6RiA-yXMN3QlNLmt0Q_65xhqvPb';
+  const WA='60173867701';
+  const HDRS={'Content-Type':'application/json','apikey':ANON,'Authorization':'Bearer '+ANON,'Accept-Profile':'public','Content-Profile':'public'};
+
+  const ZONES={S:{price:1500},K:{price:1500},L:{price:2500},VIP:{price:4000}};
+  function zoneOf(id){ return id.indexOf('VIP')===0?'VIP':id[0]; }
+
+  // Hotspot positions as % of the floorplan image (x,y = table centre)
+  const SPOTS=[
+    {id:'S13',x:27.0,y:36.1},{id:'S26',x:40.0,y:36.0},{id:'S27',x:56.4,y:36.0},{id:'S15',x:69.7,y:36.1},
+    {id:'S12',x:26.2,y:40.1},{id:'K21',x:43.4,y:40.1},{id:'K22',x:52.8,y:40.0},{id:'S16',x:69.8,y:40.1},
+    {id:'S11',x:24.9,y:45.0},{id:'S17',x:70.6,y:45.0},
+    {id:'K23',x:43.4,y:47.9},{id:'K25',x:53.1,y:47.8},
+    {id:'S10',x:23.9,y:49.9},{id:'S18',x:72.0,y:49.9},
+    {id:'S9',x:22.9,y:55.3},{id:'S19',x:72.5,y:55.3},
+    {id:'S8',x:39.6,y:58.5},{id:'S20',x:55.6,y:58.5},
+    {id:'L7',x:22.9,y:64.6},{id:'L6',x:37.9,y:64.4},{id:'L5',x:57.1,y:64.5},{id:'L3',x:72.8,y:64.5},
+    {id:'VIP 2',x:28.7,y:72.1,big:true},{id:'VIP 1',x:67.1,y:72.1,big:true},
+  ];
+
+  const BOTTLES=[
+    {n:'Singleton 12yrs',c:'Single Malt',p:780},
+    {n:"Jack Daniel's Apple",c:'Whiskey',p:880},
+    {n:'Moët & Chandon Brut',c:'Champagne',p:880},
+    {n:'Moët Brut · Mini 200ml',c:'Champagne',p:280},
+    {n:'Grey Goose',c:'Vodka',p:880},
+    {n:'Herradura',c:'Tequila',p:680},
+  ];
+
+  let state={date:null,night:null,table:null,tablePrice:0,zone:null,qty:BOTTLES.map(()=>0),booked:new Set()};
+
+  const $=id=>document.getElementById(id);
+  const money=n=>'RM '+n.toLocaleString('en-MY');
+
+  /* ---------- dates ---------- */
+  function nextByDay(day){ const d=new Date(); d.setHours(0,0,0,0); let n=(day-d.getDay()+7)%7; if(n===0)n=7; d.setDate(d.getDate()+n); return d; }
+  function fmt(d){ return d.toISOString().slice(0,10); }
+  function label(d){ return d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}); }
+  function buildDates(){
+    const fri=nextByDay(5), sat=nextByDay(6);
+    const opts=[{d:fri,night:'Friday'},{d:sat,night:'Saturday'}];
+    const wrap=$('dates'); wrap.innerHTML='';
+    opts.forEach((o,i)=>{
+      const b=document.createElement('button'); b.className='chip'+(i===0?' active':'');
+      b.textContent=o.night+' · '+label(o.d);
+      b.onclick=()=>{ document.querySelectorAll('.dates .chip').forEach(c=>c.classList.remove('active')); b.classList.add('active'); pickDate(fmt(o.d),o.night); };
+      wrap.appendChild(b);
+    });
+    // custom date
+    const c=document.createElement('label'); c.className='chip'; c.style.cursor='pointer';
+    c.innerHTML='Other date';
+    const inp=document.createElement('input'); inp.type='date'; inp.min=fmt(new Date()); inp.style.marginLeft='8px';
+    inp.onchange=()=>{ if(!inp.value)return; document.querySelectorAll('.dates .chip').forEach(x=>x.classList.remove('active')); c.classList.add('active');
+      const dd=new Date(inp.value+'T00:00:00'); const nm=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][dd.getDay()]; pickDate(inp.value,nm); };
+    c.appendChild(inp); wrap.appendChild(c);
+    pickDate(fmt(fri),'Friday');
+  }
+  function pickDate(date,night){ state.date=date; state.night=night; loadAvailability(); }
+
+  /* ---------- availability ---------- */
+  function loadAvailability(){
+    state.booked=new Set();
+    renderGrid(); // show the map immediately; booked overlays arrive right after
+    fetch(`${SB}/rest/v1/table_availability?select=table_id&booking_date=eq.${state.date}`,{headers:HDRS})
+      .then(r=>r.ok?r.json():[]).then(rows=>{ (rows||[]).forEach(x=>state.booked.add(x.table_id)); renderGrid(); })
+      .catch(()=>renderGrid());
+  }
+
+  /* ---------- interactive map ---------- */
+  function renderGrid(){
+    const g=$('map'); g.innerHTML='';
+    SPOTS.forEach(s=>{
+      const z=zoneOf(s.id); const btn=document.createElement('button');
+      btn.className='spot z-'+z+(s.big?' big':'');
+      btn.style.left=s.x+'%'; btn.style.top=s.y+'%';
+      const booked=state.booked.has(s.id);
+      if(booked)btn.classList.add('booked');
+      if(state.table===s.id)btn.classList.add('sel');
+      btn.title=s.id+' · RM '+ZONES[z].price.toLocaleString('en-MY')+(booked?' · booked':'');
+      btn.setAttribute('aria-label','Table '+s.id+', RM '+ZONES[z].price.toLocaleString('en-MY')+(booked?', already booked':''));
+      if(!booked)btn.onclick=()=>selectTable(s.id,z);
+      g.appendChild(btn);
+    });
+  }
+  function selectTable(id,z){ state.table=(state.table===id)?null:id; state.zone=state.table?z:null; state.tablePrice=state.table?ZONES[z].price:0; renderGrid(); updateSummary(); }
+
+  /* ---------- bottles ---------- */
+  function renderBottles(){
+    const w=$('bottles'); w.innerHTML='';
+    BOTTLES.forEach((b,i)=>{
+      const row=document.createElement('div'); row.className='bottle';
+      row.innerHTML='<div class="info"><div class="bn">'+b.n+'</div><div class="bc">'+b.c+'</div></div><div class="bp">'+money(b.p)+'</div>';
+      const st=document.createElement('div'); st.className='stepper';
+      const minus=document.createElement('button'); minus.textContent='−'; minus.onclick=()=>{ if(state.qty[i]>0){state.qty[i]--;q.textContent=state.qty[i];updateSummary();} };
+      const q=document.createElement('span'); q.className='q'; q.textContent=state.qty[i];
+      const plus=document.createElement('button'); plus.textContent='+'; plus.onclick=()=>{ state.qty[i]++;q.textContent=state.qty[i];updateSummary(); };
+      st.appendChild(minus); st.appendChild(q); st.appendChild(plus); row.appendChild(st); w.appendChild(row);
+    });
+  }
+  function bottlesTotal(){ return BOTTLES.reduce((s,b,i)=>s+b.p*state.qty[i],0); }
+  function bottleList(){ return BOTTLES.map((b,i)=>state.qty[i]>0?{name:b.n,price:b.p,qty:state.qty[i]}:null).filter(Boolean); }
+
+  /* ---------- summary ---------- */
+  function updateSummary(){
+    const bt=bottlesTotal(); const total=state.tablePrice+bt;
+    $('sumTable').textContent=state.table?('Table '+state.table+' · '+state.zone):'No table selected';
+    $('sumTablePrice').textContent=state.table?money(state.tablePrice):'—';
+    const bl=bottleList();
+    $('sumBottles').textContent=bl.length?('Bottles: '+bl.reduce((s,x)=>s+x.qty,0)+' item(s)'):'Bottles: none';
+    $('sumBottlePrice').textContent=money(bt);
+    $('sumTotal').textContent=money(total);
+    const btn=$('reserveBtn');
+    if(state.table){ btn.disabled=false; btn.textContent='Reserve '+state.table+' · '+money(total); }
+    else { btn.disabled=true; btn.textContent='Select a table to reserve'; }
+  }
+
+  /* ---------- submit ---------- */
+  async function reserve(){
+    const err=$('formError');
+    const name=$('name').value.trim();
+    const rawWA=$('whatsapp').value.trim().replace(/[\s\-()]/g,'');
+    if(!state.table){ err.textContent='Please select a table.'; err.classList.add('show'); return; }
+    if(!name){ err.textContent='Please enter your name.'; err.classList.add('show'); return; }
+    if(!/^\+?\d{7,15}$/.test(rawWA)){ err.textContent='Please enter a valid WhatsApp number with country code.'; err.classList.add('show'); return; }
+    err.classList.remove('show');
+    if(window._skl)window._skl('Lead'); if(window.fbq)fbq('track','Lead');
+    const btn=$('reserveBtn'); btn.disabled=true; btn.textContent='Reserving…';
+
+    const whatsapp=$('whatsapp').value.trim();
+    const guests=$('guests').value?parseInt($('guests').value,10):null;
+    const notes=$('notes').value.trim();
+    const bottles=bottleList(); const bt=bottlesTotal(); const total=state.tablePrice+bt;
+    const payload={table_id:state.table,zone:state.zone,table_price:state.tablePrice,booking_date:state.date,night:state.night,guests,bottles,bottles_total:bt,grand_total:total,name,whatsapp,notes:notes||null};
+
+    let ok=false;
+    try{
+      const r=await fetch(`${SB}/rest/v1/table_bookings`,{method:'POST',headers:{...HDRS,'Prefer':'return=minimal'},body:JSON.stringify(payload),signal:AbortSignal.timeout(12000)});
+      ok=r.ok||r.status===201;
+      if(r.status===409){
+        // someone grabbed this table a moment ago — tell the truth, refresh the map
+        err.textContent='Table '+state.table+' was just reserved by someone else for that night. Please pick another table.';
+        err.classList.add('show');
+        btn.disabled=false; btn.textContent='Select a table to reserve';
+        state.table=null; state.zone=null; state.tablePrice=0;
+        loadAvailability(); updateSummary();
+        return;
+      }
+    }catch(_){}
+
+    if(!ok){
+      // safety-net so a booking request can never vanish
+      try{fetch(`${SB}/rest/v1/lead_safetynet`,{method:'POST',headers:{...HDRS,'Prefer':'return=minimal'},body:JSON.stringify({form_type:'table_booking',page:location.pathname,user_agent:navigator.userAgent.slice(0,300),payload}),keepalive:true}).catch(function(){});}catch(_){}
+    }
+
+    // Always hand off to WhatsApp so the request is never lost, even on a bad connection
+    const bl=bottles.length?('\nBottles: '+bottles.map(b=>b.qty+'× '+b.name).join(', ')):'';
+    const msg=encodeURIComponent(`Hi Season KL! I'd like to reserve Table ${state.table} (${state.zone}) for ${state.night} ${state.date}.\nName: ${name}${guests?'\nGuests: '+guests:''}${bl}\nTotal: ${money(total)}${notes?'\nNote: '+notes:''}`);
+    $('waLink').href=`https://wa.me/${WA}?text=${msg}`;
+    $('successName').textContent=name.split(' ')[0]||'friend';
+    $('successLine').textContent=`Table ${state.table} · ${state.night} ${state.date} · ${money(total)}`;
+    if(window._skl)window._skl('CompleteRegistration'); if(window.fbq)fbq('track','CompleteRegistration');
+    $('booking').style.display='none'; $('success').classList.add('show');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  /* ---------- init ---------- */
+  buildDates(); renderBottles(); updateSummary();
+  $('reserveBtn').addEventListener('click',reserve);
+})();
+</script>
+</body>
+</html>
