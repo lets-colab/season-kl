@@ -719,6 +719,16 @@ footer{
         const ig=document.getElementById('instagram');
         if(ig&&!ig.value)ig.value='@'+h;
       }
+      /* Move her DM Tracker row to "Link Opened" (fire-and-forget;
+         the function never downgrades a later pipeline stage). */
+      if(src==='igdm'&&h){
+        fetch(`${SUPABASE_URL}/functions/v1/dm-link-open`,{
+          method:'POST',
+          headers:{'Content-Type':'application/json','Authorization':`Bearer ${SUPABASE_ANON}`},
+          body:JSON.stringify({handle:h}),
+          keepalive:true,
+        }).catch(function(){});
+      }
     }catch(_){}
   })();
 
