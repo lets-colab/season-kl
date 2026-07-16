@@ -374,7 +374,7 @@ footer{
       <h2 class="form-title reveal" data-i18n="form_icons_title">Join the<br>Season Family</h2>
       <p class="form-sub reveal" data-i18n="form_icons_sub">Tell us about yourself. We'll reach out via WhatsApp to walk you through the right tier.</p>
 
-      <form class="form reveal" id="iconForm">
+      <form class="form reveal" id="iconForm" method="post" action="#signup">
         <div class="field">
           <label for="name"><span data-i18n="label_name">Full Name</span><abbr class="req-star" title="required"> *</abbr></label>
           <input type="text" id="name" name="name" placeholder="Your name" data-i18n-ph="ph_name_short" required autocomplete="name" />
@@ -510,19 +510,33 @@ footer{
   const SUPABASE_URL='https://nykukkccynnykbmxznhl.supabase.co';
   const SUPABASE_ANON='sb_publishable_aG3K6RiA-yXMN3QlNLmt0Q_65xhqvPb';
   const LS_KEY='skl_icon_pending';
-  function saveLocal(d){try{localStorage.setItem(LS_KEY,JSON.stringify({...d,savedAt:new Date().toISOString()}));}catch(_){}}
+  function makeSubmissionId(){
+    if(window.crypto&&typeof window.crypto.randomUUID==='function')return window.crypto.randomUUID();
+    return 'icon_'+Date.now()+'_'+Math.random().toString(36).slice(2,14);
+  }
+  function saveLocal(d){
+    const payload={...d,submissionId:d.submissionId||makeSubmissionId(),savedAt:d.savedAt||new Date().toISOString()};
+    try{localStorage.setItem(LS_KEY,JSON.stringify(payload));}catch(_){}
+    return payload;
+  }
   function clearLocal(){try{localStorage.removeItem(LS_KEY);}catch(_){}}
+  async function submitApplication(p){
+    const r=await fetch(`${SUPABASE_URL}/functions/v1/submit-ambassador`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','apikey':SUPABASE_ANON,'Authorization':`Bearer ${SUPABASE_ANON}`},
+      body:JSON.stringify({name:p.name,whatsapp:p.whatsapp,email:p.email||null,instagram:p.instagram,tier:p.tier,message:p.message,submission_id:p.submissionId}),
+      signal:AbortSignal.timeout(20000),
+    });
+    let data={};try{data=await r.json();}catch(_){}
+    return {ok:r.ok&&data.success===true&&data.synced===true,captured:data.captured===true};
+  }
   (async function retryPending(){
     let p;try{p=JSON.parse(localStorage.getItem(LS_KEY)||'null');}catch(_){return;}
     if(!p)return;
+    p=saveLocal(p);
     try{
-      const r=await fetch(`${SUPABASE_URL}/rest/v1/ambassador_signups`,{
-        method:'POST',
-        headers:{'Content-Type':'application/json','apikey':SUPABASE_ANON,'Authorization':`Bearer ${SUPABASE_ANON}`,'Prefer':'return=minimal','Accept-Profile':'public','Content-Profile':'public'},
-        body:JSON.stringify({name:p.name,whatsapp:p.whatsapp,email:p.email||null,instagram_handle:p.instagram,tier_interest:p.tier||'Unspecified',message:p.message,submitted_at:p.savedAt}),
-        signal:AbortSignal.timeout(10000),
-      });
-      if(r.ok||r.status===201)clearLocal();
+      const result=await submitApplication(p);
+      if(result.ok)clearLocal();
     }catch(_){}
   })();
   const form=document.getElementById('iconForm');
@@ -549,21 +563,19 @@ footer{
     const tier=document.getElementById('tier').value;
     const message=document.getElementById('message').value.trim();
     const fullMessage=(language?`[Language: ${language}]\n`:'')+message;
-    saveLocal({name,whatsapp,email,language,instagram,tier,message:fullMessage});
-    let networkOk=false;
+    const pending=saveLocal({name,whatsapp,email,language,instagram,tier,message:fullMessage});
+    let networkOk=false,captured=false;
     try{
-      const res=await fetch(`${SUPABASE_URL}/rest/v1/ambassador_signups`,{
-        method:'POST',
-        headers:{'Content-Type':'application/json','apikey':SUPABASE_ANON,'Authorization':`Bearer ${SUPABASE_ANON}`,'Prefer':'return=minimal','Accept-Profile':'public','Content-Profile':'public'},
-        body:JSON.stringify({name,whatsapp,email,instagram_handle:instagram,tier_interest:tier||'Unspecified',message:fullMessage,submitted_at:new Date().toISOString()}),
-        signal:AbortSignal.timeout(10000),
-      });
-      if(res.ok||res.status===201){networkOk=true;clearLocal();}
+      const result=await submitApplication(pending);
+      networkOk=result.ok;captured=result.captured;
+      if(networkOk)clearLocal();
     }catch(_){}
     if(!networkOk){
-      try{fetch(`${SUPABASE_URL}/rest/v1/lead_safetynet`,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_ANON,'Authorization':`Bearer ${SUPABASE_ANON}`,'Prefer':'return=minimal','Content-Profile':'public'},body:JSON.stringify({form_type:'ambassador',page:location.pathname,user_agent:navigator.userAgent.slice(0,300),payload:{name,whatsapp,email,language,instagram,tier,message:fullMessage}}),keepalive:true}).catch(function(){});}catch(_){}
+      if(!captured){try{fetch(`${SUPABASE_URL}/rest/v1/lead_safetynet`,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_ANON,'Authorization':`Bearer ${SUPABASE_ANON}`,'Prefer':'return=minimal','Content-Profile':'public'},body:JSON.stringify({form_type:'ambassador',page:location.pathname,user_agent:navigator.userAgent.slice(0,300),payload:{name,whatsapp,email,language,instagram,tier,message:fullMessage}}),keepalive:true}).catch(function(){});}catch(_){}}
       submitBtn.disabled=false;submitBtn.textContent='Try Again';
-      errorDiv.textContent='Connection issue — your application is saved and will submit automatically when you reconnect. Or message us on WhatsApp.';
+      errorDiv.textContent=captured
+        ? 'Your application is saved, but destination confirmation is still pending. We will retry automatically — please do not resubmit.'
+        : 'Connection issue — your application is saved and will submit automatically when you reconnect. Or message us on WhatsApp.';
       errorDiv.classList.add('show');
       return;
     }
