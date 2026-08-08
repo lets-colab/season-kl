@@ -47,7 +47,7 @@ July was a month of **strong engineering delivery into a funnel that stopped rec
 2. **The pipeline captures leads perfectly and converts none of them.** 51 passes issued, 51 synced to Notion, **zero redeemed**. The proof chain terminates at "Supabase Synced" and has never once reached "Door Verified."
 3. **The last two weeks of engineering shipped into a dead funnel.** DM attribution, tracking links, and IG Story sharing all landed 15–16 July — after traffic had already stopped. They are built and deployed but have never been exercised at volume.
 
-4. **A 152-account DM campaign ran with the instrumentation switched off.** Outreach *did* happen — 152 accounts contacted between ≈18 July and ≈1 August, yielding two real rate quotes. But it bypassed the tracker built for it five days earlier, so not one DM can be linked to a pass, and 121 of the 152 exist only as display names. See §5.
+4. **A 152-account DM campaign ran with the instrumentation switched off — and produced no passes.** Season KL outreach *did* happen: 152 accounts contacted from the `letsco.lab` Instagram account between ≈18 July and ≈1 August, yielding two real rate quotes. It bypassed the tracker built for it five days earlier, so not one DM can be linked to a pass, and 121 of the 152 exist only as display names. Zero passes were issued in the entire window it ran. See §5.
 
 **The honest headline:** the machine is built and works. Nobody is feeding it, nobody is verifying what comes out the other end — and the one campaign that did run, ran around it.
 
@@ -251,7 +251,7 @@ The Season Scout agent is fully specified in `AGENTS.md`: a 5-factor qualificati
 
 ### 5.2 Proof of work — ✅ 152 accounts contacted
 
-Evidence supplied 8 Aug: 13 screenshots of the `letsco.lab` Instagram inbox, transcribed to [`proof/dms/outreach-log.csv`](proof/dms/outreach-log.csv).
+Evidence supplied 8 Aug: 13 screenshots of the `letsco.lab` Instagram inbox, transcribed to [`proof/dms/outreach-log.csv`](proof/dms/outreach-log.csv). Confirmed by the campaign owner as Season KL outreach sent from that account.
 
 **A substantial campaign was run.** 152 unique accounts were DM'd. This corrects the picture the repository alone gives: the *work* happened, but none of it entered the *system of record*.
 
@@ -280,9 +280,15 @@ Against `STRATEGY.md` §5 KOL rates (Nano RM300–600, Micro RM500–2,000), Ger
 
 ### 5.3 The three findings this evidence produces
 
-**1. The campaign ran after the funnel died.** The DMs date from ≈18 Jul to ≈1 Aug. The traffic collapse was 12 Jul; the last code change 16 Jul; the last pass issued **11 Jul**. So 152 DMs went out during a window in which **zero First Visit Passes were issued**. Whatever this outreach produced, it did not produce a pass.
+**1. The campaign ran after the funnel died, and produced no passes.** Confirmed by the campaign owner: these are Season KL outreach DMs sent from the `letsco.lab` Instagram account.
 
-*Caveat before management reads that as a verdict:* `letsco.lab` is the agency account, and I cannot confirm from screenshots alone that every DM pitched Season KL specifically, or what the message said. What is certain is that no pass was issued in the period.
+The DMs date from ≈18 Jul to ≈1 Aug. The traffic collapse was 12 Jul; the last code change 16 Jul; the last pass issued **11 Jul**. So **152 Season KL outreach DMs went out during a window in which zero First Visit Passes were issued.**
+
+That is now a clean, attributable result rather than an inference: the largest single outreach effort of the period converted to nothing measurable. Whether that is a targeting problem, a message problem, or purely a measurement problem cannot be separated from the data available — which is itself the argument for §5.4.
+
+**1b. The DMs came from the agency account, not the brand.** Recipients saw an invitation from `letsco.lab` — an agency name with no public association with Season KL. The offer being pitched (Season KL's First Visit Pass) carries a different name from the sender.
+
+This is worth testing before the next campaign. `STRATEGY.md` §8 sets a 30–40% reply-rate goal on the assumption of a *personal, recognisable* approach; a cold DM from an unfamiliar agency handle is a materially different proposition, and plausibly explains part of the ~12× shortfall. A/B testing sender identity — brand account versus agency account — is a cheap experiment with a large potential swing, and nothing in the current stack prevents it.
 
 **2. Reply rate is roughly 2.6% against a 30–40% target.** `STRATEGY.md` §8 sets a 30–40% reply-rate goal. Four visible replies out of 152 is **~12× below** it. Treat 2.6% as a **floor, not a final figure** — 140 rows read "Auto-detected outcome…" truncated, and some of those may be replies the tool classified. The true rate is recoverable only by opening the threads.
 
@@ -392,6 +398,7 @@ Framed against the `STRATEGY.md` North Star: **300 pax every Friday & Saturday b
 | 4 | Reinstate or replace primary paid channel | ≥500 sessions/week |
 | 5 | Back-fill the 152 contacted accounts into `prospects.csv` | 152 rows, handles resolved |
 | 5b | Answer `K.M. Arshad` — reply sitting unread ~1 week | Thread cleared |
+| 5d | A/B test sender identity: Season KL account vs `letsco.lab` | Reply rate compared across ≥50 each |
 | 5c | Identify the third-party IG DM automation and register it | Owner + tool named in §4.1 |
 | 6 | Build second channel to ≥25% of traffic | Concentration below 75% |
 
