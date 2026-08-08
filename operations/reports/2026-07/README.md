@@ -37,7 +37,8 @@ July was a month of **strong engineering delivery into a funnel that stopped rec
 | Passes redeemed at door | **0** | ❌ |
 | Engineering PRs merged | 17 | ✅ |
 | Live automations (edge functions) | 10 | ✅ |
-| Outreach prospects logged | **0** | ❌ |
+| Accounts DM'd (`letsco.lab`) | **152** | ✅ |
+| Outreach prospects logged in tracker | **0** | ❌ |
 | Days since last pass issued | **28** (last: 11 July) | ❌ |
 
 **The three findings management needs from this report:**
@@ -46,7 +47,9 @@ July was a month of **strong engineering delivery into a funnel that stopped rec
 2. **The pipeline captures leads perfectly and converts none of them.** 51 passes issued, 51 synced to Notion, **zero redeemed**. The proof chain terminates at "Supabase Synced" and has never once reached "Door Verified."
 3. **The last two weeks of engineering shipped into a dead funnel.** DM attribution, tracking links, and IG Story sharing all landed 15–16 July — after traffic had already stopped. They are built and deployed but have never been exercised at volume.
 
-**The honest headline:** the machine is built and works. Nobody is feeding it, and nobody is verifying what comes out the other end.
+4. **A 152-account DM campaign ran with the instrumentation switched off.** Outreach *did* happen — 152 accounts contacted between ≈18 July and ≈1 August, yielding two real rate quotes. But it bypassed the tracker built for it five days earlier, so not one DM can be linked to a pass, and 121 of the 152 exist only as display names. See §5.
+
+**The honest headline:** the machine is built and works. Nobody is feeding it, nobody is verifying what comes out the other end — and the one campaign that did run, ran around it.
 
 ---
 
@@ -246,25 +249,61 @@ Against the `STRATEGY.md` target of **40–60% redemption**, actual performance 
 
 The Season Scout agent is fully specified in `AGENTS.md`: a 5-factor qualification model (KL relevance, audience fit, content activity, social proof, brand fit), each scored 0–2 for a 0–10 total, with explicit exclusions and a `DO_NOT_CONTACT` list.
 
-### 5.2 Remaining — ❌ the system was built and never used
+### 5.2 Proof of work — ✅ 152 accounts contacted
 
-**`operations/outreach/prospects.csv` contains a header row and zero prospects.**
+Evidence supplied 8 Aug: 13 screenshots of the `letsco.lab` Instagram inbox, transcribed to [`proof/dms/outreach-log.csv`](proof/dms/outreach-log.csv).
 
-The qualification framework, the campaign brief, the tracking function (`dm-tracker-match` v4), and the link-open reporting (`dm-link-open` v2) are all live. No prospect has ever been entered into the system of record.
+**A substantial campaign was run.** 152 unique accounts were DM'd. This corrects the picture the repository alone gives: the *work* happened, but none of it entered the *system of record*.
 
-`dm_match_status` is populated on **13 of 51 passes**, which indicates *some* DM activity occurred outside the tracker — but it is not attributable to named prospects, campaigns, or senders, because the CSV that would attribute it is empty.
+| Measure | Value |
+|---|---|
+| Accounts contacted | **152** |
+| Visible replies | 4 (≥2.6%) |
+| Undeliverable | 1 (`peifern.here` — cannot receive DMs) |
+| Seen, no reply | 2 |
+| Verified-badge accounts | 13 |
+| Self-declared Club Ambassadors / Creators | 4 |
+| Contacted ~3 weeks ago (≈18 Jul) | 61 |
+| Contacted ~2 weeks ago (≈25 Jul) | 82 |
+| Contacted ~1 week ago (≈1 Aug) | 9 |
 
-### 5.3 Proof of work — ⚠️ AWAITING ASSETS
+**Two genuine commercial responses** — the most valuable data in the whole set:
 
-Management asked for DM screenshots as proof of outreach. **These cannot be produced from any system I can access** — Instagram DMs live in the Instagram app and are not connected to this stack.
+| Account | Quote |
+|---|---|
+| `Geraldine Tong` | **150** for 1 photo post + 1 IG story |
+| `Danica.wxb` | **RM800** |
 
-A drop-zone has been prepared at [`proof/dms/`](proof/dms/) with a naming convention and index template. Once screenshots are supplied they slot directly into this report as Appendix D.
+Against `STRATEGY.md` §5 KOL rates (Nano RM300–600, Micro RM500–2,000), Geraldine Tong is *below* nano rate and Danica sits mid-micro. These are the first real market prices this project has obtained.
 
-**Recommendation:** in future, outreach proof should not depend on screenshots at all. Screenshots are unverifiable, un-auditable, and don't scale. The `prospects.csv` + `dm-tracker-match` pipeline already built this month produces *better* proof — timestamped, attributable, queryable — the moment anyone actually uses it.
+**One reply is unanswered.** `K.M. Arshad` replied "??" roughly a week ago and the thread is still marked unread.
 
-### 5.4 Risk
+### 5.3 The three findings this evidence produces
 
-> **The outreach engine is a demonstrated capability with zero demonstrated output.** Presenting it to management as an achievement without noting that it has never been run would be misleading. Presenting it as a *ready asset awaiting activation* is accurate.
+**1. The campaign ran after the funnel died.** The DMs date from ≈18 Jul to ≈1 Aug. The traffic collapse was 12 Jul; the last code change 16 Jul; the last pass issued **11 Jul**. So 152 DMs went out during a window in which **zero First Visit Passes were issued**. Whatever this outreach produced, it did not produce a pass.
+
+*Caveat before management reads that as a verdict:* `letsco.lab` is the agency account, and I cannot confirm from screenshots alone that every DM pitched Season KL specifically, or what the message said. What is certain is that no pass was issued in the period.
+
+**2. Reply rate is roughly 2.6% against a 30–40% target.** `STRATEGY.md` §8 sets a 30–40% reply-rate goal. Four visible replies out of 152 is **~12× below** it. Treat 2.6% as a **floor, not a final figure** — 140 rows read "Auto-detected outcome…" truncated, and some of those may be replies the tool classified. The true rate is recoverable only by opening the threads.
+
+**3. There is an undocumented DM automation in production.** Every row carries a purple **"Lead"** label and most show **"Auto-detected outcome…"**. That is a third-party IG CRM/automation tagging conversations — a live system that appears nowhere in the repo, the edge-function inventory, or `STRATEGY.md`. It should be identified and added to the automation register (§4.1); an untracked tool touching customer conversations is a governance gap, not just a documentation one.
+
+### 5.4 The gap that cost this campaign
+
+The tracking infrastructure was live the entire time. `dm-tracker-match` (v4) and `dm-link-open` (v2) shipped 15–16 July — *before* the bulk of these DMs went out. `prospects.csv` is still empty. `dm_match_status` is set on only **13 of 51 passes**.
+
+So the campaign ran with the instrumentation switched off. The consequences are concrete and mostly irreversible:
+
+- No prospect was scored against the 5-factor model in `AGENTS.md`, so there is no way to tell which *kind* of account responds.
+- No DM can be linked to a pass, so cost-per-acquisition is uncomputable.
+- Names exist only as Instagram **display names** — 121 of 152 have no recoverable handle from the screenshots — so this list cannot be reliably de-duplicated or re-contacted without manual lookup.
+- Two rate quotes were obtained and recorded nowhere but a chat thread.
+
+**What it would have taken:** entering each prospect in `prospects.csv` before messaging, and sending the personalised link (`?src=igdm&h=<handle>`) instead of a plain DM. Both were built and available. The whole chain — prospect → DM → link opened → pass claimed → redeemed — would have populated itself.
+
+### 5.5 Risk
+
+> **The outreach capability is proven; the measurement around it is not.** 152 contacts is real work and should be credited as such. But because it ran outside the tracker, the only durable assets from it are two rate quotes and a list of display names. Running the next campaign the same way would waste the instrumentation a second time — and this time without the excuse that nobody knew it was there.
 
 ---
 
@@ -322,7 +361,9 @@ I have deliberately **not** guessed at their contents. A design-alignment review
 | Email delivery | 🟢 Live | `send-pass-email` v7 |
 | DM attribution | 🟡 Built, unexercised | Shipped after traffic stopped |
 | IG Story share loop | 🟡 Built, unexercised | 1 event, pre-dates feature |
-| Season Scout outreach | 🔴 Built, never run | 0 prospects logged |
+| IG DM outreach (manual) | 🟡 Ran, untracked | 152 contacted, 0 in tracker |
+| Season Scout / prospect tracker | 🔴 Built, never run | 0 prospects logged |
+| Third-party IG DM automation | ⚫ Undocumented | "Auto-detected outcome" — owner unknown |
 | Door check-in / verification | 🔴 Not built | 0 redemptions possible |
 | Traffic acquisition | 🔴 Failed | −98% since 12 Jul |
 | Alerting / monitoring | 🔴 Not built | Collapse undetected 27 days |
@@ -349,7 +390,9 @@ Framed against the `STRATEGY.md` North Star: **300 pax every Friday & Saturday b
 | # | Action | Target |
 |---|---|---|
 | 4 | Reinstate or replace primary paid channel | ≥500 sessions/week |
-| 5 | Activate Season Scout — first 20 P1 prospects | 20 rows in `prospects.csv` |
+| 5 | Back-fill the 152 contacted accounts into `prospects.csv` | 152 rows, handles resolved |
+| 5b | Answer `K.M. Arshad` — reply sitting unread ~1 week | Thread cleared |
+| 5c | Identify the third-party IG DM automation and register it | Owner + tool named in §4.1 |
 | 6 | Build second channel to ≥25% of traffic | Concentration below 75% |
 
 ### Priority 2 — Convert (Weeks 3–6)

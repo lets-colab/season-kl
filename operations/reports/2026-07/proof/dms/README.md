@@ -1,8 +1,17 @@
 # Appendix D — DM Outreach Proof of Work
 
-**Status:** ⚠️ awaiting assets.
+**Status:** ✅ received 8 Aug 2026 — 13 screenshots of the `letsco.lab` Instagram inbox.
 
-Instagram DMs are not connected to this stack and cannot be retrieved by any automation in the system. Screenshots must be supplied manually.
+Transcribed to [`outreach-log.csv`](outreach-log.csv): **152 unique accounts contacted** between ≈18 July and ≈1 August 2026. Analysis in the main report, [§5](../README.md#5-department-outreach--influencer-relations).
+
+**Headline:** 4 visible replies, 2 of them rate quotes (150 for 1 post + 1 story; RM800). 1 undeliverable. 13 verified-badge accounts. 121 of 152 have no recoverable handle — Instagram's inbox shows display names, and most of these are stylised or non-Latin text.
+
+**Two caveats on the transcription:**
+
+1. **Display names ≠ handles.** Where the name wasn't unambiguously a handle, `handle` is marked `UNVERIFIED` per the `AGENTS.md` rule against inventing identifiers. Resolving them means opening each profile.
+2. **The reply count is a floor.** 140 rows show a truncated `"Auto-detected outcome…"` preview. Some may be replies the automation classified. Only opening the threads gives the true rate.
+
+The original screenshots should be added to this directory using the convention below.
 
 ---
 

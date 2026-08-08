@@ -249,7 +249,7 @@
   <div class="tile bad"><div class="v">0</div><div class="l">Redeemed</div><div class="s">never measured</div></div>
   <div class="tile ok"><div class="v">17</div><div class="l">PRs merged</div><div class="s">22 commits</div></div>
   <div class="tile ok"><div class="v">10</div><div class="l">Automations</div><div class="s">141 deploys</div></div>
-  <div class="tile bad"><div class="v">0</div><div class="l">Prospects logged</div><div class="s">system unused</div></div>
+  <div class="tile warn"><div class="v">152</div><div class="l">Accounts DM'd</div><div class="s">0 in the tracker</div></div>
   <div class="tile bad"><div class="v">28</div><div class="l">Days since pass</div><div class="s">last: 11 Jul</div></div>
 </div>
 
@@ -363,12 +363,21 @@
   </ul>
 </div>
 
-<div class="dept bad">
-  <div class="dept-head"><h3>Outreach &amp; Influencer</h3><span class="pill dead">Built, never run</span></div>
-  <p>The Season Scout agent, a 5-factor qualification model, the campaign brief, and two tracking functions are all live and complete. <code>prospects.csv</code> contains a header row and zero prospects. 13 of 51 passes carry a DM match status, evidencing activity the tracker never recorded.</p>
+<div class="dept warn">
+  <div class="dept-head"><h3>Outreach &amp; Influencer</h3><span class="pill idle">Ran, untracked</span></div>
+  <p><b>152 accounts were DM'd</b> from <code>letsco.lab</code> between ≈18 July and ≈1 August — real work, and it should be credited. But it bypassed the tracker that shipped five days earlier, so <code>prospects.csv</code> is still empty and not one DM can be linked to a pass.</p>
   <ul>
-    <li>This is a <b>ready asset awaiting activation</b> — not an achievement, and it should not be presented as one</li>
+    <li><b>Two rate quotes obtained</b> — 150 for 1 post + 1 story, and RM800. The first real market prices this project has</li>
+    <li><b>~2.6% reply rate</b> against a 30–40% target — a floor, since 140 previews are truncated</li>
+    <li><b>Zero passes issued</b> in the entire window the campaign ran</li>
+    <li><b>121 of 152</b> exist only as display names — the list can't be reliably de-duplicated or re-contacted</li>
+    <li><b>One reply unanswered</b> — <code>K.M. Arshad</code>, unread ~1 week</li>
   </ul>
+</div>
+
+<div class="dept bad">
+  <div class="dept-head"><h3>Undocumented automation</h3><span class="pill dead">Unregistered</span></div>
+  <p>Every DM row carries a purple <b>"Lead"</b> label and most read <b>"Auto-detected outcome…"</b> — a third-party Instagram CRM tagging customer conversations. It appears nowhere in the repo, the edge-function inventory, or the strategy document. An untracked tool touching customer conversations is a governance gap, not just a documentation one.</p>
 </div>
 
 <h2>Quality signal worth acting on</h2>
@@ -400,9 +409,9 @@
   <p>Both Claude Design projects require <code>/design-login</code>, which needs an interactive terminal. Unblock via <b>“Send to Claude Code Web”</b> on each project, or commit the exported files to the repo. No review was written — a design-alignment assessment produced without reading the design is exactly the unverifiable claim this report exists to eliminate.</p>
 </div>
 
-<div class="blocked">
-  <h3>DM outreach screenshots</h3>
-  <p>Instagram is not connected to this stack. A drop-zone with naming convention, index schema, and redaction requirements is prepared at <code>proof/dms/</code>.</p>
+<div class="dept ok" style="margin-top:12px">
+  <div class="dept-head"><h3>DM outreach evidence</h3><span class="pill live">Received 8 Aug</span></div>
+  <p>13 inbox screenshots supplied and transcribed to <code>proof/dms/outreach-log.csv</code> — 152 accounts, with status, recency, and reply content per row. Analysed above. Two transcription caveats: display names are not handles (marked <code>UNVERIFIED</code> rather than guessed), and the reply count is a floor because most previews are truncated.</p>
 </div>
 
 <h2>Roadmap</h2>
@@ -453,7 +462,7 @@
       <tr><td class="num">3</td><td>Passes issued</td><td>Funnel throughput</td><td class="num">35</td></tr>
       <tr><td class="num">4</td><td>Passes redeemed</td><td>The only true revenue proxy</td><td class="num r">n/a</td></tr>
       <tr><td class="num">5</td><td>Redemption rate</td><td>Target 40–60%</td><td class="num r">n/a</td></tr>
-      <tr><td class="num">6</td><td>Prospects contacted</td><td>Outreach activity</td><td class="num r">0</td></tr>
+      <tr><td class="num">6</td><td>Prospects contacted</td><td>Outreach activity</td><td class="num y">152<span style="color:var(--faint)"> / 0 tracked</span></td></tr>
     </tbody>
   </table>
 </div>
@@ -462,7 +471,7 @@
 <h2>Assessment</h2>
 <div class="dept warn">
   <p style="font-size:.96rem"><b>What went right:</b> the engineering is genuinely good. 17 PRs, a 100% sync rate across 70 records, 10 live automations, a working safety-net, a multilingual site, and a deploy pipeline hardened against a hostile org policy. When the data layer says 51 passes, there are 51 passes.</p>
-  <p style="font-size:.96rem"><b>What went wrong:</b> the business built a high-quality machine and stopped feeding it. Traffic died on 12 July and nobody noticed for weeks. The outreach system was completed and never used once.</p>
+  <p style="font-size:.96rem"><b>What went wrong:</b> the business built a high-quality machine and stopped feeding it. Traffic died on 12 July and nobody noticed for weeks. And when a real campaign finally ran — 152 DMs across two weeks — it went around the tracker built for it five days earlier, so the only durable assets from it are two rate quotes and a list of display names.</p>
   <p style="font-size:.96rem"><b>The synthesis:</b> July's engineering was spent on features that only pay off <i>downstream</i> of traffic — attribution, sharing, tracking — while the <i>upstream</i> dependency failed silently and the <i>downstream</i> proof was never built. The middle of the funnel is excellent. Both ends are open.</p>
   <p style="font-size:.96rem;color:var(--gold)"><b>What credibility requires us to say:</b> we cannot currently prove a single guest walked through the door because of this system. Everything else here is real, verified, and reproducible — but that one gap makes all of it provisional. Closing it is worth more than any other item on the roadmap.</p>
 </div>
