@@ -1,0 +1,474 @@
+<title>Season KL — July 2026 Monthly Report</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+  :root{
+    /* Committed dark palette — Season KL brand identity, inherited from report.html */
+    --bg:#0A0A18;
+    --surface:#10101F;
+    --surface-2:#161628;
+    --text:#F0F4FA;
+    --muted:rgba(240,244,250,.58);
+    --faint:rgba(240,244,250,.34);
+    --border:rgba(255,255,255,.10);
+    --border-lit:rgba(255,255,255,.18);
+    --neon:#00EAFF;
+    --violet:#8855EE;
+    --gold:#E2BF7A;
+    --good:#39D98A;
+    --bad:#FF5577;
+
+    --display:'Bodoni MT',Didot,'Didot LT STD','Hoefler Text',Garamond,'Times New Roman',serif;
+    --body:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,'SF Mono',SFMono-Regular,'Cascadia Mono',Menlo,Consolas,monospace;
+
+    --maxw:1000px;
+  }
+
+  html{-webkit-text-size-adjust:100%}
+
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--body);
+    font-weight:350;
+    line-height:1.6;
+    padding:clamp(20px,4vw,44px) clamp(16px,4vw,28px) 96px;
+    max-width:var(--maxw);
+    margin:0 auto;
+    font-size:15px;
+  }
+
+  /* ---------- masthead ---------- */
+  .masthead{border-bottom:1px solid var(--border);padding-bottom:26px;margin-bottom:34px}
+  .eyebrow{
+    font-family:var(--mono);font-size:.62rem;letter-spacing:.24em;text-transform:uppercase;
+    color:var(--neon);margin-bottom:14px;
+  }
+  h1{
+    font-family:var(--display);font-weight:400;
+    font-size:clamp(2.1rem,6vw,3.4rem);line-height:1.05;letter-spacing:.01em;
+    text-wrap:balance;margin-bottom:12px;
+  }
+  .dek{color:var(--muted);font-size:1rem;max-width:60ch;text-wrap:balance}
+  .meta{
+    display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:20px;
+    font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--faint);
+  }
+  .meta b{color:var(--muted);font-weight:400}
+
+  /* ---------- verdict ---------- */
+  .verdict{
+    background:var(--surface);border:1px solid var(--border);
+    border-left:3px solid var(--gold);
+    border-radius:4px;padding:22px 24px;margin-bottom:38px;
+  }
+  .verdict p{font-size:1.06rem;line-height:1.55;text-wrap:balance}
+  .verdict strong{color:var(--gold);font-weight:500}
+
+  /* ---------- section headings ---------- */
+  h2{
+    font-family:var(--mono);font-size:.64rem;letter-spacing:.26em;text-transform:uppercase;
+    color:var(--faint);margin:52px 0 16px;
+    display:flex;align-items:center;gap:14px;
+  }
+  h2::after{content:'';flex:1;height:1px;background:var(--border)}
+  h3{
+    font-family:var(--display);font-weight:400;font-size:1.42rem;
+    margin-bottom:8px;letter-spacing:.01em;
+  }
+
+  /* ---------- KPI tiles ---------- */
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:10px}
+  .tile{
+    background:var(--surface);border:1px solid var(--border);border-radius:4px;
+    padding:16px 16px 14px;position:relative;overflow:hidden;
+  }
+  .tile::before{content:'';position:absolute;inset:0 auto 0 0;width:2px;background:var(--border-lit)}
+  .tile.ok::before{background:var(--good)}
+  .tile.warn::before{background:var(--gold)}
+  .tile.bad::before{background:var(--bad)}
+  .tile .v{
+    font-family:var(--mono);font-size:1.72rem;line-height:1.05;
+    font-variant-numeric:tabular-nums;letter-spacing:-.02em;
+  }
+  .tile.ok .v{color:var(--good)}
+  .tile.bad .v{color:var(--bad)}
+  .tile .l{
+    font-size:.68rem;letter-spacing:.09em;text-transform:uppercase;
+    color:var(--muted);margin-top:7px;
+  }
+  .tile .s{font-family:var(--mono);font-size:.63rem;color:var(--faint);margin-top:3px}
+
+  /* ---------- chart ---------- */
+  .chart-wrap{
+    background:var(--surface);border:1px solid var(--border);border-radius:4px;
+    padding:26px 24px 18px;margin-top:6px;
+  }
+  .chart-title{font-size:.92rem;color:var(--muted);margin-bottom:2px}
+  .chart-note{font-family:var(--mono);font-size:.63rem;color:var(--faint);margin-bottom:26px}
+  .chart{
+    display:grid;grid-template-columns:repeat(6,1fr);gap:clamp(6px,2vw,18px);
+    align-items:end;height:230px;
+  }
+  .bar-col{display:flex;flex-direction:column;justify-content:flex-end;height:100%;position:relative}
+  .bar-val{
+    font-family:var(--mono);font-size:.72rem;font-variant-numeric:tabular-nums;
+    text-align:center;margin-bottom:7px;color:var(--muted);
+  }
+  .bar{
+    border-radius:2px 2px 0 0;min-height:2px;
+    background:linear-gradient(180deg,var(--neon),rgba(0,234,255,.28));
+  }
+  .bar.dead{background:linear-gradient(180deg,var(--bad),rgba(255,85,119,.3))}
+  .bar-col.collapsed .bar-val{color:var(--bad)}
+  .axis{
+    display:grid;grid-template-columns:repeat(6,1fr);gap:clamp(6px,2vw,18px);
+    margin-top:12px;padding-top:12px;border-top:1px solid var(--border);
+  }
+  .axis span{
+    font-family:var(--mono);font-size:.6rem;letter-spacing:.06em;
+    text-align:center;color:var(--faint);text-transform:uppercase;
+  }
+  .cliff{
+    display:flex;align-items:center;gap:10px;margin-top:20px;
+    font-family:var(--mono);font-size:.66rem;color:var(--bad);letter-spacing:.06em;
+  }
+  .cliff::before{content:'';width:22px;height:1px;background:var(--bad);flex:none}
+
+  /* ---------- tables ---------- */
+  .scroll{overflow-x:auto;margin-top:4px;border:1px solid var(--border);border-radius:4px}
+  table{border-collapse:collapse;width:100%;font-size:.84rem;min-width:440px}
+  th{
+    font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--faint);text-align:left;font-weight:400;
+    padding:12px 14px;background:var(--surface-2);border-bottom:1px solid var(--border);
+    white-space:nowrap;
+  }
+  td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--muted)}
+  tr:last-child td{border-bottom:none}
+  td:first-child{color:var(--text)}
+  .num{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+  .g{color:var(--good)}
+  .r{color:var(--bad)}
+  .y{color:var(--gold)}
+
+  /* ---------- status pills ---------- */
+  .pill{
+    display:inline-block;font-family:var(--mono);font-size:.58rem;letter-spacing:.1em;
+    text-transform:uppercase;padding:3px 8px;border-radius:2px;white-space:nowrap;
+  }
+  .pill.live{background:rgba(57,217,138,.14);color:var(--good)}
+  .pill.idle{background:rgba(226,191,122,.14);color:var(--gold)}
+  .pill.dead{background:rgba(255,85,119,.14);color:var(--bad)}
+
+  /* ---------- department cards ---------- */
+  .dept{
+    background:var(--surface);border:1px solid var(--border);border-radius:4px;
+    padding:22px 24px;margin-bottom:12px;border-left:3px solid var(--border-lit);
+  }
+  .dept.ok{border-left-color:var(--good)}
+  .dept.warn{border-left-color:var(--gold)}
+  .dept.bad{border-left-color:var(--bad)}
+  .dept-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
+  .dept p{color:var(--muted);font-size:.9rem;margin-top:10px;max-width:68ch}
+  .dept ul{margin:12px 0 0 18px;color:var(--muted);font-size:.88rem}
+  .dept li{margin-bottom:5px}
+  .dept li::marker{color:var(--faint)}
+
+  /* ---------- findings ---------- */
+  .finding{
+    display:grid;grid-template-columns:auto 1fr;gap:18px;
+    padding:20px 0;border-bottom:1px solid var(--border);
+  }
+  .finding:last-child{border-bottom:none}
+  .fnum{
+    font-family:var(--display);font-size:2rem;line-height:1;color:var(--neon);
+    font-variant-numeric:tabular-nums;
+  }
+  .finding p{color:var(--muted);font-size:.92rem;margin-top:6px;max-width:64ch}
+
+  /* ---------- blocked ---------- */
+  .blocked{
+    background:rgba(255,85,119,.05);border:1px solid rgba(255,85,119,.22);
+    border-radius:4px;padding:20px 22px;margin-bottom:12px;
+  }
+  .blocked h3{color:var(--bad);font-size:1.1rem}
+  .blocked p{color:var(--muted);font-size:.88rem;margin-top:8px;max-width:66ch}
+  .blocked code{
+    font-family:var(--mono);font-size:.8em;background:rgba(255,255,255,.07);
+    padding:1px 5px;border-radius:2px;color:var(--text);
+  }
+
+  /* ---------- roadmap ---------- */
+  .phase{margin-bottom:26px}
+  .phase-label{
+    font-family:var(--mono);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--violet);margin-bottom:10px;
+  }
+
+  footer{
+    margin-top:64px;padding-top:24px;border-top:1px solid var(--border);
+    font-family:var(--mono);font-size:.64rem;color:var(--faint);line-height:1.9;
+  }
+  footer b{color:var(--muted);font-weight:400}
+
+  @media (max-width:560px){
+    .chart{height:180px}
+    .finding{grid-template-columns:1fr;gap:6px}
+    .fnum{font-size:1.5rem}
+  }
+  @media (prefers-reduced-motion:no-preference){
+    .bar{animation:rise .7s cubic-bezier(.22,1,.36,1) backwards}
+    @keyframes rise{from{transform:scaleY(0);transform-origin:bottom}}
+  }
+</style>
+
+<header class="masthead">
+  <div class="eyebrow">Monthly Report · Confidential</div>
+  <h1>July 2026</h1>
+  <p class="dek">A verified account of what was built, what is running, what stopped, and what it will take to restart it.</p>
+  <div class="meta">
+    <span>Period <b>1–31 Jul 2026</b></span>
+    <span>Issued <b>8 Aug 2026</b></span>
+    <span>Systems <b>Web · Supabase · Notion · Outreach</b></span>
+    <span>Evidence <b>Reproducible — Appendix B</b></span>
+  </div>
+</header>
+
+<div class="verdict">
+  <p>July was a month of <strong>strong engineering delivery into a funnel that stopped receiving traffic on 12 July.</strong> The machine is built and it works. Nobody is feeding it, and nobody is measuring what comes out.</p>
+</div>
+
+<h2>The month in numbers</h2>
+<div class="tiles">
+  <div class="tile ok"><div class="v">2,093</div><div class="l">Sessions</div><div class="s">July total</div></div>
+  <div class="tile ok"><div class="v">35</div><div class="l">Passes issued</div><div class="s">51 all-time</div></div>
+  <div class="tile ok"><div class="v">100%</div><div class="l">Sync success</div><div class="s">70 / 70 records</div></div>
+  <div class="tile bad"><div class="v">0</div><div class="l">Redeemed</div><div class="s">never measured</div></div>
+  <div class="tile ok"><div class="v">17</div><div class="l">PRs merged</div><div class="s">22 commits</div></div>
+  <div class="tile ok"><div class="v">10</div><div class="l">Automations</div><div class="s">141 deploys</div></div>
+  <div class="tile bad"><div class="v">0</div><div class="l">Prospects logged</div><div class="s">system unused</div></div>
+  <div class="tile bad"><div class="v">28</div><div class="l">Days since pass</div><div class="s">last: 11 Jul</div></div>
+</div>
+
+<h2>The cliff</h2>
+<div class="chart-wrap">
+  <div class="chart-title">Weekly sessions</div>
+  <div class="chart-note">29 Jun – 3 Aug 2026 · source: site_events</div>
+
+  <div class="chart">
+    <div class="bar-col">
+      <div class="bar-val">1,047</div>
+      <div class="bar" style="height:91.8%"></div>
+    </div>
+    <div class="bar-col">
+      <div class="bar-val">1,141</div>
+      <div class="bar" style="height:100%"></div>
+    </div>
+    <div class="bar-col collapsed">
+      <div class="bar-val">21</div>
+      <div class="bar dead" style="height:1.8%"></div>
+    </div>
+    <div class="bar-col collapsed">
+      <div class="bar-val">18</div>
+      <div class="bar dead" style="height:1.6%"></div>
+    </div>
+    <div class="bar-col collapsed">
+      <div class="bar-val">3</div>
+      <div class="bar dead" style="height:.3%"></div>
+    </div>
+    <div class="bar-col collapsed">
+      <div class="bar-val">13</div>
+      <div class="bar dead" style="height:1.1%"></div>
+    </div>
+  </div>
+  <div class="axis">
+    <span>29 Jun</span><span>6 Jul</span><span>13 Jul</span>
+    <span>20 Jul</span><span>27 Jul</span><span>3 Aug</span>
+  </div>
+  <div class="cliff">−98% between 6 Jul and 13 Jul · not recovered in four weeks</div>
+</div>
+
+<h2>Three findings</h2>
+
+<div class="finding">
+  <div class="fnum">1</div>
+  <div>
+    <h3>Traffic collapsed — and it isn't a bug</h3>
+    <p>Facebook supplied <b>90.2%</b> of all pre-collapse traffic (1,986 of 2,202 sessions) and retained <b>0.2%</b> after. Three checks rule out a technical cause: tracking still records events daily, non-Facebook sources degraded gracefully rather than zeroing, and the break predates the next code change by three days. This is a distribution failure on a single unowned channel.</p>
+  </div>
+</div>
+
+<div class="finding">
+  <div class="fnum">2</div>
+  <div>
+    <h3>The pipeline captures perfectly and converts nothing</h3>
+    <p>51 passes issued, 51 synced to Notion, <b>zero redeemed</b>. The proof chain terminates at “Supabase Synced” and has never once reached “Door Verified,” because the door check-in front-end was never built. The business cannot currently prove that a single online lead became a paying guest.</p>
+  </div>
+</div>
+
+<div class="finding">
+  <div class="fnum">3</div>
+  <div>
+    <h3>The last two weeks shipped into a dead funnel</h3>
+    <p>DM attribution, tracking links, and one-tap IG Story sharing all landed 15–16 July — after traffic had stopped. <code>ShareClick</code> and <code>ShareCompleted</code> have fired once each, on 6 July, before the feature that generates them existed. These are built, deployed, and entirely unproven.</p>
+  </div>
+</div>
+
+<h2>Where the traffic went</h2>
+<div class="scroll">
+  <table>
+    <thead><tr>
+      <th>Source</th><th class="num">Before 13 Jul</th><th class="num">After</th><th class="num">Retained</th>
+    </tr></thead>
+    <tbody>
+      <tr><td>Facebook</td><td class="num">1,986</td><td class="num r">4</td><td class="num r">0.2%</td></tr>
+      <tr><td>Direct / none</td><td class="num">139</td><td class="num">38</td><td class="num y">27%</td></tr>
+      <tr><td>Instagram</td><td class="num">49</td><td class="num">6</td><td class="num y">12%</td></tr>
+      <tr><td>Internal</td><td class="num">21</td><td class="num">11</td><td class="num g">52%</td></tr>
+      <tr><td>Other</td><td class="num">6</td><td class="num">6</td><td class="num g">100%</td></tr>
+      <tr><td>Google</td><td class="num">1</td><td class="num">0</td><td class="num r">0%</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h2>System status</h2>
+
+<div class="dept ok">
+  <div class="dept-head"><h3>Data &amp; CRM Operations</h3><span class="pill live">Operational</span></div>
+  <p>The strongest asset in the business. 70 of 70 records reached Notion across six tables, with zero losses. The <code>lead_safetynet</code> table caught 2 submissions that failed the primary path — the fallback works. 10 edge functions live, 141 cumulative deployments.</p>
+  <ul>
+    <li><b>Open:</b> 2 unresolved <code>trooper_signups</code> sync errors</li>
+    <li><b>Defect:</b> <code>lead_source</code> is free text — <code>kols</code> and <code>KOL / Creator</code> both exist</li>
+  </ul>
+</div>
+
+<div class="dept ok">
+  <div class="dept-head"><h3>Product &amp; Engineering</h3><span class="pill live">Operational</span></div>
+  <p>17 PRs merged. Six of them fought a single adversary — an org policy blocking unpinned GitHub Actions — and won with a runtime mode-detecting deploy pipeline. Eight pages live in four languages.</p>
+  <ul>
+    <li><b>Missing:</b> door QR check-in — the direct cause of zero verified attendance</li>
+    <li><b>Missing:</b> any alerting; a 98% traffic drop went unnoticed for 27 days</li>
+  </ul>
+</div>
+
+<div class="dept bad">
+  <div class="dept-head"><h3>Growth &amp; Acquisition</h3><span class="pill dead">Failed</span></div>
+  <p>One channel carried 90% of traffic and its loss took the business to near-zero in 48 hours. No owned-audience fallback exists — no email list, no WhatsApp broadcast. Google contributed one session all month.</p>
+  <ul>
+    <li><b>Nobody has opened Facebook Ads Manager.</b> The diagnosis is inferential until someone does</li>
+  </ul>
+</div>
+
+<div class="dept bad">
+  <div class="dept-head"><h3>Outreach &amp; Influencer</h3><span class="pill dead">Built, never run</span></div>
+  <p>The Season Scout agent, a 5-factor qualification model, the campaign brief, and two tracking functions are all live and complete. <code>prospects.csv</code> contains a header row and zero prospects. 13 of 51 passes carry a DM match status, evidencing activity the tracker never recorded.</p>
+  <ul>
+    <li>This is a <b>ready asset awaiting activation</b> — not an achievement, and it should not be presented as one</li>
+  </ul>
+</div>
+
+<h2>Quality signal worth acting on</h2>
+<div class="scroll">
+  <table>
+    <thead><tr>
+      <th>Lead source</th><th class="num">Passes</th><th class="num">With intent</th><th class="num">With email</th><th class="num">Capture rate</th>
+    </tr></thead>
+    <tbody>
+      <tr><td>Instagram</td><td class="num">25</td><td class="num">16</td><td class="num">6</td><td class="num y">24%</td></tr>
+      <tr><td>Friend / Word of mouth</td><td class="num">20</td><td class="num">17</td><td class="num">12</td><td class="num g">60%</td></tr>
+      <tr><td>KOL / Creator</td><td class="num">2</td><td class="num">2</td><td class="num">1</td><td class="num">50%</td></tr>
+      <tr><td>Ambassador</td><td class="num">2</td><td class="num">2</td><td class="num">1</td><td class="num">50%</td></tr>
+      <tr><td>TikTok</td><td class="num">1</td><td class="num">1</td><td class="num">0</td><td class="num r">0%</td></tr>
+    </tbody>
+  </table>
+</div>
+<p style="color:var(--muted);font-size:.9rem;margin-top:14px;max-width:66ch">Word-of-mouth produced leads with <b>2.5× the contactability</b> of Instagram — the highest-quality leads in the system, from the channel costing nothing. Meanwhile 90% of traffic was bought from Facebook. The cheapest channel produced the best leads and received the least investment.</p>
+
+<h2>Blocked — requires access</h2>
+
+<div class="blocked">
+  <h3>Notion workspace audit</h3>
+  <p>The connector requires an interactive OAuth login unavailable in this environment. No page could be read, inventoried, deduplicated, or described. A complete executable specification — inventory schema, duplicate rules, decision tree, description template, and the automation write-map — is delivered in <code>NOTION-AUDIT-SPEC.md</code>, ready for anyone holding access.</p>
+</div>
+
+<div class="blocked">
+  <h3>Design system reviews (×2)</h3>
+  <p>Both Claude Design projects require <code>/design-login</code>, which needs an interactive terminal. Unblock via <b>“Send to Claude Code Web”</b> on each project, or commit the exported files to the repo. No review was written — a design-alignment assessment produced without reading the design is exactly the unverifiable claim this report exists to eliminate.</p>
+</div>
+
+<div class="blocked">
+  <h3>DM outreach screenshots</h3>
+  <p>Instagram is not connected to this stack. A drop-zone with naming convention, index schema, and redaction requirements is prepared at <code>proof/dms/</code>.</p>
+</div>
+
+<h2>Roadmap</h2>
+
+<div class="phase">
+  <div class="phase-label">Priority 0 · Restore measurement · Week 1</div>
+  <div class="scroll"><table>
+    <thead><tr><th>Action</th><th>Success criterion</th></tr></thead>
+    <tbody>
+      <tr><td>Build door QR check-in</td><td>First non-zero <code>redemption_status</code></td></tr>
+      <tr><td>Audit Facebook ad account</td><td>Root cause documented</td></tr>
+      <tr><td>Add funnel alerting</td><td>Alert fires on test threshold</td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+<div class="phase">
+  <div class="phase-label">Priority 1 · Restore traffic · Weeks 1–3</div>
+  <div class="scroll"><table>
+    <thead><tr><th>Action</th><th>Target</th></tr></thead>
+    <tbody>
+      <tr><td>Reinstate or replace primary channel</td><td>≥500 sessions/week</td></tr>
+      <tr><td>Activate Season Scout — first 20 P1 prospects</td><td>20 rows in <code>prospects.csv</code></td></tr>
+      <tr><td>Build a second channel</td><td>Concentration below 75%</td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+<div class="phase">
+  <div class="phase-label">Priority 2 · Convert · Weeks 3–6</div>
+  <div class="scroll"><table>
+    <thead><tr><th>Action</th><th>Target</th></tr></thead>
+    <tbody>
+      <tr><td>Double down on word-of-mouth referral loop</td><td>≥30% of passes</td></tr>
+      <tr><td>Activate Pass-It-On viral loop (already built)</td><td>≥10 <code>ShareCompleted</code>/week</td></tr>
+      <tr><td>Constrain <code>lead_source</code>; clear sync errors</td><td>0 defects</td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+<h2>The six KPIs to track weekly</h2>
+<div class="scroll">
+  <table>
+    <thead><tr><th class="num">#</th><th>KPI</th><th>Why it matters</th><th class="num">Now</th></tr></thead>
+    <tbody>
+      <tr><td class="num">1</td><td>Sessions</td><td>Leading indicator of distribution health</td><td class="num">2,093</td></tr>
+      <tr><td class="num">2</td><td>Channel concentration</td><td>Single-point-of-failure risk</td><td class="num r">90.2%</td></tr>
+      <tr><td class="num">3</td><td>Passes issued</td><td>Funnel throughput</td><td class="num">35</td></tr>
+      <tr><td class="num">4</td><td>Passes redeemed</td><td>The only true revenue proxy</td><td class="num r">n/a</td></tr>
+      <tr><td class="num">5</td><td>Redemption rate</td><td>Target 40–60%</td><td class="num r">n/a</td></tr>
+      <tr><td class="num">6</td><td>Prospects contacted</td><td>Outreach activity</td><td class="num r">0</td></tr>
+    </tbody>
+  </table>
+</div>
+<p style="color:var(--muted);font-size:.9rem;margin-top:14px;max-width:66ch">KPIs 4 and 5 read <b>n/a</b>, not zero. Nobody has ever checked — that is a different problem from guests failing to convert, with a different fix. Making them measurable is the single highest-value engineering task available.</p>
+
+<h2>Assessment</h2>
+<div class="dept warn">
+  <p style="font-size:.96rem"><b>What went right:</b> the engineering is genuinely good. 17 PRs, a 100% sync rate across 70 records, 10 live automations, a working safety-net, a multilingual site, and a deploy pipeline hardened against a hostile org policy. When the data layer says 51 passes, there are 51 passes.</p>
+  <p style="font-size:.96rem"><b>What went wrong:</b> the business built a high-quality machine and stopped feeding it. Traffic died on 12 July and nobody noticed for weeks. The outreach system was completed and never used once.</p>
+  <p style="font-size:.96rem"><b>The synthesis:</b> July's engineering was spent on features that only pay off <i>downstream</i> of traffic — attribution, sharing, tracking — while the <i>upstream</i> dependency failed silently and the <i>downstream</i> proof was never built. The middle of the funnel is excellent. Both ends are open.</p>
+  <p style="font-size:.96rem;color:var(--gold)"><b>What credibility requires us to say:</b> we cannot currently prove a single guest walked through the door because of this system. Everything else here is real, verified, and reproducible — but that one gap makes all of it provisional. Closing it is worth more than any other item on the roadmap.</p>
+</div>
+
+<footer>
+  <b>Evidence standard</b> — every figure traces to a reproducible SQL query or commit SHA. See Appendix B.<br>
+  <b>Appendices</b> — A Version Evolution Log · B Evidence Index · C Notion Audit Spec · D DM Proof · E ChatGPT Handoff<br>
+  <b>Limitations</b> — sessions are self-reported by first-party tracking; the Facebook diagnosis is inferential pending ad-account access; Notion state is unverified; attendance has never been instrumented.<br>
+  <b>Season KL</b> · Prepared 8 August 2026
+</footer>
