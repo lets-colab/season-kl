@@ -155,6 +155,7 @@ Site live at `lets-colab.github.io/season-kl` across 8 pages: `index`, `explorer
 - ❌ Door QR check-in front-end — specified in `STRATEGY.md`, never built. This is the direct cause of zero verified attendance.
 - ❌ No automated test or monitoring on the funnel; the traffic collapse was found by manual query 27 days later.
 - ⚠️ CyberTrooper repo effectively dormant — 4 commits in July, all CodeQL/CI housekeeping.
+- ⚠️ **Orphaned Netlify integration.** A Netlify project (`seasonkl`) is connected to the repository and fails its deploy preview on every commit. It has no configuration in the repo — no `netlify.toml`, `_redirects`, `_headers`, or `package.json` — and produced zero checks on PRs #35/#36 (16 Jul), so it was connected after that date and has never deployed successfully. Production is served by GitHub Pages via `gh-pages.yml` and is unaffected. **Impact:** every PR now shows a red check that means nothing, which trains reviewers to ignore CI — the same blindness that let the traffic collapse run for 27 days. Either configure it or disconnect it; leaving it red is the one option with an ongoing cost.
 
 ### 3.4 Risk
 
@@ -325,6 +326,7 @@ I have deliberately **not** guessed at their contents. A design-alignment review
 | Door check-in / verification | 🔴 Not built | 0 redemptions possible |
 | Traffic acquisition | 🔴 Failed | −98% since 12 Jul |
 | Alerting / monitoring | 🔴 Not built | Collapse undetected 27 days |
+| Netlify deploy preview | 🔴 Broken | Orphaned integration, red on every PR |
 
 ---
 
