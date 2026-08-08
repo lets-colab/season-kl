@@ -245,7 +245,7 @@
 <div class="tiles">
   <div class="tile ok"><div class="v">2,093</div><div class="l">Sessions</div><div class="s">July total</div></div>
   <div class="tile ok"><div class="v">35</div><div class="l">Passes issued</div><div class="s">51 all-time</div></div>
-  <div class="tile ok"><div class="v">100%</div><div class="l">Sync success</div><div class="s">70 / 70 records</div></div>
+  <div class="tile bad"><div class="v">30</div><div class="l">Duplicate rows</div><div class="s">+6 never arrived</div></div>
   <div class="tile bad"><div class="v">0</div><div class="l">Redeemed</div><div class="s">never measured</div></div>
   <div class="tile ok"><div class="v">17</div><div class="l">PRs merged</div><div class="s">22 commits</div></div>
   <div class="tile ok"><div class="v">10</div><div class="l">Automations</div><div class="s">141 deploys</div></div>
@@ -336,13 +336,24 @@
 
 <h2>System status</h2>
 
-<div class="dept ok">
-  <div class="dept-head"><h3>Data &amp; CRM Operations</h3><span class="pill live">Operational</span></div>
-  <p>The strongest asset in the business. 70 of 70 records reached Notion across six tables, with zero losses. The <code>lead_safetynet</code> table caught 2 submissions that failed the primary path — the fallback works. 10 edge functions live, 141 cumulative deployments.</p>
+<div class="dept bad">
+  <div class="dept-head"><h3>Data &amp; CRM Operations</h3><span class="pill dead">Sync defective</span></div>
+  <p><b>Revised 8 Aug after Notion access.</b> This section previously read "70 of 70 records synced — the strongest asset in the business." That came from Supabase's own <code>sync_status</code>, which records that a write was <i>attempted</i>. Reconciled against what actually landed in Notion:</p>
   <ul>
-    <li><b>Open:</b> 2 unresolved <code>trooper_signups</code> sync errors</li>
-    <li><b>Defect:</b> <code>lead_source</code> is free text — <code>kols</code> and <code>KOL / Creator</code> both exist</li>
+    <li><b>Supabase holds 51 passes. Notion holds 77 rows — but only 45 distinct pass IDs</b></li>
+    <li><b>30 duplicate rows</b> — the same pass written repeatedly</li>
+    <li><b>6 passes never arrived</b> — marked synced, absent from Notion</li>
+    <li><b>Probable cause:</b> <code>notion-retry</code> (v20) retrying without an idempotency key. 20 deployments is the signature of a function patched repeatedly without the root cause being found</li>
+    <li><b>Fault is isolated:</b> the Guest CRM holds exactly 45 rows, matching the distinct count. The CRM is clean</li>
+    <li><b>Still sound:</b> <code>lead_safetynet</code> caught 2 submissions that failed the primary path. Intake works — <i>reconciliation</i> was what never existed</li>
   </ul>
+</div>
+
+<div class="dept warn">
+  <div class="dept-head"><h3>Door check-in — correction</h3><span class="pill idle">Built, never opened</span></div>
+  <p>The report said this was "never built." Half right. There's no website QR flow, but Notion has a <b>fully-built door check-in database and a working form</b> — required fields for guest, night, source, group size, verification method, proof status, owner; a QR / Pass Code option; three views; relations to passes, CRM, events and weekly reports.</p>
+  <p>Its contents: <b>one row, created 1 July, every field null.</b></p>
+  <p>This changes the top recommendation. Building a QR flow is no longer the fastest route to a redemption number — <b>opening the form that already exists is.</b> Staff could record verified attendance this Friday with zero engineering. The blocker is an operations assignment, not a build task.</p>
 </div>
 
 <div class="dept ok">
@@ -400,9 +411,11 @@
 
 <h2>Blocked — requires access</h2>
 
-<div class="blocked">
-  <h3>Notion workspace audit</h3>
-  <p>The connector requires an interactive OAuth login unavailable in this environment. No page could be read, inventoried, deduplicated, or described. A complete executable specification — inventory schema, duplicate rules, decision tree, description template, and the automation write-map — is delivered in <code>NOTION-AUDIT-SPEC.md</code>, ready for anyone holding access.</p>
+<div class="dept ok" style="margin-top:12px">
+  <div class="dept-head"><h3>Notion audit</h3><span class="pill live">Done — read-only</span></div>
+  <p>Connector authorised 8 Aug; a read-only inventory ran and <b>nothing was created, changed, moved, or archived.</b> It produced the two corrections above and confirmed all three <code>STRATEGY.md</code> database IDs resolve with no drift.</p>
+  <p><b>Not yet cleaned, deliberately.</b> Archiving requires cross-checking each candidate against the automation write-map, and the sync is <i>actively</i> misbehaving. Cleaning up mid-bug would mix two problems and make both harder to diagnose. Fix the sync, then clean.</p>
+  <p><b>Candidates identified, untouched:</b> three overlapping dashboards, a page/database name collision, eight overlapping audit pages, one naming inconsistency, and a page whose title is an unresolved bug report. The client hub sits <b>nine ancestor levels deep</b>, four with blank titles.</p>
 </div>
 
 <div class="blocked">
@@ -422,9 +435,11 @@
   <div class="scroll"><table>
     <thead><tr><th>Action</th><th>Success criterion</th></tr></thead>
     <tbody>
-      <tr><td>Build door QR check-in</td><td>First non-zero <code>redemption_status</code></td></tr>
+      <tr><td><b>Assign the existing Notion door form to a named person for Friday</b></td><td>First real attendance record — zero engineering</td></tr>
+      <tr><td>Add an idempotency key to <code>notion-retry</code></td><td>Duplicate count stops growing</td></tr>
       <tr><td>Audit Facebook ad account</td><td>Root cause documented</td></tr>
       <tr><td>Add funnel alerting</td><td>Alert fires on test threshold</td></tr>
+      <tr><td>Reconcile 6 missing passes; de-dupe 30 rows (after the fix)</td><td>Notion distinct = Supabase count</td></tr>
     </tbody>
   </table></div>
 </div>
@@ -471,7 +486,8 @@
 
 <h2>Assessment</h2>
 <div class="dept warn">
-  <p style="font-size:.96rem"><b>What went right:</b> the engineering is genuinely good. 17 PRs, a 100% sync rate across 70 records, 10 live automations, a working safety-net, a multilingual site, and a deploy pipeline hardened against a hostile org policy. When the data layer says 51 passes, there are 51 passes.</p>
+  <p style="font-size:.96rem"><b>What went right:</b> the engineering output is real. 17 PRs, 10 live automations, a working safety-net that caught 2 submissions the primary path dropped, a multilingual site, and a deploy pipeline hardened against a hostile org policy. The Notion CRM is more sophisticated than the strategy document claims — a full proof chain, door verification schema, and working forms, all built.</p>
+  <p style="font-size:.96rem"><b>A correction this report has to make about itself:</b> its first draft called the sync layer "the strongest asset in the business" on the strength of a 100% figure. That figure was the sender grading its own homework. Reconciled against the receiver, 30 rows are duplicates and 6 passes are missing. The lesson generalises — every number here that a system reports about itself needs a second source, and the ones that had one held up.</p>
   <p style="font-size:.96rem"><b>What went wrong:</b> the business built a high-quality machine and stopped feeding it. Traffic died on 12 July and nobody noticed for weeks. And when a real campaign finally ran — 152 DMs across two weeks — it went around the tracker built for it five days earlier, so the only durable assets from it are two rate quotes and a list of display names.</p>
   <p style="font-size:.96rem"><b>The synthesis:</b> July's engineering was spent on features that only pay off <i>downstream</i> of traffic — attribution, sharing, tracking — while the <i>upstream</i> dependency failed silently and the <i>downstream</i> proof was never built. The middle of the funnel is excellent. Both ends are open.</p>
   <p style="font-size:.96rem;color:var(--gold)"><b>What credibility requires us to say:</b> we cannot currently prove a single guest walked through the door because of this system. Everything else here is real, verified, and reproducible — but that one gap makes all of it provisional. Closing it is worth more than any other item on the roadmap.</p>

@@ -33,7 +33,7 @@ July was a month of **strong engineering delivery into a funnel that stopped rec
 |---|---|---|
 | Website sessions | 2,093 | ✅ |
 | First Visit Passes issued | 35 (51 all-time) | ✅ |
-| Pass → Notion sync success | 51 / 51 (100%) | ✅ |
+| Pass → Notion sync, reconciled | 45 distinct of 51 · **30 dupes** | ❌ |
 | Passes redeemed at door | **0** | ❌ |
 | Engineering PRs merged | 17 | ✅ |
 | Live automations (edge functions) | 10 | ✅ |
@@ -44,7 +44,7 @@ July was a month of **strong engineering delivery into a funnel that stopped rec
 **The three findings management needs from this report:**
 
 1. **Traffic collapsed on 12 July and has not recovered.** Weekly sessions went 1,141 → 21 → 18 → 3. Facebook supplied ~90% of all traffic and effectively stopped delivering. This is a distribution failure, not a technical one — the site and tracking are both confirmed alive.
-2. **The pipeline captures leads perfectly and converts none of them.** 51 passes issued, 51 synced to Notion, **zero redeemed**. The proof chain terminates at "Supabase Synced" and has never once reached "Door Verified."
+2. **The pipeline captures leads and converts none of them — and the capture is less clean than it reports.** 51 passes issued, **zero redeemed**. Reconciliation against Notion (8 Aug) found 30 duplicate pass rows and 6 passes that never arrived; the "100% synced" figure was self-reported by the sender and never checked against the receiver. See §4.2.
 3. **The last two weeks of engineering shipped into a dead funnel.** DM attribution, tracking links, and IG Story sharing all landed 15–16 July — after traffic had already stopped. They are built and deployed but have never been exercised at volume.
 
 4. **A 152-account DM campaign ran with the instrumentation switched off — and produced no passes.** Season KL outreach *did* happen: 152 accounts contacted from the `letsco.lab` Instagram account between ≈18 July and ≈1 August, yielding two real rate quotes. It bypassed the tracker built for it five days earlier, so not one DM can be linked to a pass, and 121 of the 152 exist only as display names. Zero passes were issued in the entire window it ran. See §5.
@@ -155,7 +155,7 @@ Site live at `lets-colab.github.io/season-kl` across 8 pages: `index`, `explorer
 
 ### 3.3 Remaining
 
-- ❌ Door QR check-in front-end — specified in `STRATEGY.md`, never built. This is the direct cause of zero verified attendance.
+- ⚠️ Door check-in — **revised.** No *website* QR flow exists, but Notion has a fully-built door check-in database and working form that has never been opened (1 row, every field null). The blocker is an operations assignment, not a build task. See [NOTION-AUDIT-FINDINGS.md](NOTION-AUDIT-FINDINGS.md) §Correction 2.
 - ❌ No automated test or monitoring on the funnel; the traffic collapse was found by manual query 27 days later.
 - ⚠️ CyberTrooper repo effectively dormant — 4 commits in July, all CodeQL/CI housekeeping.
 - ⚠️ **Orphaned Netlify integration.** A Netlify project (`seasonkl`) is connected to the repository and fails its deploy preview on every commit. It has no configuration in the repo — no `netlify.toml`, `_redirects`, `_headers`, or `package.json` — and produced zero checks on PRs #35/#36 (16 Jul), so it was connected after that date and has never deployed successfully. Production is served by GitHub Pages via `gh-pages.yml` and is unaffected. **Impact:** every PR now shows a red check that means nothing, which trains reviewers to ignore CI — the same blindness that let the traffic collapse run for 27 days. Either configure it or disconnect it; leaving it red is the one option with an ongoing cost.
@@ -185,18 +185,41 @@ Site live at `lets-colab.github.io/season-kl` across 8 pages: `index`, `explorer
 | `dm-link-open` | 2 | Marks DM tracker row "Link Opened" |
 | `submit-ambassador` | 2 | Ambassador form intake |
 
-### 4.2 Data integrity — ✅ excellent
+### 4.2 Data integrity — ❌ REVISED: the sync is duplicated and lossy
 
-| Table | Rows | Synced | Errors |
+> **This section was rewritten on 8 Aug after Notion access was obtained.** It previously read *"the sync layer is the strongest asset in the system — 70 of 70 records reached Notion."* That was measured from Supabase's `sync_status` column, which records that a write was *attempted and acknowledged* — it was never reconciled against what actually landed. Full analysis in [NOTION-AUDIT-FINDINGS.md](NOTION-AUDIT-FINDINGS.md).
+
+**Supabase-side status (what the sender reports):**
+
+| Table | Rows | Marked synced | Errors |
 |---|---|---|---|
-| `season_passes` | 51 | 51 (100%) | 0 |
-| `wheel_spins` | 8 | 8 (100%) | 0 |
-| `table_bookings` | 2 | 2 (100%) | 0 |
-| `ambassador_signups` | 3 | 3 (100%) | 0 |
-| `kol_signups` | 1 | 1 (100%) | 0 |
-| `trooper_signups` | 5 | 5 (100%) | **2** |
+| `season_passes` | 51 | 51 | 0 |
+| `wheel_spins` | 8 | 8 | 0 |
+| `table_bookings` | 2 | 2 | 0 |
+| `ambassador_signups` | 3 | 3 | 0 |
+| `kol_signups` | 1 | 1 | 0 |
+| `trooper_signups` | 5 | 5 | **2** |
 
-**Assessment:** the sync layer is the strongest asset in the system. 70 of 70 records reached Notion. The `lead_safetynet` table (2 rows) proves the fallback path works — submissions that failed the primary path were caught rather than lost.
+**Reconciled against Notion (what actually arrived):**
+
+| Measure | Value |
+|---|---|
+| Supabase `season_passes` | **51** |
+| Notion Pass Tracker — total rows | **77** |
+| Notion Pass Tracker — **distinct** pass IDs | **45** |
+| Surplus duplicate rows | **30** |
+| Passes that never arrived | **6** |
+
+**Two defects, opposite directions:**
+
+1. **30 duplicate rows** — the same pass written to Notion repeatedly.
+2. **6 passes missing** — marked synced in Supabase, absent from Notion.
+
+**Probable cause:** `notion-retry` (v20) retrying without an idempotency key. A retry firing after the original write already succeeded creates a second row instead of updating the first. Twenty deployments is the signature of a function repeatedly patched without the root cause being found.
+
+**Corroboration that the fault is isolated:** Notion's Guest CRM holds **45** rows — exactly the count of distinct pass IDs. The CRM is clean; the duplication is confined to the Pass Tracker.
+
+**What still stands:** `lead_safetynet` (2 rows) proves the fallback path works — submissions that failed the primary path were caught, not lost. The intake layer is sound. The *reconciliation* layer is what was missing, and its absence is why this went unnoticed for six weeks.
 
 ### 4.3 The conversion gap — ❌ critical
 
@@ -315,9 +338,15 @@ So the campaign ran with the instrumentation switched off. The consequences are 
 
 ## 6. Notion workspace
 
-**⚠️ Status: NOT AUDITED — access blocked.**
+**✅ Status: AUDITED (read-only pass) — 8 Aug 2026.** Full results in [NOTION-AUDIT-FINDINGS.md](NOTION-AUDIT-FINDINGS.md).
 
-The Notion MCP connector requires an interactive OAuth login that this environment cannot perform. I could not read, inventory, deduplicate, or describe any Notion page.
+The connector was authorised after this report's first draft. A read-only inventory ran; **nothing was created, changed, moved, or archived.** It produced the three corrections now folded into §4.2, §3.3 and below, and confirmed all three `STRATEGY.md` database IDs resolve correctly with no drift.
+
+**Not yet done — deliberately.** No page has been archived or merged. Spec §4 requires each candidate to be cross-checked against the automation write-map first, and §4.2 has just established that the sync is *actively* misbehaving. Cleaning up while a duplication bug runs would mix two problems and make both harder to diagnose. Fix the sync, then clean.
+
+**Deduplication candidates identified** (untouched): three overlapping dashboard surfaces, a page/database name collision on First Visit Pass, eight overlapping audit/status pages, one naming inconsistency, and a page whose title is an unresolved bug report. Detail in the findings document.
+
+**One structural note:** `Season KL — OS` — the client-facing hub — sits **nine ancestor levels deep**, four of them with blank titles.
 
 What is known from `STRATEGY.md` (repo-side documentation, not verified against live Notion):
 
@@ -361,7 +390,8 @@ I have deliberately **not** guessed at their contents. A design-alignment review
 |---|---|---|
 | Website (8 pages, 4 languages) | 🟢 Live | Sessions recorded through 8 Aug |
 | Analytics pipeline | 🟢 Live | 3,007 events captured |
-| Supabase → Notion sync | 🟢 Live | 70/70 records synced |
+| Supabase → Notion sync | 🔴 Defective | 30 dupes, 6 lost — see §4.2 |
+| Notion door check-in form | 🟡 Built, never opened | 1 blank row |
 | Pass issuance | 🟢 Live | 51 passes, 0 failures |
 | Lead safety-net | 🟢 Live | 2 catches, 0 losses |
 | Email delivery | 🟢 Live | `send-pass-email` v7 |
@@ -385,11 +415,13 @@ Framed against the `STRATEGY.md` North Star: **300 pax every Friday & Saturday b
 
 | # | Action | Success criterion |
 |---|---|---|
-| 1 | Build door QR check-in front-end | First non-zero `redemption_status` |
-| 2 | Diagnose Facebook channel — audit account, ad status, policy strikes | Root cause documented |
-| 3 | Add funnel alerting (sessions/day below threshold → notify) | Alert fires on test |
+| 1 | **Assign the existing Notion door check-in form to a named person for Friday** | First non-zero attendance record |
+| 2 | Add an idempotency key to `notion-retry` | Duplicate count stops growing |
+| 3 | Diagnose Facebook channel — audit account, ad status, policy strikes | Root cause documented |
+| 4 | Add funnel alerting (sessions/day below threshold → notify) | Alert fires on test |
+| 5 | Reconcile the 6 missing passes; de-duplicate the 30 surplus rows (after #2) | Notion distinct = Supabase count |
 
-*Rationale: without #1 the business cannot prove revenue attribution. Without #3 the next collapse also goes unnoticed for a month.*
+*Rationale: #1 requires **zero engineering** — the Notion door check-in form is built, configured, and has never been opened (see [NOTION-AUDIT-FINDINGS.md](NOTION-AUDIT-FINDINGS.md)). It is the cheapest available route to the redemption number this business has never had. #2 before #5, or the duplicates regenerate. Without #4 the next collapse also goes unnoticed for a month.*
 
 ### Priority 1 — Restore traffic (Weeks 1–3)
 
