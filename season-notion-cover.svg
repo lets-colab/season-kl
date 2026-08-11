@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="600" viewBox="0 0 1500 600" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="90" y1="20" x2="1430" y2="580" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#09031A"/>
+      <stop offset="0.48" stop-color="#020008"/>
+      <stop offset="1" stop-color="#120219"/>
+    </linearGradient>
+    <radialGradient id="cyanGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1160 150) rotate(136) scale(490 340)">
+      <stop stop-color="#00EAFF" stop-opacity="0.32"/>
+      <stop offset="1" stop-color="#00EAFF" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="pinkGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(290 470) rotate(-35) scale(520 330)">
+      <stop stop-color="#FF0066" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#FF0066" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="console" x1="488" y1="126" x2="1005" y2="478" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#151128" stop-opacity="0.92"/>
+      <stop offset="1" stop-color="#07030F" stop-opacity="0.96"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="472" y1="104" x2="1030" y2="505" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#00EAFF"/>
+      <stop offset="0.5" stop-color="#8855EE"/>
+      <stop offset="1" stop-color="#FF0066"/>
+    </linearGradient>
+    <linearGradient id="brand" x1="496" y1="250" x2="1004" y2="355" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F8F4EA"/>
+      <stop offset="0.48" stop-color="#E2BF7A"/>
+      <stop offset="1" stop-color="#F8F4EA"/>
+    </linearGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0V48" stroke="#AA77FF" stroke-opacity="0.08"/>
+    </pattern>
+    <filter id="blur" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="24"/>
+    </filter>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="180%">
+      <feDropShadow dx="0" dy="26" stdDeviation="28" flood-color="#000000" flood-opacity="0.62"/>
+    </filter>
+  </defs>
+
+  <rect width="1500" height="600" fill="url(#bg)"/>
+  <rect width="1500" height="600" fill="url(#cyanGlow)"/>
+  <rect width="1500" height="600" fill="url(#pinkGlow)"/>
+  <rect width="1500" height="600" fill="url(#grid)"/>
+
+  <g opacity="0.62">
+    <path d="M0 118H330L404 192H540" stroke="#8855EE" stroke-opacity="0.36"/>
+    <path d="M1500 450H1210L1128 368H1004" stroke="#00EAFF" stroke-opacity="0.32"/>
+    <circle cx="350" cy="134" r="4" fill="#FF0066"/>
+    <circle cx="1167" cy="432" r="4" fill="#00EAFF"/>
+    <path d="M90 508H310" stroke="#FF0066" stroke-opacity="0.38"/>
+    <path d="M1190 94H1410" stroke="#00EAFF" stroke-opacity="0.38"/>
+  </g>
+
+  <g filter="url(#softShadow)">
+    <path d="M516 126H984L1055 197V420L984 486H516L445 420V197L516 126Z" fill="url(#console)"/>
+    <path d="M516 126H984L1055 197V420L984 486H516L445 420V197L516 126Z" stroke="url(#edge)" stroke-opacity="0.72" stroke-width="2"/>
+    <path d="M497 155H1003L1028 180H472L497 155Z" fill="#FFFFFF" fill-opacity="0.025"/>
+    <path d="M480 450H1020" stroke="#FFFFFF" stroke-opacity="0.08"/>
+    <circle cx="492" cy="176" r="5" fill="#00EAFF"/>
+    <circle cx="510" cy="176" r="5" fill="#8855EE"/>
+    <circle cx="528" cy="176" r="5" fill="#FF0066"/>
+  </g>
+
+  <ellipse cx="750" cy="305" rx="335" ry="130" fill="#8855EE" fill-opacity="0.12" filter="url(#blur)"/>
+
+  <g text-anchor="middle">
+    <text x="750" y="268" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="600" letter-spacing="7" fill="#00EAFF">TROOPER × SEASON KL</text>
+    <text x="750" y="360" font-family="Cormorant Garamond, Didot, Georgia, serif" font-size="98" font-weight="600" letter-spacing="10" fill="url(#brand)">SEASON</text>
+    <path d="M750 286C752 302 762 312 778 314C762 316 752 326 750 342C748 326 738 316 722 314C738 312 748 302 750 286Z" fill="#F5EDD6" fill-opacity="0.9"/>
+    <text x="750" y="407" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="500" letter-spacing="6" fill="#F8F4EA" fill-opacity="0.88">COMMUNITY OPERATING SYSTEM · JULY 2026</text>
+  </g>
+
+  <g opacity="0.72" font-family="Inter, Arial, sans-serif" font-size="12" letter-spacing="2">
+    <text x="78" y="84" fill="#F8F4EA">RELATIONSHIPS → COMMUNITY</text>
+    <text x="1422" y="536" text-anchor="end" fill="#F8F4EA">CAPTURE · CONVERT · RETAIN</text>
+  </g>
+  <rect x="0" y="0" width="1500" height="4" fill="url(#edge)"/>
+</svg>
