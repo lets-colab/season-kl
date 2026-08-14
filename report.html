@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Season KL — Live Campaign Report</title>
+<meta name="robots" content="noindex,nofollow" />
+<link rel="icon" href="season-logo.png" type="image/png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400&family=Outfit:wght@300;400;500;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0A0A18;--surface:#10101f;--text:#F0F4FA;--muted:rgba(240,244,250,.55);--faint:rgba(240,244,250,.35);
+  --neon:#00EAFF;--violet:#8855EE;--gold:#E2BF7A;--good:#39D98A;--bad:#FF5577;
+  --border:rgba(255,255,255,.1);
+}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;font-weight:300;line-height:1.5;padding:26px 18px 70px;max-width:980px;margin:0 auto}
+header{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:6px}
+h1{font-family:'Bodoni Moda',serif;font-weight:400;font-size:1.5rem;letter-spacing:.04em}
+.stamp{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+.sub{font-size:.78rem;color:var(--muted);margin-bottom:22px}
+h2{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.26em;text-transform:uppercase;color:var(--muted);margin:30px 0 12px}
+/* stat tiles */
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.tile{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 14px 12px}
+.tile .v{font-family:'DM Mono',monospace;font-size:1.5rem;line-height:1.1}
+.tile .l{font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.tile .s{font-size:.62rem;color:var(--faint);margin-top:2px}
+/* bar charts */
+.chart{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 14px 8px;overflow-x:auto}
+.chart h3{font-size:.8rem;font-weight:400;color:var(--text);margin-bottom:12px;display:flex;gap:8px;align-items:center}
+.chart h3 i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.bars{display:flex;align-items:flex-end;gap:5px;height:120px;min-width:420px}
+.bcol{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:3px;height:100%}
+.bar{width:100%;border-radius:4px 4px 0 0;min-height:2px;position:relative;transition:opacity .15s}
+.bcol:hover .bar{opacity:.8}
+.bval{font-family:'DM Mono',monospace;font-size:.58rem;color:var(--muted)}
+.bday{font-family:'DM Mono',monospace;font-size:.52rem;color:var(--faint);margin-top:4px}
+/* horizontal bars */
+.hrow{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.hlabel{flex:0 0 110px;font-size:.72rem;color:var(--muted);text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.htrack{flex:1;display:flex;align-items:center;gap:8px}
+.hbar{height:14px;border-radius:0 4px 4px 0;background:rgba(0,234,255,.65);min-width:2px}
+.hval{font-family:'DM Mono',monospace;font-size:.66rem;color:var(--text)}
+/* health */
+.health{display:flex;gap:10px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:.66rem;letter-spacing:.06em;padding:9px 14px;border-radius:100px;border:1px solid var(--border);background:var(--surface)}
+.pill b{font-weight:400}
+.ok{color:var(--good)} .warn{color:var(--bad)}
+details{margin-top:14px}
+summary{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);cursor:pointer}
+table{width:100%;border-collapse:collapse;margin-top:10px;font-size:.72rem}
+th,td{padding:6px 8px;text-align:right;border-bottom:1px solid var(--border);font-family:'DM Mono',monospace}
+th:first-child,td:first-child{text-align:left}
+th{color:var(--muted);font-weight:400;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase}
+.err{color:var(--bad);font-size:.8rem;padding:20px;text-align:center}
+footer{margin-top:40px;font-size:.64rem;color:var(--faint);text-align:center;letter-spacing:.08em}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>SEASON · Live Campaign Report</h1>
+  <span class="stamp" id="stamp">loading…</span>
+</header>
+<p class="sub">Auto-updates from the live database every 60 seconds. Numbers are aggregate only — no guest details on this page.</p>
+
+<div id="app"><p class="err" id="loadmsg" style="color:var(--muted)">Loading live numbers…</p></div>
+
+<footer>Season KL · internal report — do not share the link publicly</footer>
+
+<script>
+(function(){
+  const SB='https://nykukkccynnykbmxznhl.supabase.co';
+  const K='sb_publishable_aG3K6RiA-yXMN3QlNLmt0Q_65xhqvPb';
+  const $=s=>document.querySelector(s);
+  const fmt=n=>Number(n||0).toLocaleString('en-MY');
+  const rm=n=>'RM '+fmt(n);
+
+  function tile(v,l,s){return `<div class="tile"><div class="v">${v}</div><div class="l">${l}</div>${s?`<div class="s">${s}</div>`:''}</div>`;}
+
+  function dailyChart(title,color,data,key){
+    const max=Math.max(1,...data.map(d=>d[key]));
+    const cols=data.map(d=>{
+      const h=Math.round(d[key]/max*100);
+      const day=new Date(d.d+'T00:00:00');
+      const lbl=day.toLocaleDateString('en-GB',{day:'numeric',month:'short'}).replace(' ',' ');
+      return `<div class="bcol" title="${lbl}: ${fmt(d[key])}">
+        <span class="bval">${d[key]>0?fmt(d[key]):''}</span>
+        <div class="bar" style="height:${h}%;background:${color}"></div>
+        <span class="bday">${day.getDate()}</span>
+      </div>`;
+    }).join('');
+    return `<div class="chart"><h3><i style="background:${color}"></i>${title} — last 14 days</h3><div class="bars">${cols}</div></div>`;
+  }
+
+  function hbars(rows,labelKey,valKey,color){
+    const max=Math.max(1,...rows.map(r=>r[valKey]));
+    return rows.map(r=>`<div class="hrow"><span class="hlabel" title="${r[labelKey]}">${r[labelKey]}</span><span class="htrack"><span class="hbar" style="width:${Math.max(2,Math.round(r[valKey]/max*100))}%;background:${color}"></span><span class="hval">${fmt(r[valKey])}</span></span></div>`).join('');
+  }
+
+  async function load(){
+    let j=null;
+    try{
+      const r=await fetch(`${SB}/rest/v1/rpc/get_funnel_report`,{method:'POST',headers:{'Content-Type':'application/json','apikey':K,'Authorization':'Bearer '+K,'Accept-Profile':'public','Content-Profile':'public'},body:'{}',signal:AbortSignal.timeout(15000)});
+      if(r.ok)j=await r.json();
+    }catch(_){}
+    if(!j){ $('#app').innerHTML='<p class="err">Could not reach the live database. Check your connection and refresh.</p>'; return; }
+
+    const t=j.totals||{}, h=j.health||{}, daily=j.daily||[];
+    const conv=t.views_7d>0?((t.passes_7d/t.views_7d)*100).toFixed(1)+'%':'—';
+    $('#stamp').textContent='updated '+new Date(j.generated_at).toLocaleTimeString('en-GB');
+
+    let html='';
+    html+='<h2>Funnel — at a glance</h2><div class="tiles">';
+    html+=tile(fmt(t.passes_total),'First Visit Passes','all time');
+    html+=tile(fmt(t.passes_7d),'Passes · 7 days',fmt(t.passes_24h)+' in last 24h');
+    html+=tile(fmt(t.views_7d),'Page views · 7 days');
+    html+=tile(conv,'View → Pass rate','7-day window');
+    html+=tile(fmt(t.bookings_total),'Table bookings',rm(t.bookings_pipeline_rm)+' pipeline');
+    html+=tile(fmt(t.spins_total),'Wheel spins',fmt(t.spins_redeemed)+' redeemed at bar');
+    html+=tile(fmt(t.ambassadors_total),'Ambassador applications');
+    html+=tile(fmt(t.kols_total),'KOL applications');
+    html+='</div>';
+
+    html+='<h2>Daily rhythm</h2>';
+    html+=dailyChart('First Visit Passes','rgba(0,234,255,.8)',daily,'leads');
+    html+='<div style="height:10px"></div>';
+    html+=dailyChart('Page views','rgba(136,85,238,.85)',daily,'views');
+
+    if((j.sources||[]).length){
+      html+='<h2>Where guests come from (lead source)</h2><div class="chart" style="padding:16px 14px">'+hbars(j.sources,'source','n','rgba(0,234,255,.65)')+'</div>';
+    }
+    if((j.pages_7d||[]).length){
+      html+='<h2>Pages · views last 7 days</h2><div class="chart" style="padding:16px 14px">'+hbars(j.pages_7d,'page','views','rgba(136,85,238,.75)')+'</div>';
+    }
+    if((j.prizes||[]).length){
+      html+='<h2>Wheel prizes won</h2><div class="chart" style="padding:16px 14px">'+hbars(j.prizes,'prize','n','rgba(226,191,122,.8)')+'</div>';
+    }
+
+    const syncOK=(h.sync_errors||0)===0, netOK=(h.safetynet_unprocessed||0)===0;
+    html+='<h2>System health</h2><div class="health">';
+    html+=`<span class="pill"><b class="${syncOK?'ok':'warn'}">${syncOK?'●':'▲'}</b> Notion sync errors: <b>${fmt(h.sync_errors)}</b></span>`;
+    html+=`<span class="pill"><b class="${netOK?'ok':'warn'}">${netOK?'●':'▲'}</b> Safety-net queue: <b>${fmt(h.safetynet_unprocessed)}</b></span>`;
+    html+=`<span class="pill">Last signup: <b>${h.last_lead_at?new Date(h.last_lead_at).toLocaleString('en-GB'):'—'}</b></span>`;
+    html+='</div>';
+
+    html+='<details><summary>Daily numbers as a table</summary><table><tr><th>Date</th><th>Views</th><th>Passes</th><th>Bookings</th><th>Spins</th></tr>';
+    daily.forEach(d=>{ html+=`<tr><td>${d.d}</td><td>${fmt(d.views)}</td><td>${fmt(d.leads)}</td><td>${fmt(d.bookings)}</td><td>${fmt(d.spins)}</td></tr>`; });
+    html+='</table></details>';
+
+    $('#app').innerHTML=html;
+  }
+  load();
+  setInterval(load,60000);
+})();
+</script>
+</body>
+</html>
